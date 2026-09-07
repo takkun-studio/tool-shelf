@@ -1,0 +1,2 @@
+import { Show, UserButton } from '@clerk/react'; import { Link } from 'react-router-dom'; import { APP_NAME } from '../constants';
+export function Layout({children}:{children:React.ReactNode}){return <><header><Link className="brand" to="/">{APP_NAME}</Link><nav><Link to="/">ホーム</Link><Link to="/pricing">料金</Link><Show when="signed-out"><Link to="/login">ログイン</Link></Show><Show when="signed-in"><Link to="/account">アカウント</Link><UserButton/></Show></nav></header><main>{children}</main><footer>入力内容はこのブラウザ内だけに保存されます。</footer></>}

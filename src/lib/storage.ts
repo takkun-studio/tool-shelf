@@ -1,0 +1,7 @@
+import { STORAGE_KEY, STORAGE_VERSION } from '../constants'; import type { Inputs } from './validation'; import type { ToolId } from './tools';
+export type Scenario={id:string;toolId:ToolId;name:string;inputs:Inputs;createdAt:string;updatedAt:string}; type Stored={version:1;scenarios:Scenario[]};
+let warning=''; const fallbackKey=`${STORAGE_KEY}:recovered`;
+export const storageWarning=()=>warning;
+export function loadScenarios():Scenario[]{try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return[];const data:unknown=JSON.parse(raw);if(!data||typeof data!=='object'||!('version'in data)||!('scenarios'in data))throw Error('invalid');const item=data as Stored;if(item.version!==STORAGE_VERSION){warning='保存データを読み込めませんでした（既存データは保護されています）。';return[]}if(!Array.isArray(item.scenarios))throw Error('invalid');return item.scenarios.filter((s):s is Scenario=>!!s&&typeof s.id==='string'&&typeof s.toolId==='string'&&typeof s.name==='string'&&!!s.inputs)}catch{warning='保存データを読み込めませんでした。';return[]}}
+export function persist(scenarios:Scenario[]):boolean{try{const key=warning.includes('既存データ')?fallbackKey:STORAGE_KEY;localStorage.setItem(key,JSON.stringify({version:STORAGE_VERSION,scenarios} satisfies Stored));return true}catch{warning='保存できませんでした。ブラウザの保存容量を確認してください。';return false}}
+export const defaultName=()=>new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date()).replace(/\//g,'/')+' の試算';

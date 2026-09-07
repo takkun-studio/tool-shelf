@@ -1,0 +1,2 @@
+import { Show, SignIn, useAuth } from '@clerk/react'; import { Link } from 'react-router-dom';
+export function Login(){const {isLoaded}=useAuth();if(!isLoaded)return <section className="auth"><p>ログイン状態を確認しています。</p></section>;return <section className="auth"><Show when="signed-out"><h1>ログイン / 新規登録</h1><p>ログイン後も課金planはまだ連携されません。</p><SignIn routing="hash" signUpUrl="#/sign-up"/></Show><Show when="signed-in"><h1>ログイン済みです</h1><p>アカウント画面から確認できます。</p><Link to="/account">アカウントへ</Link></Show></section>}
