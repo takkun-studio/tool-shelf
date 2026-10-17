@@ -176,3 +176,5 @@ button.secondary:hover:not(:disabled),.saved button:hover:not(:disabled){backgro
   footer.shelf-site-footer>span:last-child{width:100%}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.shelf-card,.shelf-cta,button{transition:none}.shelf-card:hover,.shelf-cta:hover{transform:none}}
+
+@media(max-width:420px){header.shelf-site-header nav a:first-child{display:none}header.shelf-site-header nav{gap:10px}.shelf-hero h1{font-size:32px}.shelf-hero-actions{gap:12px}}
