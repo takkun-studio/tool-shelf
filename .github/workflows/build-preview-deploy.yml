@@ -4,6 +4,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -49,6 +52,17 @@ jobs:
             screenshots/*.png
             dist/
           retention-days: 7
+      - name: Refresh tracked Pages output for Git-connected deployment
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A dist
+          if git diff --cached --quiet; then
+            echo "No dist changes to commit"
+          else
+            git commit -m "build: refresh Tool Shelf static output [skip ci]"
+            git push origin HEAD:main
+          fi
       - name: Check Cloudflare publishing credentials
         id: cloudflare_credentials
         env:
