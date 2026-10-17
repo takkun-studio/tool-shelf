@@ -63,6 +63,21 @@ jobs:
             git commit -m "build: refresh Tool Shelf static output [skip ci]"
             git push origin HEAD:main
           fi
+      - name: Inspect the real published Cloudflare website
+        run: |
+          expected=$(grep -oE 'src="/assets/[^"]+"' dist/index.html | head -1 | cut -d '"' -f 2)
+          [ -n "$expected" ] || { echo "::error::Built JS asset missing from dist/index.html"; exit 1; }
+          for attempt in $(seq 1 6); do
+            published=$(curl --fail --location --silent --show-error --max-time 10 https://takkun-tool-shelf.pages.dev/ || true)
+            if printf '%s' "$published" | grep -Fq "$expected"; then
+              echo "Live Cloudflare Pages is serving the new UI ($expected)." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 10
+          done
+          observed=$(printf '%s' "$published" | grep -oE 'src="/assets/[^"]+"' | head -1 || true)
+          echo "::warning::Cloudflare public site is still not serving new UI. Expected $expected, observed $observed."
+          echo "Cloudflare public site not updated. Expected $expected; observed $observed." >> "$GITHUB_STEP_SUMMARY"
       - name: Check Cloudflare publishing credentials
         id: cloudflare_credentials
         env:
