@@ -1,0 +1,65 @@
+name: Build preview and publish Tool Shelf
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Restore existing PUBLIC frontend configuration
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const assets = fs.readdirSync('dist/assets').filter(name => name.endsWith('.js'));
+          const bundled = assets.map(name => fs.readFileSync('dist/assets/' + name, 'utf8')).join('\n');
+          const clerk = bundled.match(/pk_(?:test|live)_[A-Za-z0-9_-]+/)?.[0];
+          const worker = bundled.match(/https:\/\/[a-zA-Z0-9.-]+\.workers\.dev/)?.[0];
+          if (!clerk || !worker) throw Error('Previous public frontend config was not found; abort build.');
+          fs.appendFileSync(process.env.GITHUB_ENV, `VITE_CLERK_PUBLISHABLE_KEY=${clerk}\nVITE_WORKER_API_URL=${worker}\n`);
+          NODE
+      - run: pnpm lint && pnpm typecheck && pnpm test && pnpm build
+      - name: Start built website locally for visual check
+        run: |
+          pnpm preview --host 127.0.0.1 --port 4173 > /tmp/tool-shelf-preview.log 2>&1 &
+          for i in $(seq 1 30); do curl --fail -s http://127.0.0.1:4173/ > /dev/null && break || sleep 1; done
+          curl --fail -s http://127.0.0.1:4173/ >/dev/null
+      - name: Install browser for screenshots
+        run: npx --yes playwright@1.56.1 install chromium --with-deps
+      - name: Capture actual responsive UI
+        run: |
+          mkdir -p screenshots
+          npx --yes playwright@1.56.1 screenshot --browser chromium --full-page --viewport-size "1440,900" --wait-for-timeout 2500 http://127.0.0.1:4173/ screenshots/tool-shelf-desktop.png
+          npx --yes playwright@1.56.1 screenshot --browser chromium --full-page --viewport-size "390,844" --wait-for-timeout 2500 http://127.0.0.1:4173/ screenshots/tool-shelf-mobile.png
+      - name: Save screenshot and deployable files
+        uses: actions/upload-artifact@v4
+        with:
+          name: tool-shelf-ui-evidence
+          path: |
+            screenshots/*.png
+            dist/
+          retention-days: 7
+      - name: Check Cloudflare publishing credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Cloudflare Pages publishing requires repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID. The site is built; it has not been deployed."
+            exit 1
+          fi
+      - name: Publish to the existing Cloudflare Pages project
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 pages deploy dist --project-name takkun-tool-shelf --branch main
