@@ -257,3 +257,22 @@ footer.shelf-site-footer .shelf-footer-brand{color:#264d99}
   .ledger-price-features{grid-column:1/-1}
   .ledger-price-action{grid-column:1/-1;justify-self:stretch}
 }
+
+
+/* Shared tool forms inherit the same blue/ink visual language. */
+.back,.tool-heading>p,.shelf-signup-note a,.saved button,.notice{color:#264d99}
+.tool-heading{border-color:#cfd6e2}
+.workspace .inputs,.workspace .results,.actions,.saved{border-radius:0}
+.workspace .results{border-left-color:#264d99}
+.workspace .results.loss{background:#fff0ec;border-left-color:#b14d35}
+.workspace .results.pending{border-left-color:#aebbd3}
+.field{border-color:#d9e1eb}
+.field label{color:#283a53}
+.field label span{color:#6b7f9c}
+.field input{background:#fff;border-color:#b9c5d6}
+.field input:focus-visible,.actions textarea:focus-visible{outline:2px solid #264d99;outline-offset:2px}
+.workspace .inputs button.secondary,.actions button.secondary,.saved button{background:#fff;color:#264d99;border:1px solid #aebfdc;border-radius:0}
+.workspace .inputs button.secondary:hover:not(:disabled),.actions button.secondary:hover:not(:disabled),.saved button:hover:not(:disabled){background:#e7eefc}
+.actions button:not(.secondary){background:#264d99;border-color:#264d99;border-radius:0}
+.actions button:not(.secondary):hover:not(:disabled){background:#1e3c79}
+.actions,.saved{border-color:#cfd8e6}
