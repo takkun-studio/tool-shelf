@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   issues: write
+  pull-requests: write
 
 jobs:
   deploy-pages:
@@ -71,7 +72,7 @@ jobs:
           fi
 
           body=$(printf 'Cloudflare Pages本番反映の本人確認です。\n\n```\n%s\n```\n\n許可すると、この実行が現在のmainを既存Pages projectへ公開して本番assetまで確認します。' "$auth_lines")
-          gh api "repos/$GITHUB_REPOSITORY/issues/11/comments" -f body="$body" >/dev/null
+          gh api "repos/$GITHUB_REPOSITORY/issues/6/comments" -f body="$body" >/dev/null
           wait "$login_pid"
 
       - name: Confirm authenticated Cloudflare account
@@ -101,4 +102,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh api "repos/$GITHUB_REPOSITORY/issues/11/comments" -f body="Cloudflare Pages本番反映完了。新しいfrontend assetの配信を確認済み。" >/dev/null
+          gh api "repos/$GITHUB_REPOSITORY/issues/6/comments" -f body="Cloudflare Pages本番反映完了。新しいfrontend assetの配信を確認済み。" >/dev/null
