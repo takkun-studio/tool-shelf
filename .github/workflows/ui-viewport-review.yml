@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/**'
       - 'worker/src/calculators.ts'
+      - 'qa/**'
       - 'wrangler.toml'
       - '.github/workflows/ui-viewport-review.yml'
 permissions:
@@ -56,6 +57,12 @@ jobs:
             pnpm dlx playwright@latest screenshot --browser chromium --viewport-size "1440,900" --wait-for-timeout 1200 --full-page "http://127.0.0.1:4173${route}" "screenshots/${name}-desktop.png"
             pnpm dlx playwright@latest screenshot --browser chromium --viewport-size "390,844" --wait-for-timeout 1200 --full-page "http://127.0.0.1:4173${route}" "screenshots/${name}-mobile.png"
           done
+      - name: Verify guest calculators and layout interactively
+        shell: bash
+        run: |
+          npm install --prefix /tmp/tool-shelf-e2e --no-audit --no-fund --no-package-lock playwright@latest
+          cp qa/preview-e2e.mjs /tmp/tool-shelf-e2e/check.mjs
+          node /tmp/tool-shelf-e2e/check.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
