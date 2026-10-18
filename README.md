@@ -1,6 +1,6 @@
 # ツール棚 MVP
 
-個人販売・小規模出店向けのブラウザ内完結計算ツール。React + Vite + TypeScript + React Router + Vitest。無料3・有料候補7の全10ツールを、現時点ではすべてローカルで利用できる状態で提供します。
+個人販売・小規模出店向けのブラウザ内完結計算ツール。React + Vite + TypeScript + React Router + Vitest。全10ツールの単発計算・CSV出力は未登録でも無料。登録・月額課金は自分の棚の保存・登録枠の拡張に使います。
 
 ## 起動
 
@@ -37,15 +37,15 @@
 2. `src/lib/calculators/index.ts` に計算分岐を追加
 3. `src/main.tsx` にrouteを追加
 
-未実装: Stripe決済、クラウド同期、CSV import。
+未実装: 棚や試算のクラウド同期、CSV import。
 
 ## 販売準備状態
 
-tool registryの`access`は`free`または`paid`。無料は最初の3ツール、有料は残り7ツールです。Freeはローカル計算、有料7ツールは認証済みの対象planでWorker計算を利用します。Stripe決済は未実装です。
+全10ツールの`access`は`free`。すべてブラウザ内で単発計算でき、ゲストでもCSV出力可能。サインイン済みなら試算をこのブラウザのlocalStorageに保存・再利用できます。無料の棚3枠、Basic（月480円）の棚5枠、Standard（月980円）の棚10枠はツールを並べ替えてすばやくアクセスするための枠数であり、計算機能のロックではありません。Unlimitedは将来構想で、現時点では販売しません。
 
 ## プラン権限レイヤー
 
-`src/lib/plans.ts` が `free / basic / standard / unlimited` と順序を定義し、tool registryは各toolの`minimumPlan`を保持します。WorkerはD1 entitlementの`free / basic / standard`を正本として使い、未知のplan・toolIdは拒否します。localStorageとfrontend送信値は権限の正本に使用しません。
+`src/lib/plans.ts` が `free / basic / standard / unlimited` と順序を定義し、フロントエンドの全ツールの`minimumPlan`は`free`。会員の棚プランはWorkerの `/v1/billing/status` で取得したD1/Stripe由来のプランを利用し、ログインユーザー別にブラウザ内の棚登録枠を Free3、Basic5、Standard10 に制限します。localStorageのプラン値やfrontend送信値は契約の正本には使用しません。
 
 ## Clerk Auth
 
@@ -57,11 +57,15 @@ Clerk Development instanceでtest modeの新規登録・確認コード・login�
 
 `worker/` はCloudflare Worker + D1の認可境界です。D1の`users`、`entitlements`、`webhook_events`は`worker/migrations/0001_initial.sql`で作成します。WorkerはClerk session JWTを公開JWKSで検証し、D1にentitlementがなければ`free`として扱います。frontendからのplan値は使いません。
 
-`/v1/calculators/discount`、`payout`、`service`、`target`、`inventory`、`channel`、`investment`の7 endpointでWorker計算を行います。Basicはdiscount/payout、Standardは全7ツールを利用できます。trial overrideは存在せず、Worker認可を迂回しません。Worker URLはgit管理外の`.env.local`に`VITE_WORKER_API_URL`として設定します。
+既存の `/v1/calculators/` 7 endpointには旧サブスクリプション権限チェックが残りますが、公開UIはこれらを呼び出さず、同じ純粋計算定義をフロントエンドに取り込んで10ツールすべて無料で計算します。Worker URLは契約状態確認と定期決済フローに使用します。旧APIは互換性のため保持し、認可・Stripe契約を勝手に緩和しません。
 
-## 最終検証（2026-09-05）
+## 最終検証（2026-09-05時点の記録）
 
 - `pnpm lint`、`pnpm typecheck`、`pnpm test`、`pnpm build`: PASS
 - 内蔵ブラウザ（390 × 844）: `/`、3ツール、各計算結果、保存済みscenarioのreload復元、404、ホーム復帰、横スクロールなし、console error/warn なしを確認
 - CSV: UIから改行・カンマ・ダブルクォートを含むscenario名を保存・出力し、実ダウンロードCSVでUTF-8 BOM、CRLF、RFC 4180相当の`""` escapeとfield内改行の保持を確認
 - 10ツール拡張: 全10直URL、追加7ツールの主要計算、390 × 844での横スクロールなし、console error/warnなしを確認
+
+## 2026-10-18 課金設計の訂正
+
+未登録でも全10ツールを単発利用できることを正本とします。月額は『ツールの利用数』ではなく『自分の棚の登録枠と使いやすさ』に対するもの。ログイン済みユーザーの棚はこのブラウザごとに保存され、別端末との同期はありません。旧来の試算データ用localStorageは変更しません。

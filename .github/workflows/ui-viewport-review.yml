@@ -1,0 +1,71 @@
+name: UI viewport review
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'worker/src/calculators.ts'
+      - 'qa/**'
+      - 'wrangler.toml'
+      - '.github/workflows/ui-viewport-review.yml'
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Restore public build configuration from published application
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const home = 'https://takkun-tool-shelf.pages.dev';
+          (async () => {
+            const html = await (await fetch(home)).text();
+            const asset = html.match(/src="(\/assets\/[^"]+\.js)"/)?.[1];
+            if (!asset) throw new Error('Published application bundle was not found');
+            const script = await (await fetch(home + asset)).text();
+            const keys = [...new Set(script.match(/pk_(?:test|live)_[A-Za-z0-9_-]+/g) ?? [])];
+            const urls = [...new Set(script.match(/https:\/\/[a-zA-Z0-9.-]+\.workers\.dev/g) ?? [])];
+            if (keys.length !== 1 || urls.length !== 1) throw new Error('Public build settings are missing or ambiguous');
+            console.log('::add-mask::' + keys[0]);
+            fs.appendFileSync(process.env.GITHUB_ENV, 'VITE_CLERK_PUBLISHABLE_KEY=' + keys[0] + '\nVITE_WORKER_API_URL=' + urls[0] + '\n');
+          })().catch((error) => { console.error(error.message); process.exitCode = 1; });
+          NODE
+      - run: pnpm build
+      - name: Install Chromium for visual review
+        run: pnpm dlx playwright@latest install --with-deps chromium
+      - name: Capture desktop and mobile snapshots
+        shell: bash
+        run: |
+          (pnpm exec vite preview --host 127.0.0.1 --port 4173 > /tmp/tool-shelf-vite.log 2>&1 &)
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && break || sleep 1; done
+          mkdir -p screenshots
+          for route in '/' '/pricing' '/tools/profit' '/tools/discount'; do
+            name=${route//\//_}
+            if [ "$name" = "_" ]; then name="home"; fi
+            pnpm dlx playwright@latest screenshot --browser chromium --viewport-size "1440,900" --wait-for-timeout 1200 --full-page "http://127.0.0.1:4173${route}" "screenshots/${name}-desktop.png"
+            pnpm dlx playwright@latest screenshot --browser chromium --viewport-size "390,844" --wait-for-timeout 1200 --full-page "http://127.0.0.1:4173${route}" "screenshots/${name}-mobile.png"
+          done
+      - name: Verify guest calculators and layout interactively
+        shell: bash
+        run: |
+          npm install --prefix /tmp/tool-shelf-e2e --no-audit --no-fund --no-package-lock playwright@latest
+          cp qa/preview-e2e.mjs /tmp/tool-shelf-e2e/check.mjs
+          node /tmp/tool-shelf-e2e/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tool-shelf-ui-viewport-images
+          path: screenshots/
+          retention-days: 5

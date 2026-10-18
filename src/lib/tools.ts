@@ -14,6 +14,6 @@ const entries:Omit<Tool,'minimumPlan'>[]=[
 {id:'channel',slug:'channel',name:'販売チャネル比較計算',shortDescription:'2つの販売先の手取りと利益を並べて比較。',route:'/tools/channel',access:'paid',category:'販売',order:9,fields:fields([['priceA','チャネルA 販売価格','円','money'],['costA','チャネルA 商品原価','円','money'],['shippingA','チャネルA 送料','円','money'],['salesFeeA','チャネルA 販売手数料率','%','percent'],['paymentFeeA','チャネルA 決済手数料率','%','percent'],['priceB','チャネルB 販売価格','円','money'],['costB','チャネルB 商品原価','円','money'],['shippingB','チャネルB 送料','円','money'],['salesFeeB','チャネルB 販売手数料率','%','percent'],['paymentFeeB','チャネルB 決済手数料率','%','percent']])},
 {id:'investment',slug:'investment',name:'初期投資回収計算',shortDescription:'初期費用を回収する件数と目安月数を確認。',route:'/tools/investment',access:'paid',category:'事業',order:10,fields:fields([['initialCost','初期費用','円','money'],['profitPerSale','1件あたり利益','円','money'],['monthlyCount','月間販売・受注数','個','quantity']])}
 ];
-const minimumPlan=(order:number):Plan=>order<=3?'free':order<=5?'basic':'standard';
-export const tools:Tool[]=entries.map(tool=>({...tool,minimumPlan:minimumPlan(tool.order)}));
+// Every calculator can be used without payment. Plans govern shelf slots only.
+export const tools:Tool[]=entries.map(tool=>({...tool,access:'free' as const,minimumPlan:'free' as const}));
 export const toolById=(id:ToolId)=>tools.find(tool=>tool.id===id)!;
