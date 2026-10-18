@@ -50,7 +50,7 @@ export function Home() {
         <p>個人販売・小さなお店のための道具箱</p>
         <h1>計算ツール<span>10</span></h1>
       </div>
-      <p className="ledger-heading-note"><span>全種類無料</span>　登録なしで計算できます</p>
+      <p className="ledger-heading-note"><span>全種類無料</span> 登録なしで計算できます</p>
     </div>
 
     <div className="ledger-workspace">
@@ -58,7 +58,7 @@ export function Home() {
         <div className="ledger-side-intro"><span>自分の棚</span><span className="ledger-side-index">保存する道具</span></div>
         {!shelf.isLoaded ? <p className="ledger-side-muted">ログイン状態を確認しています。</p>
         : shelf.isSignedIn ? <>
-          <p className="ledger-side-counter">登録済み　<strong>{shelf.pins.length}</strong><span> / {shelf.limit} 枠</span></p>
+          <p className="ledger-side-counter">登録済み <strong>{shelf.pins.length}</strong><span> / {shelf.limit} 枠</span></p>
           {shelf.pins.length === 0 ? <p className="ledger-side-muted">下の一覧から、よく使う道具を追加できます。</p> :
             <ol className="ledger-pins">{shelf.pins.map((id, index) => {
               const tool = toolById(id);
