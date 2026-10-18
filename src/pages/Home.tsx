@@ -1,36 +1,61 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useShelf } from '../hooks/useShelf';
+import { calculate } from '../lib/calculators';
 import { tools, toolById, type Tool, type ToolId } from '../lib/tools';
 
 const sections = [
-  { id: '販売', title: '販売の計算', note: '値付け・利益・売上' },
-  { id: '出店', title: '出店の計算', note: 'イベント・マルシェ' },
-  { id: 'サービス', title: 'サービスの計算', note: '料金・作業時間' },
-  { id: '在庫', title: '在庫の計算', note: '仕入れ・在庫回転' },
-  { id: '事業', title: '事業の計算', note: '投資・回収' },
-] as const;
+  { name:'販売', detail:'価格を決める・利益を出す', sign:'売' },
+  { name:'出店', detail:'イベント・出店費を計算', sign:'店' },
+  { name:'サービス', detail:'作業時間から料金を決める', sign:'役' },
+  { name:'在庫', detail:'仕入れと在庫を調べる', sign:'庫' },
+  { name:'事業', detail:'投資の回収を考える', sign:'計' },
+];
 
-function CalculatorRow({ tool, pinned, onToggle, signedIn }: {
-  tool: Tool;
-  pinned: boolean;
-  onToggle: (id: ToolId) => void;
-  signedIn: boolean;
+function useMiniProfit() {
+  const [price, setPrice] = useState('');
+  const [cost, setCost] = useState('');
+  const [shipping, setShipping] = useState('');
+  const allFilled = [price, cost, shipping].every(value => /^\d+$/.test(value) && Number.isSafeInteger(Number(value)));
+  const result = allFilled ? calculate('profit', {
+    price:Number(price),cost:Number(cost),shipping:Number(shipping),
+    feeRate:0,fixedFee:0,other:0,
+  }).rows.find(row => row.key === 'profit')?.value : null;
+  return { price, setPrice, cost, setCost, shipping, setShipping, result };
+}
+
+function MiniCalculator() {
+  const calc = useMiniProfit();
+  return <section className="handy-mini" aria-labelledby="handy-mini-title">
+    <header className="handy-mini-bar"><span className="handy-mini-led" aria-hidden="true"/> <h2 id="handy-mini-title">利益をちょっと計算</h2><small>おためし計算</small></header>
+    <div className="handy-mini-inner">
+      <div className="handy-mini-inputs">
+        <label>販売価格 <span>円</span><input type="number" min="0" step="1" inputMode="numeric" value={calc.price} onChange={e => calc.setPrice(e.target.value)} placeholder="例：3000"/></label>
+        <label>仕入れ・原価 <span>円</span><input type="number" min="0" step="1" inputMode="numeric" value={calc.cost} onChange={e => calc.setCost(e.target.value)} placeholder="例：1200"/></label>
+        <label>送料 <span>円</span><input type="number" min="0" step="1" inputMode="numeric" value={calc.shipping} onChange={e => calc.setShipping(e.target.value)} placeholder="例：300"/></label>
+      </div>
+      <div className="handy-mini-total" aria-live="polite">
+        <span>手元に残る額（概算）</span>
+        <strong>{calc.result == null ? '—' : calc.result.toLocaleString('ja-JP')}<small> 円</small></strong>
+        <small>※ 手数料・その他の経費は含みません</small>
+      </div>
+    </div>
+    <Link to="/tools/profit" className="handy-mini-more">手数料も入れて詳しく計算 <span aria-hidden="true">↗</span></Link>
+  </section>;
+}
+
+function ToolItem({ tool, pinned, onToggle, signedIn }: {
+  tool: Tool; pinned:boolean; onToggle:(id:ToolId)=>void; signedIn:boolean;
 }) {
-  return <li className="ledger-row">
-    <span className="ledger-row-number">{String(tool.order).padStart(2, '0')}</span>
-    <Link className="ledger-row-link" to={tool.route}>
-      <strong>{tool.name}</strong>
-      <span>{tool.shortDescription}</span>
-    </Link>
-    {signedIn && <button type="button" className="ledger-row-pin" aria-pressed={pinned}
-      aria-label={`${tool.name}を${pinned ? '棚から外す' : '棚に登録する'}`}
-      onClick={() => onToggle(tool.id)}>
-      {pinned ? '棚に登録済' : '棚に追加'}
+  return <li className="handy-tool">
+    <div className="handy-tool-content">
+      <Link to={tool.route} className="handy-tool-link"><span className="handy-tool-title">{tool.name}</span><span className="handy-tool-arrow" aria-hidden="true">↗</span></Link>
+      <p>{tool.shortDescription}</p>
+    </div>
+    {signedIn && <button type="button" onClick={() => onToggle(tool.id)} className="handy-tool-save" aria-pressed={pinned}
+      aria-label={`${tool.name}を${pinned ? '棚から外す' : '棚に登録する'}`}>
+      {pinned ? '★ 登録中' : '☆ 棚に入れる'}
     </button>}
-    <Link className="ledger-row-open" to={tool.route} aria-label={`${tool.name}を開く`}>
-      <span>開く</span><span aria-hidden="true">↗</span>
-    </Link>
   </li>;
 }
 
@@ -38,99 +63,68 @@ export function Home() {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('すべて');
   const shelf = useShelf();
-  const filtered = useMemo(() => tools.filter((tool) =>
+  const filtered = useMemo(() => tools.filter(tool =>
     (category === 'すべて' || tool.category === category) &&
     `${tool.name} ${tool.shortDescription} ${tool.category}`.toLocaleLowerCase('ja-JP').includes(query.trim().toLocaleLowerCase('ja-JP'))
   ).sort((a, b) => a.order - b.order), [category, query]);
+  const categories = ['すべて', ...sections.map(item => item.name)];
 
-  return <div className="ledger">
-    <div className="ledger-page-heading">
-      <div>
-        <div className="ledger-heading-marker" aria-hidden="true"><span></span><span></span><span></span></div>
-        <p>個人販売・小さなお店のための道具箱</p>
-        <h1>計算ツール<span>10</span></h1>
-      </div>
-      <p className="ledger-heading-note"><span>全種類無料</span> 登録なしで計算できます</p>
+  return <div className="handy">
+    <div className="handy-heading">
+      <div className="handy-heading-label">個人販売のための、10の計算道具。</div>
+      <h1>ツール棚 <span>／ 道具一覧</span></h1>
+      <p>値付け、出店、在庫。数字が必要になったら、ここから。</p>
     </div>
 
-    <div className="ledger-workspace">
-      <aside className="ledger-side">
-        <div className="ledger-side-intro"><span>自分の棚</span><span className="ledger-side-index">保存する道具</span></div>
-        {!shelf.isLoaded ? <p className="ledger-side-muted">ログイン状態を確認しています。</p>
-        : shelf.isSignedIn ? <>
-          <p className="ledger-side-counter">登録済み <strong>{shelf.pins.length}</strong><span> / {shelf.limit} 枠</span></p>
-          {shelf.pins.length === 0 ? <p className="ledger-side-muted">下の一覧から、よく使う道具を追加できます。</p> :
-            <ol className="ledger-pins">{shelf.pins.map((id, index) => {
-              const tool = toolById(id);
-              return <li key={id}><div className="ledger-pin-name"><span>{String(index + 1).padStart(2, '0')}</span><Link to={tool.route}>{tool.name}</Link></div>
-                <div className="ledger-pin-actions">
-                  <button type="button" disabled={index === 0} aria-label={`${tool.name}を上へ移動`} onClick={() => shelf.move(id, -1)}>↑</button>
-                  <button type="button" disabled={index === shelf.pins.length - 1} aria-label={`${tool.name}を下へ移動`} onClick={() => shelf.move(id, 1)}>↓</button>
-                  <button type="button" aria-label={`${tool.name}を外す`} onClick={() => shelf.toggle(id)}>×</button>
-                </div>
-              </li>;
-            })}</ol>}
-          {shelf.hiddenCount > 0 && <p className="ledger-side-muted">枠を超える登録は保持されています。</p>}
-          {shelf.message && <p className="ledger-side-feedback" role="status">{shelf.message}</p>}
-          <p className="ledger-side-muted">このブラウザに保存されます。</p>
-          <Link className="ledger-side-plan" to="/pricing">棚の枠を増やす <span aria-hidden="true">↗</span></Link>
-        </> :
-          <div className="ledger-side-guest">
-            <p>よく使う道具を<br/><strong>３つまで固定。</strong></p>
-            <span>無料登録で自分の棚が使えます。計算は登録しなくても無料。</span>
-            <Link to="/login">無料で棚を作る <span aria-hidden="true">↗</span></Link>
+    <div className="handy-top-grid">
+      <section className="handy-my-shelf" aria-labelledby="handy-shelf-heading">
+        <div className="handy-my-shelf-head">
+          <h2 id="handy-shelf-heading">自分の棚</h2>
+          <span>{shelf.isSignedIn ? `${shelf.pins.length} / ${shelf.limit} 個` : '無料登録で3個まで'}</span>
+        </div>
+        {!shelf.isLoaded ? <p className="handy-shelf-help">ログイン状態を確認しています。</p>
+          : shelf.isSignedIn ? <>
+            {shelf.pins.length ? <ol className="handy-shelf-pins">{shelf.pins.map((id,index) =>
+              <li key={id}><Link to={toolById(id).route}><span>{String(index + 1).padStart(2,'0')}</span>{toolById(id).name}</Link>
+              <div><button type="button" onClick={() => shelf.move(id,-1)} disabled={!index} aria-label={`${toolById(id).name}を上に移動`}>↑</button>
+              <button type="button" onClick={() => shelf.move(id,1)} disabled={index === shelf.pins.length-1} aria-label={`${toolById(id).name}を下に移動`}>↓</button>
+              <button type="button" onClick={() => shelf.toggle(id)} aria-label={`${toolById(id).name}を棚から外す`}>×</button></div></li>)}</ol> :
+              <div className="handy-shelf-blank"><span aria-hidden="true">＋</span><p>よく使う道具は、下の一覧から登録できます。</p></div>}
+            {shelf.message && <p className="handy-shelf-notice" role="status">{shelf.message}</p>}
+            {shelf.hiddenCount > 0 && <p className="handy-shelf-notice">登録枠を超えた分も保存されています。</p>}
+            <Link to="/pricing" className="handy-shelf-plan">登録できる数を増やす →</Link>
+          </> :
+          <div className="handy-shelf-guest">
+            <div className="handy-shelf-art" aria-hidden="true"><i>01</i><i>02</i><i>03</i></div>
+            <p>よく使うツールを並べておけます。<br/>計算そのものは登録なしで無料です。</p>
+            <Link to="/login">無料で自分の棚をつくる →</Link>
           </div>}
-        <div className="ledger-side-nav">
-          <h2>用途で探す</h2>
-          <div role="group" aria-label="カテゴリで絞り込む">
-            <button type="button" className={category === 'すべて' ? 'active' : ''} aria-pressed={category === 'すべて'} onClick={() => setCategory('すべて')}>
-              <span>すべて</span><small>{tools.length}</small>
-            </button>
-            {sections.map(section => <button type="button" key={section.id} className={category === section.id ? 'active' : ''} aria-pressed={category === section.id} onClick={() => setCategory(section.id)}>
-              <span>{section.id}</span><small>{tools.filter(tool => tool.category === section.id).length}</small>
-            </button>)}
-          </div>
-        </div>
-        <p className="ledger-side-footnote">月額プランは計算の購入ではなく、自分の棚の登録枠を増やすためのものです。</p>
-      </aside>
-
-      <section id="tool-catalog" className="ledger-main" aria-labelledby="ledger-catalog-title">
-        <div className="ledger-main-header">
-          <div><p className="ledger-main-kicker">道具を選ぶ</p><h2 id="ledger-catalog-title">ツール一覧</h2></div>
-          <span className="ledger-main-count">{filtered.length} <small>件</small></span>
-        </div>
-        <label className="ledger-search" htmlFor="tool-query">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5.5 5.5"/></svg>
-          <span className="sr-only">ツールを検索</span>
-          <input id="tool-query" type="search" value={query} onChange={event => setQuery(event.target.value)}
-            placeholder="道具の名前や、計算したいことを入力"/>
-          <span className="ledger-search-hint">全10ツールから検索</span>
-        </label>
-
-        <div className="ledger-mobile-categories" role="group" aria-label="カテゴリで絞り込む（スマホ）">
-          {['すべて', ...sections.map(section => section.id)].map(item => <button type="button" key={item}
-            className={category === item ? 'active' : ''} aria-pressed={category === item}
-            onClick={() => setCategory(item)}>{item}</button>)}
-        </div>
-
-        <div className="ledger-section-list">
-          {sections.map((section, index) => {
-            const sectionTools = filtered.filter(tool => tool.category === section.id);
-            if (sectionTools.length === 0) return null;
-            return <section className="ledger-group" key={section.id} aria-labelledby={`ledger-group-${section.id}`}>
-              <div className="ledger-group-heading">
-                <div className="ledger-group-heading-left"><span>{String(index + 1).padStart(2, '0')}</span><h3 id={`ledger-group-${section.id}`}>{section.title}</h3></div>
-                <span className="ledger-group-note">{section.note} <b>{sectionTools.length}件</b></span>
-              </div>
-              <ol className="ledger-tool-list">{sectionTools.map(tool => <CalculatorRow key={tool.id}
-                tool={tool} pinned={shelf.pins.includes(tool.id)} onToggle={shelf.toggle} signedIn={shelf.isSignedIn}/>)}</ol>
-            </section>;
-          })}
-          {!filtered.length && <div className="ledger-no-results"><strong>該当する道具がありません。</strong><p>検索する言葉を変えてみてください。</p>
-            <button type="button" onClick={() => { setQuery(''); setCategory('すべて'); }}>すべて表示する</button></div>}
-        </div>
       </section>
+      <MiniCalculator/>
     </div>
-    <footer className="ledger-note"><span>道具箱の中身は、いつでも無料。</span><Link to="/pricing">自分の棚について <span aria-hidden="true">↗</span></Link></footer>
+
+    <section id="tool-catalog" className="handy-directory" aria-labelledby="handy-directory-title">
+      <div className="handy-directory-title"><div><span>道具を探す</span><h2 id="handy-directory-title">すべての計算ツール</h2></div><p>全10種類・すべて無料</p></div>
+      <div className="handy-filter-bar">
+        <label className="handy-search" htmlFor="tool-query"><span aria-hidden="true">⌕</span><span className="handy-sr-only">ツールを検索</span>
+          <input id="tool-query" value={query} onChange={e => setQuery(e.target.value)} type="search" placeholder="道具の名前、計算したいことから探す" />
+        </label>
+        <div className="handy-filters" role="group" aria-label="種類を絞り込む">{categories.map(item =>
+          <button key={item} type="button" aria-pressed={category === item} className={category===item?'selected':''}
+            onClick={() => setCategory(item)}>{item}</button>)}</div>
+      </div>
+      <div className="handy-directory-grid">
+        {sections.map((section,index)=>{
+          const list = filtered.filter(tool=>tool.category===section.name);
+          if (!list.length) return null;
+          return <section key={section.name} className={`handy-group handy-group--${index}`} aria-labelledby={`handy-group-${index}`}>
+            <div className="handy-group-head"><div className="handy-group-seal" aria-hidden="true">{section.sign}</div><div><h3 id={`handy-group-${index}`}>{section.name}</h3><p>{section.detail}</p></div><span>{list.length}件</span></div>
+            <ul>{list.map(tool => <ToolItem key={tool.id} tool={tool} pinned={shelf.pins.includes(tool.id)} signedIn={shelf.isSignedIn} onToggle={shelf.toggle}/>)}</ul>
+          </section>;
+        })}
+        {!filtered.length && <div className="handy-no-results"><strong>見つかりませんでした。</strong><p>別の言葉で試してください。</p><button type="button" onClick={() => { setCategory('すべて');setQuery(''); }}>すべて表示する</button></div>}
+      </div>
+    </section>
+    <div className="handy-bottom-note"><p>使う道具が決まったら、棚に登録。</p><Link to="/pricing">棚のプランについて →</Link></div>
   </div>;
 }
