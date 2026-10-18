@@ -6,13 +6,14 @@ const workerUrl = import.meta.env.VITE_WORKER_API_URL;
 export function Pricing() {
   const { getToken, isLoaded, isSignedIn } = useAuth();
   const navigate = useNavigate();
+
   const checkout = async (plan: 'basic' | 'standard') => {
     if (!isLoaded || !isSignedIn) { navigate('/login'); return; }
     if (!workerUrl) return;
     const token = await getToken();
-    const response = await fetch(`${workerUrl}/v1/billing/checkout`, {
+    const response = await fetch(workerUrl + '/v1/billing/checkout', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+      headers: { Authorization: 'Bearer ' + token, 'content-type': 'application/json' },
       body: JSON.stringify({ plan }),
     });
     const body = await response.json().catch(() => null) as { url?: unknown } | null;
@@ -22,40 +23,44 @@ export function Pricing() {
   return <div className="ledger-price-page">
     <Link to="/" className="ledger-price-back">← 計算ツールに戻る</Link>
     <div className="ledger-price-heading">
-      <p>ツール棚 / プラン</p>
-      <h1>棚の料金</h1>
-      <span>10種類の計算は、プランに関係なく無料です。</span>
+      <p>ツール棚 / 料金</p>
+      <h1>通常版は無料。<br/>PROだけ選ぶ。</h1>
+      <span>無料版を狭くして課金するのではなく、必要な人だけPRO版を追加します。</span>
     </div>
 
     <div className="ledger-price-fact">
       <span aria-hidden="true">✓</span>
-      <div><strong>計算するだけなら、登録も支払いも不要。</strong>
-      <p>原価・利益計算から初期投資回収まで、どのツールも無料で使えます。月額プランは、よく使う道具を並べておく「自分の棚」のためのものです。</p></div>
+      <div><strong>全ツールの通常版とCSV出力は無料。</strong>
+      <p>月480円は、棚に入れた5件だけPRO対象。月980円は、棚に入れなくても全ツールがPRO対象です。</p></div>
     </div>
 
-    <div className="ledger-prices" aria-label="棚のプラン">
+    <div className="ledger-prices" aria-label="料金プラン">
       <article className="ledger-price-option">
-        <div className="ledger-price-name"><span>無料</span><strong>Free</strong></div>
+        <div className="ledger-price-name"><span>通常版</span><strong>無料</strong></div>
         <div className="ledger-price-value"><strong>¥0</strong><small>ずっと無料</small></div>
-        <div className="ledger-price-features"><strong>自分の棚 3 枠</strong><p>よく使う道具を固定・並べ替え。試算の保存と読み込みもできます。</p></div>
-        <Link to={isSignedIn ? '/' : '/login'} className="ledger-price-action ledger-price-action--light">{isSignedIn ? '自分の棚を開く' : '無料で棚を作る'} ↗</Link>
+        <div className="ledger-price-features"><strong>全ツール通常版</strong><p>計算・CSV出力は全種類無料。無料登録すると、よく使う3件を棚に置けます。</p></div>
+        <Link to={isSignedIn ? '/' : '/login'} className="ledger-price-action ledger-price-action--light">{isSignedIn ? 'ツール棚を開く' : '無料登録する'} ↗</Link>
       </article>
+
       <article className="ledger-price-option">
-        <div className="ledger-price-name"><span>日常的に使う方向け</span><strong>Basic</strong></div>
+        <div className="ledger-price-name"><span>必要なPROだけ</span><strong>5件PRO</strong></div>
         <div className="ledger-price-value"><strong>¥480</strong><small>/ 月</small></div>
-        <div className="ledger-price-features"><strong>自分の棚 5 枠</strong><p>無料の棚から2枠追加。いつも使う道具をまとめておけます。</p></div>
-        <button type="button" className="ledger-price-action" onClick={() => { void checkout('basic'); }}>Basic を契約 ↗</button>
+        <div className="ledger-price-features"><strong>棚に入れた5件がPRO対象</strong><p>PRO版を使いたいツールを5件まで選択。別のツールに使いたくなったら入れ替えできます。</p></div>
+        <button type="button" className="ledger-price-action" onClick={() => { void checkout('basic'); }}>月480円で使う ↗</button>
       </article>
+
       <article className="ledger-price-option">
-        <div className="ledger-price-name"><span>全ツールを整理する方向け</span><strong>Standard</strong></div>
+        <div className="ledger-price-name"><span>全部使う</span><strong>全件PRO</strong></div>
         <div className="ledger-price-value"><strong>¥980</strong><small>/ 月</small></div>
-        <div className="ledger-price-features"><strong>自分の棚 10 枠</strong><p>10種類すべてを好きな順番で並べて、すぐに開けます。</p></div>
-        <button type="button" className="ledger-price-action" onClick={() => { void checkout('standard'); }}>Standard を契約 ↗</button>
+        <div className="ledger-price-features"><strong>全ツールがPRO対象</strong><p>個別に選ぶ必要なし。ツールが追加された場合も、そのままPRO対象になります。</p></div>
+        <button type="button" className="ledger-price-action" onClick={() => { void checkout('standard'); }}>月980円で使う ↗</button>
       </article>
     </div>
+
     <div className="ledger-price-terms">
-      <p>※ 計算・CSV出力はどのプランでも無料です。課金によって計算結果や使えるツールが変わることはありません。</p>
-      <p>※ 棚の並び順と保存済み試算は、このブラウザ内に保存されます。別端末には自動同期されません。</p>
+      <p>※ 通常版の計算とCSV出力は、契約の有無に関係なく無料です。</p>
+      <p>※ 月480円のPRO対象5件はアカウント単位で保存します。別画面や別端末から同時に変更した場合は古い更新を上書きせず、最新状態を読み直します。</p>
+      <p>※ PRO版の具体的な追加機能は、各ツールで実装済みの内容だけを提供します。未実装機能を料金には含めません。</p>
     </div>
   </div>;
 }
