@@ -10,6 +10,13 @@ try {
   assert.equal(await page.locator('.handy-tool').count(), 10, 'all tools should be visible to guests');
   assert.match(await page.locator('body').innerText(), /全10種類・すべて無料|登録なしで無料/);
 
+  assert.equal(await page.locator('.handy-mini-inputs input').count(), 3);
+  await page.locator('.handy-mini-inputs input').nth(0).fill('3000');
+  await page.locator('.handy-mini-inputs input').nth(1).fill('1200');
+  await page.locator('.handy-mini-inputs input').nth(2).fill('300');
+  assert.match(await page.locator('.handy-mini-total').innerText(), /1,500/, 'mini calculator must compute actual profit');
+
+
   await page.goto(base + '/tools/discount', { waitUntil: 'domcontentloaded' });
   await page.locator('#field-listPrice').waitFor();
   assert.equal(await page.locator('.pro-note').count(), 0, 'guests must not see a paywall');
