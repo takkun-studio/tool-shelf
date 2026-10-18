@@ -205,3 +205,55 @@ footer.shelf-site-footer .shelf-footer-brand{color:#264d99}
   .handy-search input{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+
+/* Subscription comparison: same stationery UI and useful information density. */
+.handy-mini header.handy-mini-bar {
+  height:43px;max-width:none;margin:0;width:100%;justify-content:flex-start;
+  padding:0 16px;align-items:center;border-bottom:1px solid #d2d3d2;
+}
+.handy-directory-title>div{min-width:0}
+.ledger-price-page{max-width:1090px;margin:0 auto;padding:40px 0 48px}
+.ledger-price-back{font-size:13px;color:#3156a0;text-decoration:none;font-weight:750}
+.ledger-price-heading{margin:28px 0 30px}
+.ledger-price-heading p{font-size:12px;margin:0 0 13px;color:#7186a8}
+.ledger-price-heading h1{font-size:clamp(36px,4vw,48px);letter-spacing:-.07em;line-height:1.3;color:#243453;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;margin:0 0 8px}
+.ledger-price-heading>span{font-size:13px;color:#4e6288}
+.ledger-price-fact{display:flex;align-items:flex-start;gap:14px;border:2px solid #264d99;background:#e6edfc;padding:18px 23px;margin:0 0 30px}
+.ledger-price-fact>span{display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#f7c751;border:1px solid #224780;width:32px;height:32px;font-size:18px;color:#213c74;font-weight:850}
+.ledger-price-fact strong{font-size:15px;color:#273e73;letter-spacing:-.02em}
+.ledger-price-fact p{font-size:12px;color:#53668a;line-height:1.85;margin:7px 0 0}
+.ledger-prices{border-top:3px solid #264d99}
+.ledger-price-option{display:grid;grid-template-columns:1.05fr .75fr 2fr 190px;gap:20px;align-items:center;border-bottom:1px solid #c6cfe0;padding:28px 15px;background:#fffefa}
+.ledger-price-option:nth-child(even){background:#f0f4fe}
+.ledger-price-name span{display:block;font-size:11px;color:#6880a6;margin-bottom:7px}
+.ledger-price-name strong{font-size:24px;color:#223e78;font-weight:850}
+.ledger-price-value strong{font-size:28px;color:#21375d;letter-spacing:-.045em}
+.ledger-price-value small{display:block;font-size:11px;color:#7a88a2;margin-top:3px}
+.ledger-price-features strong{font-size:16px;color:#243951}
+.ledger-price-features p{font-size:12px;color:#687589;line-height:1.7;margin:7px 0 0}
+.ledger-price-action{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;background:#264d99;border:1px solid #264d99;color:#fff;font-size:12px;font-weight:800;padding:12px 10px;min-height:44px;border-radius:0}
+.ledger-price-action:hover:not(:disabled){background:#193c85;color:#fff}
+.ledger-price-action--light{background:#fff;color:#264d99}
+.ledger-price-action--light:hover{background:#e6edfc;color:#264d99}
+.ledger-price-terms{padding-top:24px}
+.ledger-price-terms p{font-size:12px;color:#66768d;line-height:1.8;margin:0 0 9px}
+@media(max-width:920px){
+  .ledger-price-option{grid-template-columns:1fr .8fr 2fr;gap:13px}
+  .ledger-price-action{grid-column:3;justify-self:stretch}
+}
+@media(max-width:700px){
+  .handy-directory-title{align-items:flex-start;flex-direction:column;gap:9px}
+  .handy-directory-title h2{font-size:30px}
+  .handy-directory-title>p{font-size:11px}
+  .ledger-price-page{padding:27px 0 28px}
+  .ledger-price-heading{margin:25px 0 22px}
+  .ledger-price-heading h1{font-size:37px}
+  .ledger-price-fact{padding:15px;gap:12px;margin-bottom:19px}
+  .ledger-price-fact strong{font-size:14px}
+  .ledger-price-option{grid-template-columns:1fr 1fr;gap:13px 15px;padding:21px 13px}
+  .ledger-price-name strong{font-size:22px}
+  .ledger-price-value{text-align:right}
+  .ledger-price-features{grid-column:1/-1}
+  .ledger-price-action{grid-column:1/-1;justify-self:stretch}
+}
