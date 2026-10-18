@@ -376,3 +376,14 @@ footer.shelf-site-footer{margin-top:60px}
   .shelf-pricing dl div{min-height:0}
   .shelf-pricing-link{margin-top:10px}
 }
+
+
+/* PRO entitlement state */
+.shelf-pro-badge{display:inline-block;margin-left:8px;padding:2px 6px;border:1px solid #2f6f54;background:#e8f4ee;color:#245a44;font-size:10px;font-weight:800;line-height:1.4;vertical-align:2px}
+.shelf-pro-swap{margin:14px 0;padding:14px;border:1px solid #aeb9ad;background:#f8faf5}
+.shelf-pro-swap>strong{display:block;margin-bottom:9px;font-size:12px;line-height:1.6;color:#314139}
+.shelf-pro-swap>div{display:flex;flex-wrap:wrap;gap:7px}
+.shelf-pro-swap button{border:1px solid #9eaea0;background:#fff;color:#2c4d3b;padding:8px 10px;font-size:11px;border-radius:0}
+.shelf-pro-swap button:hover:not(:disabled){background:#edf5ef}
+.shelf-pro-swap button:disabled{opacity:.55}
+.shelf-pro-swap-cancel{margin-top:8px}
