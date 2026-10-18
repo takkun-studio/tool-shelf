@@ -1,5 +1,6 @@
 import { useAuth } from '@clerk/react';
 import { Link, useNavigate } from 'react-router-dom';
+
 const workerUrl = import.meta.env.VITE_WORKER_API_URL;
 
 export function Pricing() {
@@ -17,19 +18,44 @@ export function Pricing() {
     const body = await response.json().catch(() => null) as { url?: unknown } | null;
     if (response.ok && typeof body?.url === 'string') window.location.assign(body.url);
   };
-  return <section className="pricing shelf-pricing">
-    <p className="shelf-quiet-label">ツール棚の使い方と料金</p>
-    <h1>計算はすべて無料。<br/>月額は、使いやすい棚のために。</h1>
-    <p>原価計算も、出店収支も、残りの7つも。10種類すべて、登録や支払いなしで使えます。<br/>使う道具をまとめて、好きな順に並べておきたい人向けに棚のプランを用意しています。</p>
-    <div className="shelf-pricing-basics">
-      <h2>無料でできること</h2>
-      <p>全10ツールの単発計算とCSV出力。アカウントを作ると、棚に3ツールまで登録し、入力した試算をこのブラウザに保存できます。</p>
+
+  return <div className="ledger-price-page">
+    <Link to="/" className="ledger-price-back">← 計算ツールに戻る</Link>
+    <div className="ledger-price-heading">
+      <p>ツール棚 / プラン</p>
+      <h1>棚の料金</h1>
+      <span>10種類の計算は、プランに関係なく無料です。</span>
     </div>
-    <dl>
-      <div><dt>Free</dt><dd>¥0</dd><small>計算ツールは全10種類使えます。無料登録で棚3枠。試算の保存・再利用もできます。</small><Link className="shelf-pricing-link" to={isSignedIn ? '/' : '/login'}>{isSignedIn ? '自分の棚に戻る' : '無料登録して棚を使う'} →</Link></div>
-      <div><dt>Basic</dt><dd>¥480 <span>/月</span></dd><small>計算ツールは全10種類使えます。棚5枠。よく使う道具をさらに2個置けます。</small><button onClick={() => { void checkout('basic'); }}>Basicの棚を使う</button></div>
-      <div><dt>Standard</dt><dd>¥980 <span>/月</span></dd><small>計算ツールは全10種類使えます。棚10枠。すべての道具を好みの順に並べられます。</small><button onClick={() => { void checkout('standard'); }}>Standardの棚を使う</button></div>
-    </dl>
-    <p className="shelf-pricing-note">月額契約なしでも計算機能が制限されることはありません。棚の並びと保存済み試算は、このブラウザに保存されます。別端末への自動同期はありません。</p>
-  </section>;
+
+    <div className="ledger-price-fact">
+      <span aria-hidden="true">✓</span>
+      <div><strong>計算するだけなら、登録も支払いも不要。</strong>
+      <p>原価・利益計算から初期投資回収まで、どのツールも無料で使えます。月額プランは、よく使う道具を並べておく「自分の棚」のためのものです。</p></div>
+    </div>
+
+    <div className="ledger-prices" aria-label="棚のプラン">
+      <article className="ledger-price-option">
+        <div className="ledger-price-name"><span>無料</span><strong>Free</strong></div>
+        <div className="ledger-price-value"><strong>¥0</strong><small>ずっと無料</small></div>
+        <div className="ledger-price-features"><strong>自分の棚 3 枠</strong><p>よく使う道具を固定・並べ替え。試算の保存と読み込みもできます。</p></div>
+        <Link to={isSignedIn ? '/' : '/login'} className="ledger-price-action ledger-price-action--light">{isSignedIn ? '自分の棚を開く' : '無料で棚を作る'} ↗</Link>
+      </article>
+      <article className="ledger-price-option">
+        <div className="ledger-price-name"><span>日常的に使う方向け</span><strong>Basic</strong></div>
+        <div className="ledger-price-value"><strong>¥480</strong><small>/ 月</small></div>
+        <div className="ledger-price-features"><strong>自分の棚 5 枠</strong><p>無料の棚から2枠追加。いつも使う道具をまとめておけます。</p></div>
+        <button type="button" className="ledger-price-action" onClick={() => { void checkout('basic'); }}>Basic を契約 ↗</button>
+      </article>
+      <article className="ledger-price-option">
+        <div className="ledger-price-name"><span>全ツールを整理する方向け</span><strong>Standard</strong></div>
+        <div className="ledger-price-value"><strong>¥980</strong><small>/ 月</small></div>
+        <div className="ledger-price-features"><strong>自分の棚 10 枠</strong><p>10種類すべてを好きな順番で並べて、すぐに開けます。</p></div>
+        <button type="button" className="ledger-price-action" onClick={() => { void checkout('standard'); }}>Standard を契約 ↗</button>
+      </article>
+    </div>
+    <div className="ledger-price-terms">
+      <p>※ 計算・CSV出力はどのプランでも無料です。課金によって計算結果や使えるツールが変わることはありません。</p>
+      <p>※ 棚の並び順と保存済み試算は、このブラウザ内に保存されます。別端末には自動同期されません。</p>
+    </div>
+  </div>;
 }

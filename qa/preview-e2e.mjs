@@ -6,9 +6,16 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
 try {
   await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
-  await page.locator('.shelf-tool-row').first().waitFor();
-  assert.equal(await page.locator('.shelf-tool-row').count(), 10, 'all tools should be visible to guests');
-  assert.match(await page.locator('body').innerText(), /全10ツール、会員登録なしでも無料/);
+  await page.locator('.handy-tool').first().waitFor();
+  assert.equal(await page.locator('.handy-tool').count(), 10, 'all tools should be visible to guests');
+  assert.match(await page.locator('body').innerText(), /全10種類・すべて無料|登録なしで無料/);
+
+  assert.equal(await page.locator('.handy-mini-inputs input').count(), 3);
+  await page.locator('.handy-mini-inputs input').nth(0).fill('3000');
+  await page.locator('.handy-mini-inputs input').nth(1).fill('1200');
+  await page.locator('.handy-mini-inputs input').nth(2).fill('300');
+  assert.match(await page.locator('.handy-mini-total').innerText(), /1,500/, 'mini calculator must compute actual profit');
+
 
   await page.goto(base + '/tools/discount', { waitUntil: 'domcontentloaded' });
   await page.locator('#field-listPrice').waitFor();
@@ -30,7 +37,7 @@ try {
     await page.setViewportSize({ width: viewport, height: 900 });
     for (const route of ['/', '/pricing', '/tools/discount']) {
       await page.goto(base + route, { waitUntil: 'domcontentloaded' });
-      await page.locator(route === '/' ? '.shelf-tool-list' : route === '/pricing' ? '.pricing dl' : '.inputs').waitFor();
+      await page.locator(route === '/' ? '.handy-directory-grid' : route === '/pricing' ? '.ledger-prices' : '.inputs').waitFor();
       const width = await page.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(width <= viewport + 1, route + ' overflows at ' + viewport + 'px: ' + width);
     }

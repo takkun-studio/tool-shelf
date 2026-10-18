@@ -1,0 +1,278 @@
+/* 手で使う計算道具。装飾ではなく、実際の入力・出力と道具の整理を画面の中心にする。 */
+:root {
+  --handy-paper:#f5f4f0;
+  --handy-white:#fffefa;
+  --handy-ink:#252b35;
+  --handy-blue:#264d99;
+  --handy-blue-soft:#e8eefc;
+  --handy-border:#ccd0d6;
+  --handy-yellow:#f7c751;
+  --handy-muted:#5f6c7c;
+  background:var(--handy-paper);color:var(--handy-ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+}
+html{scroll-behavior:smooth}
+body,header.shelf-site-header{background:var(--handy-paper);color:var(--handy-ink)}
+.app-shell main{max-width:1280px;padding:0 29px}
+header.shelf-site-header{height:74px;max-width:1280px;padding:0 29px;border-bottom:2px solid #292f40}
+header.shelf-site-header .brand{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;font-size:21px;letter-spacing:-.05em;font-weight:900;color:#202632;display:inline-flex;align-items:center;gap:9px}
+header.shelf-site-header .brand::before{
+  content:"";display:inline-block;width:21px;height:21px;border:3px solid #264d99;background:#f7c751;
+  box-shadow:4px 4px 0 #2c3d58;transform:translateY(-2px);
+}
+header.shelf-site-header nav{gap:25px}
+header.shelf-site-header nav a{font-size:13px;color:#45526b}
+header.shelf-site-header nav a.is-active{color:#264d99}
+header.shelf-site-header nav a.shelf-login{border-radius:0;background:#264d99;color:white;padding:11px 19px}
+header.shelf-site-header nav a.shelf-login:hover{background:#203e77}
+footer.shelf-site-footer{max-width:1280px;margin-top:32px;border-color:#d6d9dc;color:#77808c}
+footer.shelf-site-footer .shelf-footer-brand{color:#264d99}
+.handy{padding-bottom:35px}
+.handy-heading{padding:51px 0 32px;position:relative}
+.handy-heading-label{display:inline-flex;background:#f7c751;padding:6px 10px;font-size:12px;color:#22242d;font-weight:800;letter-spacing:.03em}
+.handy-heading h1{font-size:clamp(42px,5.3vw,72px);font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-weight:800;color:#21283b;letter-spacing:-.085em;line-height:1.24;margin:17px 0 14px}
+.handy-heading h1>span{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;font-size:clamp(16px,1.8vw,24px);color:#7c8591;font-weight:550;letter-spacing:-.03em;vertical-align:8px;margin-left:8px;white-space:nowrap}
+.handy-heading>p{color:#536072;font-size:14px;margin:0;line-height:1.9}
+.handy-top-grid{display:grid;grid-template-columns:minmax(275px,.79fr) minmax(0,1.21fr);gap:18px}
+.handy-my-shelf{background:#e7ecf9;border:2px solid #264d99;padding:25px 26px;min-width:0;display:flex;flex-direction:column;min-height:320px;position:relative}
+.handy-my-shelf::after{content:"";display:block;position:absolute;top:-2px;right:-2px;width:56px;height:10px;background:var(--handy-yellow);border-right:2px solid #264d99;border-top:2px solid #264d99}
+.handy-my-shelf-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #b7c6e1;padding-bottom:14px}
+.handy-my-shelf-head h2{font-size:23px;letter-spacing:-.04em;margin:0;color:#244282;font-weight:850}
+.handy-my-shelf-head>span{font-size:11px;color:#536b92;font-weight:700;text-align:right}
+.handy-shelf-guest{display:flex;flex-direction:column;flex:1;padding-top:27px}
+.handy-shelf-art{display:flex;gap:9px}
+.handy-shelf-art i{font-style:normal;width:55px;height:74px;background:#fffefa;border:2px solid #254891;color:#264d99;font:800 13px ui-monospace,monospace;display:flex;justify-content:center;align-items:center;box-shadow:4px 4px 0 #a7b8d9}
+.handy-shelf-art i:nth-child(2){background:#fff2c5;transform:translateY(-6px)}
+.handy-shelf-art i:nth-child(3){background:#fcf1e8;transform:translateY(3px)}
+.handy-shelf-guest p{line-height:1.85;font-size:13px;color:#4b617e;margin:22px 0 18px}
+.handy-shelf-guest>a,.handy-shelf-plan{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#264d99;color:#fff;text-decoration:none;font-size:13px;font-weight:800;padding:13px 14px;margin-top:auto}
+.handy-shelf-guest>a:hover,.handy-shelf-plan:hover{background:#203c75}
+.handy-shelf-pins{margin:15px 0 13px;list-style:none;padding:0}
+.handy-shelf-pins li{padding:8px 0;border-bottom:1px solid #c0cce3;display:flex;align-items:center;gap:8px;justify-content:space-between}
+.handy-shelf-pins a{font-size:12px;color:#29487d;text-decoration:none;font-weight:750}
+.handy-shelf-pins a span{font:700 10px ui-monospace,monospace;margin-right:10px;color:#7187af}
+.handy-shelf-pins li>div{display:flex;gap:4px}
+.handy-shelf-pins button{padding:3px 7px;min-height:29px;background:white;color:#264b8e;border:1px solid #adbfdf;border-radius:0;font-size:12px}
+.handy-shelf-blank{padding:25px 0;display:flex;gap:14px;align-items:center}
+.handy-shelf-blank>span{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:2px dashed #9db3d9;font-size:30px;color:#365ca2}
+.handy-shelf-blank p{font-size:12px;line-height:1.8;color:#5a6c88}
+.handy-shelf-notice{font-size:11px;color:#536b92}
+.handy-mini{background:#fffefa;border:2px solid #2c3346;min-width:0;display:flex;flex-direction:column}
+.handy-mini-bar{display:flex;gap:9px;align-items:center;min-height:44px;padding:0 21px;border-bottom:1px solid #d2d3d2;background:#faf8f2}
+.handy-mini-bar h2{font-size:14px;font-weight:850;letter-spacing:-.02em;margin:0;color:#263248}
+.handy-mini-bar small{margin-left:auto;font-size:10px;color:#7f8a98}
+.handy-mini-led{height:8px;width:8px;border-radius:50%;background:#e9a345}
+.handy-mini-inner{display:grid;grid-template-columns:1fr minmax(190px,.82fr);min-height:220px;flex:1}
+.handy-mini-inputs{padding:21px 23px}
+.handy-mini-inputs label{font-size:12px;font-weight:750;color:#5b6170;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px;margin-bottom:14px}
+.handy-mini-inputs label span{font-size:11px;color:#999aa1;font-weight:500}
+.handy-mini-inputs input{display:block;border:1px solid #b6bec8;border-radius:0;background:white;height:36px;padding:7px 10px;width:100%;font-size:14px;color:#202d43;outline-offset:2px;font-family:ui-monospace,monospace}
+.handy-mini-inputs input:focus-visible{outline:2px solid #264d99}
+.handy-mini-total{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:22px;background:var(--handy-yellow);border-left:2px solid #2c3346;min-width:0}
+.handy-mini-total>span{font-size:12px;font-weight:800;color:#4e421f}
+.handy-mini-total strong{font:800 clamp(30px,3.3vw,47px) ui-monospace,monospace;color:#202a41;letter-spacing:-.09em;margin:20px 0 14px;white-space:nowrap}
+.handy-mini-total strong small{font-size:14px;font-weight:700;letter-spacing:0}
+.handy-mini-total>small{font-size:10px;color:#765f2c;line-height:1.5}
+.handy-mini-more{margin-top:auto;border-top:1px solid #ccd1d4;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:#264d99;font-size:12px;font-weight:800}
+.handy-mini-more:hover{background:#f5f7fb}
+.handy-directory{margin-top:75px;scroll-margin-top:25px}
+.handy-directory-title{display:flex;align-items:end;justify-content:space-between;gap:14px;padding-bottom:17px;border-bottom:3px double #343947}
+.handy-directory-title>div>span{font-size:11px;color:#264d99;font-weight:850}
+.handy-directory-title h2{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(25px,3.2vw,38px);letter-spacing:-.07em;margin:4px 0 0;line-height:1.3}
+.handy-directory-title>p{color:#51618a;font-size:12px;font-weight:800;margin:0 0 4px}
+.handy-filter-bar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 0 26px}
+.handy-search{display:flex;align-items:center;gap:9px;background:white;border:1px solid #bfc7d3;padding:0 14px;max-width:430px;width:100%;height:47px}
+.handy-search>span:first-child{font-size:28px;color:#637da8;line-height:1;transform:translateY(-2px)}
+.handy-search input{flex:1;min-width:0;height:43px;border:none;background:transparent;font:inherit;font-size:12px;outline:none}
+.handy-search:focus-within{outline:2px solid #5279c7}
+.handy-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.handy-filters{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.handy-filters button{min-height:36px;border:1px solid #b8c2d3;padding:7px 11px;font-size:12px;color:#536684;background:#fffefa;border-radius:0}
+.handy-filters button.selected{color:white;background:#264d99;border-color:#264d99}
+.handy-filters button:hover:not(:disabled){background:#e3ecfb;color:#254b8a}
+.handy-filters button.selected:hover{background:#264d99;color:white}
+.handy-directory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;align-items:start}
+.handy-group{background:#fffefa;border:1px solid #c6ced8;min-width:0}
+.handy-group--0{grid-column:span 2}
+.handy-group-head{background:#e8effc;border-bottom:1px solid #b7c6e2;display:flex;gap:12px;align-items:center;padding:12px 15px}
+.handy-group--0 .handy-group-head{background:#f9ecc4;border-color:#e2cc88}
+.handy-group--1 .handy-group-head{background:#f1e8ef;border-color:#dbcbd6}
+.handy-group--3 .handy-group-head{background:#e6eee2;border-color:#c9d9c3}
+.handy-group--4 .handy-group-head{background:#f0e9db;border-color:#d7cbb5}
+.handy-group-seal{width:35px;height:35px;flex-shrink:0;background:#264d99;display:flex;align-items:center;justify-content:center;color:white;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-weight:800;font-size:19px}
+.handy-group--0 .handy-group-seal{background:#8f5b24}
+.handy-group--1 .handy-group-seal{background:#8d5a86}
+.handy-group--3 .handy-group-seal{background:#547450}
+.handy-group--4 .handy-group-seal{background:#88744f}
+.handy-group-head h3{margin:0;font-size:15px;font-weight:850;color:#313643;letter-spacing:-.025em}
+.handy-group-head p{font-size:10px;color:#697785;margin:4px 0 0}
+.handy-group-head>span{margin-left:auto;font-size:11px;color:#65758a;font-weight:750;white-space:nowrap}
+.handy-group ul{list-style:none;padding:0 15px;margin:0}
+.handy-group--0 ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:17px}
+.handy-tool{padding:16px 0;min-width:0;border-bottom:1px dashed #cbd0d4;display:flex;align-items:start;gap:5px;justify-content:space-between}
+.handy-group ul .handy-tool:last-child{border-bottom:0}
+.handy-group--0 ul .handy-tool:nth-last-child(2){border-bottom:0}
+.handy-tool-content{min-width:0;flex:1}
+.handy-tool-link{display:flex;align-items:baseline;justify-content:space-between;gap:7px;text-decoration:none;color:#293448;font-weight:850;font-size:14px;line-height:1.6}
+.handy-tool-link:hover{text-decoration:underline;text-underline-offset:3px}
+.handy-tool-arrow{color:#2d59ad;font-size:18px;flex-shrink:0}
+.handy-tool p{font-size:11px;color:#71808b;line-height:1.55;margin:5px 0 0}
+.handy-tool-save{background:transparent;border:none;color:#486cb2;padding:3px;font-size:10px;font-weight:750;min-height:25px;align-self:start;white-space:nowrap}
+.handy-tool-save:hover:not(:disabled){color:#172e7a;background:#eef1f9}
+.handy-tool-save[aria-pressed=true]{color:#a46b1d}
+.handy-no-results{grid-column:1/-1;text-align:center;padding:40px 25px;background:#fffefa;border:1px solid #bcc6d4}
+.handy-no-results p{font-size:13px;color:#66748a}
+.handy-no-results button{border-radius:0;background:#264d99}
+.handy-bottom-note{margin:36px 0 0;display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid #adb8ca;padding-top:15px;color:#58647a;font-size:12px}
+.handy-bottom-note a{color:#264d99;font-weight:850;text-decoration:none}
+.pricing,.ledger-price-page{max-width:1040px}
+.ledger-price-heading h1,.tool-heading h1{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;color:#243d75}
+.ledger-price-fact{background:#e8eefc;border-color:#355faa}
+.ledger-price-fact strong{color:#274478}
+.ledger-price-fact>span{color:#264d99}
+.ledger-prices{border-color:#264d99}
+.ledger-price-option{border-color:#cbd5e4}
+.ledger-price-name strong,.ledger-price-value strong{color:#264579}
+.ledger-price-action{background:#264d99;color:#fff;border-color:#264d99;border-radius:0}
+.ledger-price-action:hover:not(:disabled){background:#1b3975}
+.ledger-price-action--light{background:#fff;color:#264d99}
+.ledger-price-action--light:hover{background:#e6efff;color:#264d99}
+.workspace .inputs,.workspace .results,.actions,.saved{border-radius:0;box-shadow:none}
+.workspace .results{background:#e7eefc}
+.tool-heading h1{color:#233c77}
+.field input,.actions textarea{border-radius:0}
+@media(max-width:1030px){
+  .handy-top-grid{grid-template-columns:minmax(260px,.82fr) minmax(0,1.18fr)}
+  .handy-mini-inner{grid-template-columns:minmax(0,1fr) minmax(150px,.7fr)}
+  .handy-mini-total{padding:15px}
+  .handy-mini-total strong{font-size:32px}
+  .handy-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .handy-group--0{grid-column:span 2}
+  .handy-filter-bar{flex-direction:column;align-items:stretch}
+  .handy-search{max-width:100%}
+  .handy-filters{justify-content:flex-start}
+}
+@media(max-width:740px){
+  .app-shell main,header.shelf-site-header,footer.shelf-site-footer{padding:0 16px}
+  header.shelf-site-header{height:64px}
+  header.shelf-site-header .brand{font-size:18px;gap:10px}
+  header.shelf-site-header .brand::before{width:17px;height:17px;border-width:2px;box-shadow:3px 3px 0 #2c3d58}
+  header.shelf-site-header nav{gap:12px}
+  header.shelf-site-header nav a{font-size:11px}
+  header.shelf-site-header nav a.shelf-login{padding:8px 10px}
+  .handy-heading{padding:30px 0 24px}
+  .handy-heading h1{font-size:43px;margin:15px 0 7px}
+  .handy-heading h1>span{font-size:15px;vertical-align:5px;margin-left:1px}
+  .handy-heading>p{font-size:12px}
+  .handy-top-grid{grid-template-columns:1fr;gap:13px}
+  .handy-my-shelf{padding:19px;min-height:0}
+  .handy-my-shelf-head h2{font-size:19px}
+  .handy-shelf-guest{display:grid;grid-template-columns:115px minmax(0,1fr);gap:8px 17px;align-items:center;padding-top:18px}
+  .handy-shelf-art{gap:5px}
+  .handy-shelf-art i{height:46px;width:32px;font-size:10px;box-shadow:2px 2px 0 #a7b8d9}
+  .handy-shelf-guest p{font-size:11px;line-height:1.75;margin:0}
+  .handy-shelf-guest>a{grid-column:1/-1;margin-top:11px;font-size:12px;padding:12px}
+  .handy-mini-inner{grid-template-columns:1fr minmax(135px,.82fr);min-height:0}
+  .handy-mini-inputs{padding:15px}
+  .handy-mini-inputs label{font-size:11px;margin-bottom:10px}
+  .handy-mini-inputs input{height:33px;font-size:13px}
+  .handy-mini-total{padding:12px}
+  .handy-mini-total>span{font-size:10px}
+  .handy-mini-total strong{font-size:clamp(23px,6.9vw,33px);margin:18px 0 12px}
+  .handy-mini-total>small{font-size:9px}
+  .handy-mini-more{font-size:11px;padding:10px 15px}
+  .handy-directory{margin-top:51px}
+  .handy-directory-title h2{font-size:29px}
+  .handy-directory-title>p{font-size:10px}
+  .handy-filter-bar{padding:15px 0 19px;gap:12px}
+  .handy-filters{gap:5px}
+  .handy-filters button{min-height:34px;font-size:11px;padding:6px 10px}
+  .handy-directory-grid{grid-template-columns:1fr}
+  .handy-group--0{grid-column:auto}
+  .handy-group--0 ul{grid-template-columns:1fr}
+  .handy-group--0 ul .handy-tool:nth-last-child(2){border-bottom:1px dashed #cbd0d4}
+  .handy-group-head{padding:12px}
+  .handy-tool{padding:15px 0}
+  .handy-tool-link{font-size:14px}
+  .handy-bottom-note{margin:24px 0 0}
+}
+@media(max-width:390px){
+  header.shelf-site-header nav a:first-child{display:none}
+  .handy-heading h1{font-size:37px}
+  .handy-heading h1>span{font-size:13px}
+  .handy-mini-inner{grid-template-columns:minmax(0,1fr) 130px}
+  .handy-mini-total strong{font-size:22px}
+  .handy-search input{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+
+/* Subscription comparison: same stationery UI and useful information density. */
+.handy-mini header.handy-mini-bar {
+  height:43px;max-width:none;margin:0;width:100%;justify-content:flex-start;
+  padding:0 16px;align-items:center;border-bottom:1px solid #d2d3d2;
+}
+.handy-directory-title>div{min-width:0}
+.ledger-price-page{max-width:1090px;margin:0 auto;padding:40px 0 48px}
+.ledger-price-back{font-size:13px;color:#3156a0;text-decoration:none;font-weight:750}
+.ledger-price-heading{margin:28px 0 30px}
+.ledger-price-heading p{font-size:12px;margin:0 0 13px;color:#7186a8}
+.ledger-price-heading h1{font-size:clamp(36px,4vw,48px);letter-spacing:-.07em;line-height:1.3;color:#243453;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;margin:0 0 8px}
+.ledger-price-heading>span{font-size:13px;color:#4e6288}
+.ledger-price-fact{display:flex;align-items:flex-start;gap:14px;border:2px solid #264d99;background:#e6edfc;padding:18px 23px;margin:0 0 30px}
+.ledger-price-fact>span{display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#f7c751;border:1px solid #224780;width:32px;height:32px;font-size:18px;color:#213c74;font-weight:850}
+.ledger-price-fact strong{font-size:15px;color:#273e73;letter-spacing:-.02em}
+.ledger-price-fact p{font-size:12px;color:#53668a;line-height:1.85;margin:7px 0 0}
+.ledger-prices{border-top:3px solid #264d99}
+.ledger-price-option{display:grid;grid-template-columns:1.05fr .75fr 2fr 190px;gap:20px;align-items:center;border-bottom:1px solid #c6cfe0;padding:28px 15px;background:#fffefa}
+.ledger-price-option:nth-child(even){background:#f0f4fe}
+.ledger-price-name span{display:block;font-size:11px;color:#6880a6;margin-bottom:7px}
+.ledger-price-name strong{font-size:24px;color:#223e78;font-weight:850}
+.ledger-price-value strong{font-size:28px;color:#21375d;letter-spacing:-.045em}
+.ledger-price-value small{display:block;font-size:11px;color:#7a88a2;margin-top:3px}
+.ledger-price-features strong{font-size:16px;color:#243951}
+.ledger-price-features p{font-size:12px;color:#687589;line-height:1.7;margin:7px 0 0}
+.ledger-price-action{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;background:#264d99;border:1px solid #264d99;color:#fff;font-size:12px;font-weight:800;padding:12px 10px;min-height:44px;border-radius:0}
+.ledger-price-action:hover:not(:disabled){background:#193c85;color:#fff}
+.ledger-price-action--light{background:#fff;color:#264d99}
+.ledger-price-action--light:hover{background:#e6edfc;color:#264d99}
+.ledger-price-terms{padding-top:24px}
+.ledger-price-terms p{font-size:12px;color:#66768d;line-height:1.8;margin:0 0 9px}
+@media(max-width:920px){
+  .ledger-price-option{grid-template-columns:1fr .8fr 2fr;gap:13px}
+  .ledger-price-action{grid-column:3;justify-self:stretch}
+}
+@media(max-width:700px){
+  .handy-directory-title{align-items:flex-start;flex-direction:column;gap:9px}
+  .handy-directory-title h2{font-size:30px}
+  .handy-directory-title>p{font-size:11px}
+  .ledger-price-page{padding:27px 0 28px}
+  .ledger-price-heading{margin:25px 0 22px}
+  .ledger-price-heading h1{font-size:37px}
+  .ledger-price-fact{padding:15px;gap:12px;margin-bottom:19px}
+  .ledger-price-fact strong{font-size:14px}
+  .ledger-price-option{grid-template-columns:1fr 1fr;gap:13px 15px;padding:21px 13px}
+  .ledger-price-name strong{font-size:22px}
+  .ledger-price-value{text-align:right}
+  .ledger-price-features{grid-column:1/-1}
+  .ledger-price-action{grid-column:1/-1;justify-self:stretch}
+}
+
+
+/* Shared tool forms inherit the same blue/ink visual language. */
+.back,.tool-heading>p,.shelf-signup-note a,.saved button,.notice{color:#264d99}
+.tool-heading{border-color:#cfd6e2}
+.workspace .inputs,.workspace .results,.actions,.saved{border-radius:0}
+.workspace .results{border-left-color:#264d99}
+.workspace .results.loss{background:#fff0ec;border-left-color:#b14d35}
+.workspace .results.pending{border-left-color:#aebbd3}
+.field{border-color:#d9e1eb}
+.field label{color:#283a53}
+.field label span{color:#6b7f9c}
+.field input{background:#fff;border-color:#b9c5d6}
+.field input:focus-visible,.actions textarea:focus-visible{outline:2px solid #264d99;outline-offset:2px}
+.workspace .inputs button.secondary,.actions button.secondary,.saved button{background:#fff;color:#264d99;border:1px solid #aebfdc;border-radius:0}
+.workspace .inputs button.secondary:hover:not(:disabled),.actions button.secondary:hover:not(:disabled),.saved button:hover:not(:disabled){background:#e7eefc}
+.actions button:not(.secondary){background:#264d99;border-color:#264d99;border-radius:0}
+.actions button:not(.secondary):hover:not(:disabled){background:#1e3c79}
+.actions,.saved{border-color:#cfd8e6}
