@@ -1,22 +1,69 @@
+import { calculate, toolById, type CalculatorResult, type ToolId } from '../../src/tools';
+
 export type BackendPlan = 'free' | 'basic' | 'standard';
-export type PaidToolId = 'discount' | 'payout' | 'service' | 'target' | 'inventory' | 'channel' | 'investment';
-type ResultType = 'money' | 'percent' | 'quantity' | 'number';
-type Row = { key: string; label: string; value: number | null; type: ResultType };
-export type CalculatorResult = { status?: string; loss?: boolean; rows: Row[] };
-type Spec = { minimumPlan: Exclude<BackendPlan, 'free'>; keys: string[]; percentKeys?: string[]; calculate: (values: Record<string, number>) => CalculatorResult };
-const money = (key: string, label: string, value: number | null): Row => ({ key, label, value, type: 'money' });
-const percent = (key: string, label: string, value: number | null): Row => ({ key, label, value, type: 'percent' });
-const quantity = (key: string, label: string, value: number | null): Row => ({ key, label, value, type: 'quantity' });
-const number = (key: string, label: string, value: number | null): Row => ({ key, label, value, type: 'number' });
-export const paidToolSpecs: Record<PaidToolId, Spec> = {
-  discount: { minimumPlan: 'basic', keys: ['listPrice', 'discountRate', 'cost', 'shipping', 'feeRate', 'fixedFee', 'other'], percentKeys: ['discountRate', 'feeRate'], calculate: (v) => { const price = v.listPrice * (1 - v.discountRate / 100), fee = price * v.feeRate / 100 + v.fixedFee, total = v.cost + v.shipping + fee + v.other, profit = price - total; return { loss: profit < 0, status: v.feeRate === 100 ? '販売手数料率が100%のため、赤字にならない価格は計算不能です' : undefined, rows: [money('salePrice', 'セール販売価格', price), money('profit', 'セール後利益', profit), percent('profitRate', '利益率', price === 0 ? null : profit / price * 100), money('fee', '販売手数料', fee), money('minimumPrice', '赤字にならない価格', v.feeRate >= 100 ? null : Math.ceil((v.cost + v.shipping + v.fixedFee + v.other) / (1 - v.feeRate / 100)))] }; } },
-  payout: { minimumPlan: 'basic', keys: ['price', 'cost', 'shipping', 'salesFeeRate', 'paymentFeeRate', 'fixedFee', 'other'], percentKeys: ['salesFeeRate', 'paymentFeeRate'], calculate: (v) => { const fee = v.price * (v.salesFeeRate + v.paymentFeeRate) / 100 + v.fixedFee, payout = v.price - fee, profit = payout - v.cost - v.shipping - v.other; return { loss: profit < 0, rows: [money('payout', '手取り売上', payout), money('profit', '利益', profit), money('fees', '手数料合計', fee), percent('profitRate', '利益率', v.price === 0 ? null : profit / v.price * 100)] }; } },
-  service: { minimumPlan: 'standard', keys: ['hourlyRate', 'hours', 'expenses'], calculate: (v) => { const price = v.hourlyRate * v.hours + v.expenses; return { rows: [money('price', '必要なサービス料金', price), money('labor', '作業報酬', v.hourlyRate * v.hours), money('expenses', '経費', v.expenses)] }; } },
-  target: { minimumPlan: 'standard', keys: ['targetProfit', 'profitPerSale', 'price', 'fixedCost'], calculate: (v) => { const required = v.targetProfit + v.fixedCost; if (v.profitPerSale === 0) return { status: '1件あたり利益が0円のため、必要販売数は計算不能です', rows: [money('requiredProfit', '必要利益', required), quantity('requiredCount', '必要販売数', null), money('requiredSales', '必要売上', null)] }; const count = Math.ceil(required / v.profitPerSale); return { rows: [money('requiredProfit', '必要利益', required), quantity('requiredCount', '必要販売数', count), money('requiredSales', '必要売上', count * v.price)] }; } },
-  inventory: { minimumPlan: 'standard', keys: ['stock', 'unitCost', 'monthlySales'], calculate: (v) => { const value = v.stock * v.unitCost, months = v.monthlySales === 0 ? null : v.stock / v.monthlySales; return { status: v.monthlySales === 0 ? '月間販売数が0件のため、在庫の持ち月数は計算不能です' : undefined, rows: [money('stockValue', '在庫金額', value), quantity('stock', '現在庫数', v.stock), number('months', '在庫の持ち月数', months), quantity('monthlySales', '月間販売数', v.monthlySales)] }; } },
-  channel: { minimumPlan: 'standard', keys: ['priceA', 'costA', 'shippingA', 'salesFeeA', 'paymentFeeA', 'priceB', 'costB', 'shippingB', 'salesFeeB', 'paymentFeeB'], percentKeys: ['salesFeeA', 'paymentFeeA', 'salesFeeB', 'paymentFeeB'], calculate: (v) => { const side = (price: number, cost: number, shipping: number, salesFee: number, paymentFee: number) => { const fees = price * (salesFee + paymentFee) / 100, payout = price - fees; return { payout, profit: payout - cost - shipping }; }; const a = side(v.priceA, v.costA, v.shippingA, v.salesFeeA, v.paymentFeeA), b = side(v.priceB, v.costB, v.shippingB, v.salesFeeB, v.paymentFeeB); return { loss: a.profit < 0 || b.profit < 0, rows: [money('profitA', 'チャネルA 利益', a.profit), money('profitB', 'チャネルB 利益', b.profit), money('payoutA', 'チャネルA 手取り', a.payout), money('payoutB', 'チャネルB 手取り', b.payout), money('difference', '利益差（A - B）', a.profit - b.profit)] }; } },
-  investment: { minimumPlan: 'standard', keys: ['initialCost', 'profitPerSale', 'monthlyCount'], calculate: (v) => { const count = v.profitPerSale === 0 ? null : Math.ceil(v.initialCost / v.profitPerSale), months = count === null || v.monthlyCount === 0 ? null : count / v.monthlyCount; return { status: count === null ? '1件あたり利益が0円のため、回収件数は計算不能です' : v.monthlyCount === 0 ? '月間販売・受注数が0件のため、回収月数は計算不能です' : undefined, rows: [quantity('breakEvenCount', '損益分岐件数', count), number('recoveryMonths', '回収までの月数', months), money('initialCost', '初期費用', v.initialCost), money('monthlyProfit', '月間利益見込み', v.profitPerSale * v.monthlyCount)] }; } },
+
+export const paidToolIds = [
+  'discount',
+  'payout',
+  'service',
+  'target',
+  'inventory',
+  'channel',
+  'investment',
+] as const satisfies readonly ToolId[];
+
+export type PaidToolId = (typeof paidToolIds)[number];
+
+type Spec = {
+  minimumPlan: Exclude<BackendPlan, 'free'>;
+  keys: string[];
+  percentKeys?: string[];
+  calculate: (values: Record<string, number>) => CalculatorResult;
 };
-export const isPaidToolId = (value: string): value is PaidToolId => value in paidToolSpecs;
-export const readPaidInputs = (toolId: PaidToolId, value: unknown): Record<string, number> | null => { if (!value || typeof value !== 'object') return null; const source = value as Record<string, unknown>, spec = paidToolSpecs[toolId], values: Record<string, number> = {}; for (const key of spec.keys) { const number = source[key]; if (typeof number !== 'number' || !Number.isSafeInteger(number) || number < 0 || (spec.percentKeys?.includes(key) && number > 100)) return null; values[key] = number; } return values; };
-export const calculatePaid = (toolId: PaidToolId, values: Record<string, number>) => paidToolSpecs[toolId].calculate(values);
+
+const legacyMinimumPlan: Record<PaidToolId, Exclude<BackendPlan, 'free'>> = {
+  discount: 'basic',
+  payout: 'basic',
+  service: 'standard',
+  target: 'standard',
+  inventory: 'standard',
+  channel: 'standard',
+  investment: 'standard',
+};
+
+export const paidToolSpecs = Object.fromEntries(
+  paidToolIds.map((id) => {
+    const definition = toolById(id);
+    return [id, {
+      minimumPlan: legacyMinimumPlan[id],
+      keys: definition.fields.map((field) => field.key),
+      percentKeys: definition.fields.filter((field) => field.kind === 'percent').map((field) => field.key),
+      calculate: (values: Record<string, number>) => calculate(id, values),
+    }];
+  }),
+) as Record<PaidToolId, Spec>;
+
+export const isPaidToolId = (value: string): value is PaidToolId =>
+  (paidToolIds as readonly string[]).includes(value);
+
+export const readPaidInputs = (toolId: PaidToolId, value: unknown): Record<string, number> | null => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const source = value as Record<string, unknown>;
+  const definition = toolById(toolId);
+  const values: Record<string, number> = {};
+
+  for (const field of definition.fields) {
+    const input = source[field.key];
+    if (
+      typeof input !== 'number' ||
+      !Number.isSafeInteger(input) ||
+      input < 0 ||
+      (field.kind === 'percent' && input > 100)
+    ) return null;
+    values[field.key] = input;
+  }
+  return values;
+};
+
+export const calculatePaid = (toolId: PaidToolId, values: Record<string, number>) =>
+  calculate(toolId, values);
