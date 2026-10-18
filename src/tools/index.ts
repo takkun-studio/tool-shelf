@@ -35,6 +35,7 @@ export const toolModules = [
 ] as const;
 
 export const tools = toolModules.map((module) => module.definition);
+export type Tool = (typeof tools)[number];
 export type ToolId = (typeof toolModules)[number]['definition']['id'];
 
 export const isToolId = (value: string): value is ToolId =>
