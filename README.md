@@ -57,7 +57,7 @@ Clerk Development instanceでtest modeの新規登録・確認コード・login�
 
 `worker/` はCloudflare Worker + D1の認可境界です。D1の`users`、`entitlements`、`webhook_events`は`worker/migrations/0001_initial.sql`で作成します。WorkerはClerk session JWTを公開JWKSで検証し、D1にentitlementがなければ`free`として扱います。frontendからのplan値は使いません。
 
-既存の `/v1/calculators/` 7 endpointには旧サブスクリプション権限チェックが残りますが、公開UIはこれらを呼び出さず、同じ純粋計算定義をフロントエンドに取り込んで10ツールすべて無料で計算します。Worker URLは契約状態確認と定期決済フローに使用します。旧APIは互換性のため保持しますが、全ての旧有料計算APIもPRO選択とStripe契約で認可し、直接APIを叩いてPROを迂回できないようにしています。
+既存の `/v1/calculators/` 7 endpointは互換性のため保持しますが、PRO選択とStripe契約の両方で再認可します。公開UIの全10種類の通常版は従来どおりクライアント計算で無料です。PRO比較は `/v1/pro/compare/:id` をWorkerで計算・認可し、ユーザーID別D1選択を毎回照合します。
 
 ## 最終検証（2026-09-05時点の記録）
 
