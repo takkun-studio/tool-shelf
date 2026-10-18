@@ -30,7 +30,7 @@ try {
     await page.setViewportSize({ width: viewport, height: 900 });
     for (const route of ['/', '/pricing', '/tools/discount']) {
       await page.goto(base + route, { waitUntil: 'domcontentloaded' });
-      await page.locator(route === '/' ? '.shelf-tool-list' : route === '/pricing' ? '.pricing dl' : '.inputs').waitFor();
+      await page.locator(route === '/' ? '.ledger-section-list' : route === '/pricing' ? '.pricing dl' : '.inputs').waitFor();
       const width = await page.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(width <= viewport + 1, route + ' overflows at ' + viewport + 'px: ' + width);
     }
