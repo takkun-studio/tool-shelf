@@ -1,7 +1,7 @@
 import { useAuth } from '@clerk/react';
 import { useEffect, useRef, useState } from 'react';
 import { moveShelf, readShelf, shelfLimit, writeShelf, type ShelfPlan } from '../lib/shelf';
-import type { ToolId } from '../lib/tools';
+import { tools, type ToolId } from '../lib/tools';
 
 const workerUrl = import.meta.env.VITE_WORKER_API_URL;
 
@@ -16,8 +16,12 @@ type ProStatus = {
 const isPlan = (value: unknown): value is ShelfPlan =>
   value === 'free' || value === 'basic' || value === 'standard';
 
+const knownToolIds = new Set<string>(tools.map((tool) => tool.id));
 const isToolIds = (value: unknown): value is ToolId[] =>
-  Array.isArray(value) && value.every((item) => typeof item === 'string');
+  Array.isArray(value) &&
+  value.length <= 5 &&
+  new Set(value).size === value.length &&
+  value.every((item) => typeof item === 'string' && knownToolIds.has(item));
 
 export function useShelf() {
   const { getToken, isLoaded: authLoaded, isSignedIn, userId } = useAuth();
