@@ -1,24 +1,75 @@
-# ツール棚 MVP
+# ツール棚
 
-個人販売・小規模出店向けのブラウザ内完結計算ツール。React + Vite + TypeScript + React Router + Vitest。全10ツールの単発計算・CSV出力は未登録でも無料。登録・月額課金は自分の棚の保存・登録枠の拡張に使います。
+個人販売・小規模出店向けの計算・判断ツール棚。React + Vite + TypeScript + React Router + Vitest。通常版の計算とCSV出力は未登録でも無料です。
 
-## 起動
+## 起動・検証
 
-`pnpm install` → `pnpm dev`。確認は `pnpm lint`、`pnpm typecheck`、`pnpm test`、`pnpm build`。
+`pnpm install` → `pnpm dev`
 
-## 構成
+変更後は必ず以下を通します。
 
-- `src/lib/tools.ts`: 唯一のtool registry（metadata、順序、route、入力定義）
-- `src/lib/calculators/`: UIから独立した純粋計算
-- `src/lib/storage.ts`: `tool-shelf:v1:scenarios`、schema version 1 の安全なlocalStorage
-- `src/lib/csv.ts`: UTF-8 BOM / CRLF / RFC 4180相当CSV
-- `src/pages/`: ホームと各ツール共通画面
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
 
-すべての入力は必須。金額・数量は0以上の整数、%は0〜100の整数。空欄や不正値では計算しない。率は保存・表示とも0〜100で、計算時だけ100で割る。
+## 1ツール1フォルダ
 
-計算式は画面の各結果と `src/lib/calculators/index.ts` に集約。損益ゼロ売価と損益分岐点数量は安全側で切り上げる。
+ツール本体の正本は `src/tools/<tool-id>/` です。既存10ツールは次の形に統一しています。
 
-## 実装済みツール
+```text
+src/tools/
+  profit/
+    definition.ts
+    calculate.ts
+    calculate.test.ts
+    index.ts
+  breakeven/
+    definition.ts
+    calculate.ts
+    calculate.test.ts
+    index.ts
+  ...
+  index.ts
+  drafts.ts
+  types.ts
+```
+
+各ファイルの役割:
+
+- `definition.ts`: ID、名前、説明、カテゴリ、順番、URL、入力項目
+- `calculate.ts`: そのツールだけの純粋計算
+- `calculate.test.ts`: そのツールだけの回帰テスト
+- `index.ts`: definition と calculate を1モジュールとしてリンク
+- `src/tools/index.ts`: **公開済みツールだけ**をまとめる中央registry（レジストリ）
+- `src/tools/drafts.ts`: **未公開候補だけ**をまとめる下書きregistry
+- `src/tools/types.ts`: 全ツール共通の型と結果ヘルパー
+
+`src/lib/tools.ts` と `src/lib/calculators/index.ts` は既存コード互換用のリンクだけにし、ツール固有ロジックは置きません。
+
+## ルート
+
+`src/main.tsx` は `src/tools/index.ts` の公開registryからrouteを自動生成します。
+
+そのため、新しい完成ツールを公開registryへリンクすれば `/tools/<id>` が自動で増えます。routeの手書き追加は不要です。
+
+## 下書き30ツール
+
+2026-10-19時点で、既存10ツールとは別に追加候補30件のフォルダと `definition.ts` を先に確保しています。
+
+下書きは `src/tools/drafts.ts` にだけリンクされ、`src/tools/index.ts` には入りません。したがって、計算未実装の候補が本番一覧やrouteに出ることはありません。
+
+完成させる時だけ、そのフォルダへ以下を追加します。
+
+1. `calculate.ts`
+2. `calculate.test.ts`
+3. `index.ts`
+4. `src/tools/index.ts` へ1行リンク
+5. `src/tools/drafts.ts` から外す
+
+## 実装済み10ツール
 
 1. 原価・利益計算
 2. 損益分岐点計算
@@ -31,41 +82,46 @@
 9. 販売チャネル比較計算
 10. 初期投資回収計算
 
-## 新しいツールを追加する
+## 入力・計算ルール
 
-1. `src/lib/tools.ts` にmetadataと入力項目を追加
-2. `src/lib/calculators/index.ts` に計算分岐を追加
-3. `src/main.tsx` にrouteを追加
+通常版は全ツール無料。すべての数値入力は0以上の整数、%は0〜100の整数を基本とします。空欄や不正値では計算しません。
 
-未実装: 棚や試算のクラウド同期、CSV import。
+損益ゼロ売価や必要販売数など、安全側に寄せる値は切り上げます。
 
-## 販売準備状態
+## PRO料金
 
-全10ツールの`access`は`free`。すべてブラウザ内で単発計算でき、ゲストでもCSV出力可能。サインイン済みなら試算をこのブラウザのlocalStorageに保存・再利用できます。無料の棚3枠、Basic（月480円）の棚5枠、Standard（月980円）の棚10枠はツールを並べ替えてすばやくアクセスするための枠数であり、計算機能のロックではありません。Unlimitedは将来構想で、現時点では販売しません。
+- **無料**: 全ツールの通常版 + CSV出力。無料登録でお気に入り棚3枠
+- **月480円 / 5件PRO**: 棚に入れた5件だけPRO対象。5件は入れ替え可能
+- **月980円 / 全件PRO**: 全ツールPRO対象。棚は10件まで利用可能
 
-## プラン権限レイヤー
+内部コード名として `basic` / `standard` は残しますが、ユーザー画面では「5件PRO」「全件PRO」と表示します。
 
-`src/lib/plans.ts` が `free / basic / standard / unlimited` と順序を定義し、フロントエンドの全ツールの`minimumPlan`は`free`。会員の棚プランはWorkerの `/v1/billing/status` で取得したD1/Stripe由来のプランを利用し、ログインユーザー別にブラウザ内の棚登録枠を Free3、Basic5、Standard10 に制限します。localStorageのプラン値やfrontend送信値は契約の正本には使用しません。
+月480円の5件はCloudflare D1の `pro_selections` にアカウント単位で保存します。revision（リビジョン）を使い、別タブ・別端末の同時変更で古い内容が上書きされないようにしています。
 
-## Clerk Auth
+## PRO機能の扱い
 
-`VITE_CLERK_PUBLISHABLE_KEY` をgit管理外の `.env.local` に設定します（変数名は `.env.example` を参照）。`@clerk/react` が認証境界で、`/login`・`/account`・headerのユーザー操作を提供します。Clerk Secret KeyはVite/frontendへ置きません。未ログイン時はWorker APIが401を返します。
+料金だけ先に作って、未実装のPRO機能を「使える」と表示しないこと。
 
-Clerk Development instanceでtest modeの新規登録・確認コード・login・session再読込・`/account`・logoutを実通信確認済みです。
+各ツール固有のPRO機能を作る場合は、そのツールのフォルダ内に `pro.ts` と `pro.test.ts` を追加します。PRO固有機能がないツールには空の `pro.ts` を作りません。
 
-## 課金backend基盤
+## Worker
 
-`worker/` はCloudflare Worker + D1の認可境界です。D1の`users`、`entitlements`、`webhook_events`は`worker/migrations/0001_initial.sql`で作成します。WorkerはClerk session JWTを公開JWKSで検証し、D1にentitlementがなければ`free`として扱います。frontendからのplan値は使いません。
+`worker/` はCloudflare Worker + D1の認証・課金・PRO権限境界です。
 
-既存の `/v1/calculators/` 7 endpointには旧サブスクリプション権限チェックが残りますが、公開UIはこれらを呼び出さず、同じ純粋計算定義をフロントエンドに取り込んで10ツールすべて無料で計算します。Worker URLは契約状態確認と定期決済フローに使用します。旧APIは互換性のため保持し、認可・Stripe契約を勝手に緩和しません。
+既存 `/v1/calculators/:id` の互換APIは残しますが、計算式そのものは `src/tools/<id>/calculate.ts` を再利用します。Worker側に同じ計算式を複製しません。
 
-## 最終検証（2026-09-05時点の記録）
+## 保存
 
-- `pnpm lint`、`pnpm typecheck`、`pnpm test`、`pnpm build`: PASS
-- 内蔵ブラウザ（390 × 844）: `/`、3ツール、各計算結果、保存済みscenarioのreload復元、404、ホーム復帰、横スクロールなし、console error/warn なしを確認
-- CSV: UIから改行・カンマ・ダブルクォートを含むscenario名を保存・出力し、実ダウンロードCSVでUTF-8 BOM、CRLF、RFC 4180相当の`""` escapeとfield内改行の保持を確認
-- 10ツール拡張: 全10直URL、追加7ツールの主要計算、390 × 844での横スクロールなし、console error/warnなしを確認
+- 試算: `tool-shelf:v1:scenarios`
+- 無料 / 全件PROの棚並び: browser localStorage
+- 月480円のPRO対象5件: D1
 
-## 2026-10-18 課金設計の訂正
+## 正本とバックアップ
 
-未登録でも全10ツールを単発利用できることを正本とします。月額は『ツールの利用数』ではなく『自分の棚の登録枠と使いやすさ』に対するもの。ログイン済みユーザーの棚はこのブラウザごとに保存され、別端末との同期はありません。旧来の試算データ用localStorageは変更しません。
+GitHub `takkun-studio/tool-shelf` の `main` がコード正本。
+
+この1ツール1フォルダ化の直前バックアップ:
+
+`backup/2026-10-19-before-tool-folder-refactor`
+
+本番Cloudflare PagesはGitHubのコード変更とは別に公開物を確認し、CI成功だけで「本番反映済み」と判断しません。
