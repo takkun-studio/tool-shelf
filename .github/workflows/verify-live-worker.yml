@@ -1,0 +1,23 @@
+name: Verify live Tool Shelf Worker
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PRO status endpoint is live and protected
+        shell: bash
+        run: |
+          body_file="$(mktemp)"
+          status=$(curl --silent --show-error --location --output "$body_file" --write-out '%{http_code}' --max-time 20 \
+            --header 'Origin: https://takkun-tool-shelf.pages.dev' \
+            'https://tool-shelf-api.gszknw599m.workers.dev/v1/pro/status')
+          cat "$body_file"
+          echo "HTTP $status"
+          if [ "$status" != "401" ]; then
+            echo "::error::Expected live /v1/pro/status to exist and reject an unauthenticated request with 401; got HTTP $status"
+            exit 1
+          fi
