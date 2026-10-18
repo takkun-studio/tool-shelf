@@ -276,3 +276,12 @@ footer.shelf-site-footer .shelf-footer-brand{color:#264d99}
 .actions button:not(.secondary){background:#264d99;border-color:#264d99;border-radius:0}
 .actions button:not(.secondary):hover:not(:disabled){background:#1e3c79}
 .actions,.saved{border-color:#cfd8e6}
+
+
+/* PRO access state */
+.handy-tool-pro{display:inline-block;margin-top:7px;padding:3px 6px;border:1px solid #c99b25;background:#fff0b6;color:#76551a;font-size:10px;font-weight:850}
+.handy-shelf-swap{display:flex;flex-direction:column;gap:7px;margin:12px 0;padding:12px;border:1px solid #9fb1d2;background:#fffefa}
+.handy-shelf-swap strong{font-size:12px;color:#2a477f;line-height:1.6}
+.handy-shelf-swap button{border:1px solid #b7c5dd;background:#fff;color:#274c8f;border-radius:0;padding:9px 10px;text-align:left;font-size:11px;font-weight:750}
+.handy-shelf-swap button:hover:not(:disabled){background:#e8effc}
+.handy-shelf-swap button:disabled{opacity:.55}
