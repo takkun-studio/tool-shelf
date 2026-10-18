@@ -6,9 +6,9 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
 try {
   await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
-  await page.locator('.ledger-row').first().waitFor();
-  assert.equal(await page.locator('.ledger-row').count(), 10, 'all tools should be visible to guests');
-  assert.match(await page.locator('body').innerText(), /全種類無料|登録なしで計算できます/);
+  await page.locator('.handy-tool').first().waitFor();
+  assert.equal(await page.locator('.handy-tool').count(), 10, 'all tools should be visible to guests');
+  assert.match(await page.locator('body').innerText(), /全10種類・すべて無料|登録なしで無料/);
 
   await page.goto(base + '/tools/discount', { waitUntil: 'domcontentloaded' });
   await page.locator('#field-listPrice').waitFor();
@@ -30,7 +30,7 @@ try {
     await page.setViewportSize({ width: viewport, height: 900 });
     for (const route of ['/', '/pricing', '/tools/discount']) {
       await page.goto(base + route, { waitUntil: 'domcontentloaded' });
-      await page.locator(route === '/' ? '.ledger-section-list' : route === '/pricing' ? '.ledger-prices' : '.inputs').waitFor();
+      await page.locator(route === '/' ? '.handy-directory-grid' : route === '/pricing' ? '.ledger-prices' : '.inputs').waitFor();
       const width = await page.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(width <= viewport + 1, route + ' overflows at ' + viewport + 'px: ' + width);
     }
