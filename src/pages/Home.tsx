@@ -87,8 +87,8 @@ export function Home() {
           : shelf.isSignedIn ? <>
             {shelf.plan === 'standard' ? <p className="handy-standard-info">全ツールでPRO比較を使えます。個別の登録や入れ替えは不要です。</p> : shelf.pins.length ? <ol className="handy-shelf-pins">{shelf.pins.map((id,index) =>
               <li key={id}><Link to={toolById(id).route}><span>{String(index + 1).padStart(2,'0')}</span>{toolById(id).name}</Link>
-              <div><button type="button" disabled={shelf.busy} onClick={() => shelf.move(id,-1)} disabled={!index} aria-label={`${toolById(id).name}を上に移動`}>↑</button>
-              <button type="button" disabled={shelf.busy} onClick={() => shelf.move(id,1)} disabled={index === shelf.pins.length-1} aria-label={`${toolById(id).name}を下に移動`}>↓</button>
+              <div><button type="button" disabled={shelf.busy || !index} onClick={() => shelf.move(id,-1)} aria-label={`${toolById(id).name}を上に移動`}>↑</button>
+              <button type="button" disabled={shelf.busy || index === shelf.pins.length-1} onClick={() => shelf.move(id,1)} aria-label={`${toolById(id).name}を下に移動`}>↓</button>
               <button type="button" disabled={shelf.busy} onClick={() => shelf.toggle(id)} aria-label={`${toolById(id).name}を棚から外す`}>×</button></div></li>)}</ol> :
               <div className="handy-shelf-blank"><span aria-hidden="true">＋</span><p>{shelf.plan === 'basic' ? '下の一覧から、PRO版を使いたい5件を選んでください。' : 'よく使う道具は、下の一覧から登録できます。'}</p></div>}
             {shelf.message && <p className="handy-shelf-notice" role="status">{shelf.message}</p>}
