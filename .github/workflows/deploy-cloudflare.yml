@@ -52,12 +52,14 @@ jobs:
           NODE
       - name: Run all existing safeguards
         run: pnpm lint && pnpm typecheck && pnpm test && pnpm build
+      - name: Check Worker compiles without deploying it
+        run: npx --yes wrangler@4 deploy --dry-run
       - name: Review pending D1 migrations
         run: npx --yes wrangler@4 d1 migrations list tool-shelf-entitlements --remote
       - name: Apply tracked D1 migrations without dropping existing data
         run: npx --yes wrangler@4 d1 migrations apply tool-shelf-entitlements --remote
       - name: Check PRO selections table exists
-        run: npx --yes wrangler@4 d1 execute tool-shelf-entitlements --remote --command "SELECT name FROM sqlite_master WHERE type='table' AND name='pro_selections';"
+        run: npx --yes wrangler@4 d1 execute tool-shelf-entitlements --remote --command "SELECT * FROM pro_selections LIMIT 0;"
       - name: Deploy Worker before exposing the PRO frontend
         run: npx --yes wrangler@4 deploy
       - name: Deploy frontend to existing Pages project
