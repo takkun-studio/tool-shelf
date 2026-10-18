@@ -44,17 +44,18 @@ function MiniCalculator() {
   </section>;
 }
 
-function ToolItem({ tool, pinned, onToggle, signedIn }: {
-  tool: Tool; pinned:boolean; onToggle:(id:ToolId)=>void; signedIn:boolean;
+function ToolItem({ tool, pinned, onToggle, signedIn, plan, busy }: {
+  tool: Tool; pinned:boolean; onToggle:(id:ToolId)=>void; signedIn:boolean; plan: 'free'|'basic'|'standard'; busy:boolean;
 }) {
   return <li className="handy-tool">
     <div className="handy-tool-content">
       <Link to={tool.route} className="handy-tool-link"><span className="handy-tool-title">{tool.name}</span><span className="handy-tool-arrow" aria-hidden="true">↗</span></Link>
       <p>{tool.shortDescription}</p>
+      {signedIn && (plan === 'standard' || (plan === 'basic' && pinned)) && <span className="handy-pro-badge">PRO利用可</span>}
     </div>
-    {signedIn && <button type="button" onClick={() => onToggle(tool.id)} className="handy-tool-save" aria-pressed={pinned}
+    {signedIn && plan !== 'standard' && <button type="button" disabled={busy} onClick={() => onToggle(tool.id)} className="handy-tool-save" aria-pressed={pinned}
       aria-label={`${tool.name}を${pinned ? '棚から外す' : '棚に登録する'}`}>
-      {pinned ? '★ 登録中' : '☆ 棚に入れる'}
+      {plan === 'basic' ? pinned ? '★ PRO登録中' : '☆ PROに追加' : pinned ? '★ 登録中' : '☆ 棚に入れる'}
     </button>}
   </li>;
 }
@@ -80,23 +81,28 @@ export function Home() {
       <section className="handy-my-shelf" aria-labelledby="handy-shelf-heading">
         <div className="handy-my-shelf-head">
           <h2 id="handy-shelf-heading">自分の棚</h2>
-          <span>{shelf.isSignedIn ? `${shelf.pins.length} / ${shelf.limit} 個` : '無料登録で3個まで'}</span>
+          <span>{shelf.isSignedIn ? shelf.plan === 'standard' ? '全ツールPRO利用可' : `${shelf.pins.length} / ${shelf.limit} 個` : '無料登録で3個まで'}</span>
         </div>
         {!shelf.isLoaded ? <p className="handy-shelf-help">ログイン状態を確認しています。</p>
           : shelf.isSignedIn ? <>
-            {shelf.pins.length ? <ol className="handy-shelf-pins">{shelf.pins.map((id,index) =>
+            {shelf.plan === 'standard' ? <p className="handy-standard-info">全ツールでPRO比較を使えます。個別の登録や入れ替えは不要です。</p> : shelf.pins.length ? <ol className="handy-shelf-pins">{shelf.pins.map((id,index) =>
               <li key={id}><Link to={toolById(id).route}><span>{String(index + 1).padStart(2,'0')}</span>{toolById(id).name}</Link>
-              <div><button type="button" onClick={() => shelf.move(id,-1)} disabled={!index} aria-label={`${toolById(id).name}を上に移動`}>↑</button>
-              <button type="button" onClick={() => shelf.move(id,1)} disabled={index === shelf.pins.length-1} aria-label={`${toolById(id).name}を下に移動`}>↓</button>
-              <button type="button" onClick={() => shelf.toggle(id)} aria-label={`${toolById(id).name}を棚から外す`}>×</button></div></li>)}</ol> :
-              <div className="handy-shelf-blank"><span aria-hidden="true">＋</span><p>よく使う道具は、下の一覧から登録できます。</p></div>}
+              <div><button type="button" disabled={shelf.busy} onClick={() => shelf.move(id,-1)} disabled={!index} aria-label={`${toolById(id).name}を上に移動`}>↑</button>
+              <button type="button" disabled={shelf.busy} onClick={() => shelf.move(id,1)} disabled={index === shelf.pins.length-1} aria-label={`${toolById(id).name}を下に移動`}>↓</button>
+              <button type="button" disabled={shelf.busy} onClick={() => shelf.toggle(id)} aria-label={`${toolById(id).name}を棚から外す`}>×</button></div></li>)}</ol> :
+              <div className="handy-shelf-blank"><span aria-hidden="true">＋</span><p>{shelf.plan === 'basic' ? '下の一覧から、PRO版を使いたい5件を選んでください。' : 'よく使う道具は、下の一覧から登録できます。'}</p></div>}
             {shelf.message && <p className="handy-shelf-notice" role="status">{shelf.message}</p>}
+            {shelf.plan === 'basic' && shelf.replaceCandidate && <div className="handy-swap" aria-label="PRO枠を入れ替える">
+              <strong>「{toolById(shelf.replaceCandidate).name}」と入れ替えるツール</strong>
+              {shelf.pins.map(id => <button type="button" key={id} disabled={shelf.busy} onClick={() => shelf.replace(id)}>{toolById(id).name} と入れ替える ↗</button>)}
+              <button type="button" onClick={shelf.cancelReplace}>キャンセル</button>
+            </div>}
             {shelf.hiddenCount > 0 && <p className="handy-shelf-notice">登録枠を超えた分も保存されています。</p>}
-            <Link to="/pricing" className="handy-shelf-plan">登録できる数を増やす →</Link>
+            <Link to="/pricing" className="handy-shelf-plan">{shelf.plan === 'standard' ? 'プランを確認する →' : shelf.plan === 'basic' ? '全ツールPRO版のプランを見る →' : 'PRO版のプランを見る →'}</Link>
           </> :
           <div className="handy-shelf-guest">
             <div className="handy-shelf-art" aria-hidden="true"><i>01</i><i>02</i><i>03</i></div>
-            <p>よく使うツールを並べておけます。<br/>計算そのものは登録なしで無料です。</p>
+            <p>通常計算はいつでも無料。<br/>有料プランなら選んだ道具のPRO比較が使えます。</p>
             <Link to="/login">無料で自分の棚をつくる →</Link>
           </div>}
       </section>
@@ -119,12 +125,12 @@ export function Home() {
           if (!list.length) return null;
           return <section key={section.name} className={`handy-group handy-group--${index}`} aria-labelledby={`handy-group-${index}`}>
             <div className="handy-group-head"><div className="handy-group-seal" aria-hidden="true">{section.sign}</div><div><h3 id={`handy-group-${index}`}>{section.name}</h3><p>{section.detail}</p></div><span>{list.length}件</span></div>
-            <ul>{list.map(tool => <ToolItem key={tool.id} tool={tool} pinned={shelf.pins.includes(tool.id)} signedIn={shelf.isSignedIn} onToggle={shelf.toggle}/>)}</ul>
+            <ul>{list.map(tool => <ToolItem key={tool.id} tool={tool} pinned={shelf.pins.includes(tool.id)} signedIn={shelf.isSignedIn} onToggle={shelf.toggle} plan={shelf.plan} busy={shelf.busy}/>)}</ul>
           </section>;
         })}
         {!filtered.length && <div className="handy-no-results"><strong>見つかりませんでした。</strong><p>別の言葉で試してください。</p><button type="button" onClick={() => { setCategory('すべて');setQuery(''); }}>すべて表示する</button></div>}
       </div>
     </section>
-    <div className="handy-bottom-note"><p>使う道具が決まったら、棚に登録。</p><Link to="/pricing">棚のプランについて →</Link></div>
+    <div className="handy-bottom-note"><p>通常の計算は全ツール無料。PRO版は月額プランで。</p><Link to="/pricing">棚のプランについて →</Link></div>
   </div>;
 }
