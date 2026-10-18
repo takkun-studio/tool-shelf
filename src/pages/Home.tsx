@@ -3,49 +3,34 @@ import { Link } from 'react-router-dom';
 import { useShelf } from '../hooks/useShelf';
 import { tools, toolById, type Tool, type ToolId } from '../lib/tools';
 
-const featured: { id: ToolId; question: string; note: string }[] = [
-  { id: 'profit', question: 'この価格で、利益は残る？', note: '原価・利益計算' },
-  { id: 'breakeven', question: '何個売れば、黒字になる？', note: '損益分岐点計算' },
-  { id: 'market', question: '出店費用、回収できる？', note: 'マルシェ出店収支計算' },
-];
+const sections = [
+  { id: '販売', title: '販売の計算', note: '値付け・利益・売上' },
+  { id: '出店', title: '出店の計算', note: 'イベント・マルシェ' },
+  { id: 'サービス', title: 'サービスの計算', note: '料金・作業時間' },
+  { id: '在庫', title: '在庫の計算', note: '仕入れ・在庫回転' },
+  { id: '事業', title: '事業の計算', note: '投資・回収' },
+] as const;
 
-function ToolGlyph({ id }: { id: ToolId }) {
-  const kinds: Record<ToolId, 'graph' | 'grid' | 'circle' | 'steps' | 'balance'> = {
-    profit: 'graph', breakeven: 'steps', market: 'grid', discount: 'circle',
-    payout: 'balance', service: 'steps', target: 'circle', inventory: 'grid',
-    channel: 'balance', investment: 'graph',
-  };
-  const shapes = {
-    graph: <><path d="M5 23h30M7 19l8-8 6 5 10-12"/><path d="M25 4h6v6"/></>,
-    grid: <><rect x="6" y="6" width="11" height="11" rx="1"/><rect x="21" y="6" width="11" height="11" rx="1"/><rect x="6" y="21" width="11" height="11" rx="1"/><rect x="21" y="21" width="11" height="11" rx="1"/></>,
-    circle: <><circle cx="19" cy="19" r="14"/><path d="M19 5v28M5 19h28"/></>,
-    steps: <><path d="M4 32h10V22h10V12h10"/><path d="M29 12h5v5"/></>,
-    balance: <><path d="M19 5v28M7 12h24M9 12l-5 10h10L9 12ZM29 12l-5 10h10l-5-10ZM12 33h14"/></>,
-  };
-  return <svg viewBox="0 0 38 38" aria-hidden="true" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none">{shapes[kinds[id]]}</svg>;
-}
-
-function ToolCard({ tool, isPinned, onToggle, isSignedIn }: {
-  tool: Tool; isPinned: boolean; onToggle: (id: ToolId) => void; isSignedIn: boolean;
+function CalculatorRow({ tool, pinned, onToggle, signedIn }: {
+  tool: Tool;
+  pinned: boolean;
+  onToggle: (id: ToolId) => void;
+  signedIn: boolean;
 }) {
-  return <li className="shelf-tool-row studio-tile">
-    <div className="studio-tile-top">
-      <span className="studio-tile-number">{String(tool.order).padStart(2, '0')} <span>/ 10</span></span>
-      <div className={`studio-glyph studio-glyph--${tool.category}`}><ToolGlyph id={tool.id}/></div>
-    </div>
-    <div className="studio-tile-body">
-      <span className="studio-tile-category">{tool.category}の計算</span>
-      <h3><Link to={tool.route}>{tool.name}</Link></h3>
-      <p>{tool.shortDescription}</p>
-    </div>
-    <div className="studio-tile-bottom">
-      <Link className="studio-tile-open" to={tool.route}>計算をはじめる <span aria-hidden="true">↗</span></Link>
-      {isSignedIn && <button className="studio-tile-pin" type="button"
-        onClick={() => onToggle(tool.id)} aria-pressed={isPinned}
-        aria-label={`${tool.name}を${isPinned ? '棚から外す' : '棚に登録する'}`}>
-        {isPinned ? '✓ 登録済み' : '＋ 棚に登録'}
-      </button>}
-    </div>
+  return <li className="ledger-row">
+    <span className="ledger-row-number">{String(tool.order).padStart(2, '0')}</span>
+    <Link className="ledger-row-link" to={tool.route}>
+      <strong>{tool.name}</strong>
+      <span>{tool.shortDescription}</span>
+    </Link>
+    {signedIn && <button type="button" className="ledger-row-pin" aria-pressed={pinned}
+      aria-label={`${tool.name}を${pinned ? '棚から外す' : '棚に登録する'}`}
+      onClick={() => onToggle(tool.id)}>
+      {pinned ? '棚に登録済' : '棚に追加'}
+    </button>}
+    <Link className="ledger-row-open" to={tool.route} aria-label={`${tool.name}を開く`}>
+      <span>開く</span><span aria-hidden="true">↗</span>
+    </Link>
   </li>;
 }
 
@@ -53,104 +38,99 @@ export function Home() {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('すべて');
   const shelf = useShelf();
-  const categories = useMemo(() => ['すべて', ...new Set(tools.map((tool) => tool.category))], []);
   const filtered = useMemo(() => tools.filter((tool) =>
     (category === 'すべて' || tool.category === category) &&
     `${tool.name} ${tool.shortDescription} ${tool.category}`.toLocaleLowerCase('ja-JP').includes(query.trim().toLocaleLowerCase('ja-JP'))
   ).sort((a, b) => a.order - b.order), [category, query]);
 
-  return <>
-    <section className="studio-hero" aria-labelledby="studio-hero-title">
-      <div className="studio-hero-copy">
-        <span className="studio-hero-eyebrow"><span aria-hidden="true" className="studio-hero-dot"/> 小さなお店と、個人販売のために。</span>
-        <h1 id="studio-hero-title">商売の数字を、<br/><span>もっと身近に。</span></h1>
-        <p>原価も、値引きも、出店費用も。<br/>迷ったときにすぐ開ける、10種類の計算道具。</p>
-        <div className="studio-hero-actions">
-          <a href="#tool-catalog" className="studio-primary-link">ツールを探す <span aria-hidden="true">↘</span></a>
-          <span className="studio-no-login">全10種類、登録なしで無料</span>
-        </div>
-        <span className="studio-hero-index">TOOL SHELF <span>/</span> 2026</span>
+  return <div className="ledger">
+    <div className="ledger-page-heading">
+      <div>
+        <div className="ledger-heading-marker" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p>個人販売・小さなお店のための道具箱</p>
+        <h1>計算ツール<span>10</span></h1>
       </div>
-      <div className="studio-hero-shortcuts">
-        <div className="studio-shortcuts-top"><span>まずは、この計算から</span><span>01 — 03</span></div>
-        {featured.map(({ id, question, note }, index) =>
-          <Link className="studio-shortcut" to={toolById(id).route} key={id}>
-            <span className="studio-shortcut-no">0{index + 1}</span>
-            <span className="studio-shortcut-text"><strong>{question}</strong><small>{note}</small></span>
-            <span className="studio-shortcut-arrow" aria-hidden="true">↗</span>
-          </Link>
-        )}
-        <div className="studio-shortcuts-bottom">どれも、会員登録せずに使えます <span aria-hidden="true">✓</span></div>
-      </div>
-    </section>
+      <p className="ledger-heading-note"><span>全種類無料</span>　登録なしで計算できます</p>
+    </div>
 
-    <section className="studio-shelf" aria-labelledby="studio-shelf-title">
-      <div className="studio-shelf-heading">
-        <div><span className="studio-overline">YOUR WORKSPACE</span><h2 id="studio-shelf-title">自分の棚 <span className="studio-heading-dot">.</span></h2></div>
-        <span className="studio-shelf-plan">{shelf.isSignedIn ? `${shelf.pins.length} / ${shelf.limit} 枠` : '無料登録で 3 枠'}</span>
-      </div>
-      {!shelf.isLoaded ? <p className="studio-shelf-loading">ログイン状態を確認しています。</p>
-        : !shelf.isSignedIn ?
-          <div className="studio-shelf-guest">
-            <div className="studio-shelf-guest-image" aria-hidden="true"><span>01</span><span>02</span><span>03</span></div>
-            <div className="studio-shelf-guest-text">
-              <strong>よく使う道具を、いつもの場所へ。</strong>
-              <p>お気に入りのツールを並べておけば、次からすぐ使えます。計算は登録前でも無料。</p>
-            </div>
-            <Link to="/login" className="studio-shelf-signup">無料で棚をつくる <span aria-hidden="true">→</span></Link>
-          </div> :
-          <div className="studio-shelf-member">
-            {shelf.pins.length === 0 ? <div className="studio-shelf-empty">
-              <span className="studio-shelf-empty-sign">＋</span>
-              <div><strong>ここに、いつもの道具を。</strong><p>下のツール一覧から「棚に登録」を選んでください。</p></div>
-            </div> :
-              <ol className="studio-pins">{shelf.pins.map((id, index) => {
-                const tool = toolById(id);
-                return <li key={id}>
-                  <span className="studio-pin-num">{String(index + 1).padStart(2, '0')}</span>
-                  <Link to={tool.route}>{tool.name}<span aria-hidden="true"> ↗</span></Link>
-                  <div className="studio-pin-actions">
-                    <button type="button" disabled={index === 0} onClick={() => shelf.move(id, -1)} aria-label={`${tool.name}を上へ`}>↑</button>
-                    <button type="button" disabled={index === shelf.pins.length - 1} onClick={() => shelf.move(id, 1)} aria-label={`${tool.name}を下へ`}>↓</button>
-                    <button type="button" onClick={() => shelf.toggle(id)} aria-label={`${tool.name}を外す`}>外す</button>
-                  </div>
-                </li>;
-              })}</ol>}
-            {shelf.message && <p role="status" className="studio-shelf-note">{shelf.message}</p>}
-            {shelf.hiddenCount > 0 && <p className="studio-shelf-note">プラン枠を超える登録は保持されています。</p>}
-            <p className="studio-shelf-note">並び順はこのブラウザに保存されます。<Link to="/pricing">棚の枠を増やす →</Link></p>
+    <div className="ledger-workspace">
+      <aside className="ledger-side">
+        <div className="ledger-side-intro"><span>自分の棚</span><span className="ledger-side-index">保存する道具</span></div>
+        {!shelf.isLoaded ? <p className="ledger-side-muted">ログイン状態を確認しています。</p>
+        : shelf.isSignedIn ? <>
+          <p className="ledger-side-counter">登録済み　<strong>{shelf.pins.length}</strong><span> / {shelf.limit} 枠</span></p>
+          {shelf.pins.length === 0 ? <p className="ledger-side-muted">下の一覧から、よく使う道具を追加できます。</p> :
+            <ol className="ledger-pins">{shelf.pins.map((id, index) => {
+              const tool = toolById(id);
+              return <li key={id}><div className="ledger-pin-name"><span>{String(index + 1).padStart(2, '0')}</span><Link to={tool.route}>{tool.name}</Link></div>
+                <div className="ledger-pin-actions">
+                  <button type="button" disabled={index === 0} aria-label={`${tool.name}を上へ移動`} onClick={() => shelf.move(id, -1)}>↑</button>
+                  <button type="button" disabled={index === shelf.pins.length - 1} aria-label={`${tool.name}を下へ移動`} onClick={() => shelf.move(id, 1)}>↓</button>
+                  <button type="button" aria-label={`${tool.name}を外す`} onClick={() => shelf.toggle(id)}>×</button>
+                </div>
+              </li>;
+            })}</ol>}
+          {shelf.hiddenCount > 0 && <p className="ledger-side-muted">枠を超える登録は保持されています。</p>}
+          {shelf.message && <p className="ledger-side-feedback" role="status">{shelf.message}</p>}
+          <p className="ledger-side-muted">このブラウザに保存されます。</p>
+          <Link className="ledger-side-plan" to="/pricing">棚の枠を増やす <span aria-hidden="true">↗</span></Link>
+        </> :
+          <div className="ledger-side-guest">
+            <p>よく使う道具を<br/><strong>３つまで固定。</strong></p>
+            <span>無料登録で自分の棚が使えます。計算は登録しなくても無料。</span>
+            <Link to="/login">無料で棚を作る <span aria-hidden="true">↗</span></Link>
           </div>}
-    </section>
-
-    <section id="tool-catalog" className="studio-catalog" aria-labelledby="studio-catalog-title">
-      <header className="studio-catalog-heading">
-        <div><span className="studio-overline">10 TOOLS, ALL FREE</span><h2 id="studio-catalog-title">道具をえらぶ<span className="studio-heading-dot">.</span></h2></div>
-        <p>販売から在庫管理まで。<br/>必要な計算を、すぐに。</p>
-      </header>
-      <div className="studio-directory">
-        <aside className="studio-sidebar" aria-label="ツールを絞り込む">
-          <label className="studio-search-label" htmlFor="tool-query">道具を検索</label>
-          <div className="studio-search-wrap"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7"/><path d="m16 16 5 5"/></svg><input id="tool-query" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="名前・用途で探す"/></div>
-          <p className="studio-sidebar-title">カテゴリから探す</p>
-          <div className="studio-categories" role="group" aria-label="カテゴリ">
-            {categories.map(item => <button key={item} type="button" aria-pressed={category === item} onClick={() => setCategory(item)} className={category === item ? 'selected' : ''}>
-              <span>{item}</span><span>{item === 'すべて' ? String(tools.length).padStart(2, '0') : String(tools.filter(tool => tool.category === item).length).padStart(2, '0')}</span>
+        <div className="ledger-side-nav">
+          <h2>用途で探す</h2>
+          <div role="group" aria-label="カテゴリで絞り込む">
+            <button type="button" className={category === 'すべて' ? 'active' : ''} aria-pressed={category === 'すべて'} onClick={() => setCategory('すべて')}>
+              <span>すべて</span><small>{tools.length}</small>
+            </button>
+            {sections.map(section => <button type="button" key={section.id} className={category === section.id ? 'active' : ''} aria-pressed={category === section.id} onClick={() => setCategory(section.id)}>
+              <span>{section.id}</span><small>{tools.filter(tool => tool.category === section.id).length}</small>
             </button>)}
           </div>
-          <div className="studio-sidebar-note"><span>使い方のヒント</span><p>10種類の計算はすべて無料。有料プランは、よく使う道具を並べる棚の拡張に使います。</p><Link to="/pricing">棚のプランを見る ↗</Link></div>
-        </aside>
-        <div className="studio-directory-content">
-          <div className="studio-directory-status"><span>ツール一覧 <strong>{filtered.length}</strong> 件</span><span>すべて無料</span></div>
-          {filtered.length ?
-            <ol className="shelf-tool-list studio-grid">{filtered.map(tool =>
-              <ToolCard tool={tool} key={tool.id} isPinned={shelf.pins.includes(tool.id)} onToggle={shelf.toggle} isSignedIn={shelf.isSignedIn}/>)}</ol> :
-            <div className="studio-no-results"><strong>見つかりませんでした。</strong><p>別のキーワードで探すか、絞り込みを解除してください。</p><button type="button" onClick={() => { setQuery(''); setCategory('すべて'); }}>すべて表示</button></div>}
         </div>
-      </div>
-    </section>
-    <section className="studio-outro">
-      <div><span>FREE TO USE</span><h2>計算は無料。<br/>使いやすさは、自分次第。</h2></div>
-      <div><p>どのツールも登録せずに使えます。道具を並べ替えて自分仕様にしたい方には、無料の棚から。</p><Link to={shelf.isSignedIn ? '/pricing' : '/login'}>{shelf.isSignedIn ? '棚の登録枠を見る' : '無料で棚をつくる'} <span aria-hidden="true">→</span></Link></div>
-    </section>
-  </>;
+        <p className="ledger-side-footnote">月額プランは計算の購入ではなく、自分の棚の登録枠を増やすためのものです。</p>
+      </aside>
+
+      <section id="tool-catalog" className="ledger-main" aria-labelledby="ledger-catalog-title">
+        <div className="ledger-main-header">
+          <div><p className="ledger-main-kicker">道具を選ぶ</p><h2 id="ledger-catalog-title">ツール一覧</h2></div>
+          <span className="ledger-main-count">{filtered.length} <small>件</small></span>
+        </div>
+        <label className="ledger-search" htmlFor="tool-query">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5.5 5.5"/></svg>
+          <span className="sr-only">ツールを検索</span>
+          <input id="tool-query" type="search" value={query} onChange={event => setQuery(event.target.value)}
+            placeholder="道具の名前や、計算したいことを入力"/>
+          <span className="ledger-search-hint">全10ツールから検索</span>
+        </label>
+
+        <div className="ledger-mobile-categories" role="group" aria-label="カテゴリで絞り込む（スマホ）">
+          {['すべて', ...sections.map(section => section.id)].map(item => <button type="button" key={item}
+            className={category === item ? 'active' : ''} aria-pressed={category === item}
+            onClick={() => setCategory(item)}>{item}</button>)}
+        </div>
+
+        <div className="ledger-section-list">
+          {sections.map((section, index) => {
+            const sectionTools = filtered.filter(tool => tool.category === section.id);
+            if (sectionTools.length === 0) return null;
+            return <section className="ledger-group" key={section.id} aria-labelledby={`ledger-group-${section.id}`}>
+              <div className="ledger-group-heading">
+                <div className="ledger-group-heading-left"><span>{String(index + 1).padStart(2, '0')}</span><h3 id={`ledger-group-${section.id}`}>{section.title}</h3></div>
+                <span className="ledger-group-note">{section.note} <b>{sectionTools.length}件</b></span>
+              </div>
+              <ol className="ledger-tool-list">{sectionTools.map(tool => <CalculatorRow key={tool.id}
+                tool={tool} pinned={shelf.pins.includes(tool.id)} onToggle={shelf.toggle} signedIn={shelf.isSignedIn}/>)}</ol>
+            </section>;
+          })}
+          {!filtered.length && <div className="ledger-no-results"><strong>該当する道具がありません。</strong><p>検索する言葉を変えてみてください。</p>
+            <button type="button" onClick={() => { setQuery(''); setCategory('すべて'); }}>すべて表示する</button></div>}
+        </div>
+      </section>
+    </div>
+    <footer className="ledger-note"><span>道具箱の中身は、いつでも無料。</span><Link to="/pricing">自分の棚について <span aria-hidden="true">↗</span></Link></footer>
+  </div>;
 }
