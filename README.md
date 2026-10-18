@@ -1,6 +1,6 @@
 # ツール棚 MVP
 
-個人販売・小規模出店向けのブラウザ内完結計算ツール。React + Vite + TypeScript + React Router + Vitest。全10ツールの単発計算・CSV出力は未登録でも無料。登録・月額課金は自分の棚の保存・登録枠の拡張に使います。
+個人販売・小規模出店向けの計算ツール棚。全10ツールの通常計算・CSV出力は未登録でも無料。無料登録ではお気に入り3件、月480円では棚に入れた5件のPRO権限、月980円では全ツールのPRO権限を扱います。
 
 ## 起動
 
@@ -39,13 +39,30 @@
 
 未実装: 棚や試算のクラウド同期、CSV import。
 
-## 販売準備状態
+## 現行の料金・権限仕様
 
-全10ツールの`access`は`free`。すべてブラウザ内で単発計算でき、ゲストでもCSV出力可能。サインイン済みなら試算をこのブラウザのlocalStorageに保存・再利用できます。無料の棚3枠、Basic（月480円）の棚5枠、Standard（月980円）の棚10枠はツールを並べ替えてすばやくアクセスするための枠数であり、計算機能のロックではありません。Unlimitedは将来構想で、現時点では販売しません。
+- **無料:** 全ツールの通常版とCSV出力。無料登録でお気に入り3件をブラウザ保存。
+- **月480円:** 棚に入れた5件だけPRO対象。選択5件はCloudflare D1でアカウント単位に保存し、入れ替え可能。
+- **月980円:** 全ツールがPRO対象。個別選択不要。新しいツールをregistryへ追加した場合もPRO判定対象になる。
+- 内部コード名として `basic` / `standard` は残すが、ユーザー画面では意味が曖昧なため「5件PRO」「全件PRO」と表示する。
+- 通常版を課金でロックしない。PROの具体的機能は各ツールで実装済みのものだけを提供し、未実装機能は料金説明に含めない。
 
-## プラン権限レイヤー
+## PRO選択の安全性
 
-`src/lib/plans.ts` が `free / basic / standard / unlimited` と順序を定義し、フロントエンドの全ツールの`minimumPlan`は`free`。会員の棚プランはWorkerの `/v1/billing/status` で取得したD1/Stripe由来のプランを利用し、ログインユーザー別にブラウザ内の棚登録枠を Free3、Basic5、Standard10 に制限します。localStorageのプラン値やfrontend送信値は契約の正本には使用しません。
+`worker/src/pro.ts` がPRO権限の正本。月480円の選択は最大5件、重複・未知IDを拒否する。更新にはrevisionを使い、別タブ・別端末から同時更新された場合は古い更新を409で拒否して最新状態を再取得する。
+
+D1は `worker/migrations/0003_pro_selections.sql` で追加する。さらにWorker側でも `CREATE TABLE IF NOT EXISTS` を実行するため、新Workerが先に動いてもテーブル不足でPRO状態取得が落ちない。既存のusers / entitlements / webhook_eventsは削除・上書きしない。
+
+既存 `/v1/calculators/:id` の旧有料APIは、Stripe契約だけでなく新しいPRO選択も確認してから実行する。公開UIの通常計算は従来どおり無料のローカル計算。
+
+## バックアップ
+
+変更前の状態はGitHubに保持:
+- `backup/2026-10-18-before-pro-main`
+- `backup/2026-10-18-before-pro-design-v4`
+- 不採用の旧試作PR #5はclosedのまま履歴として保存。
+
+## Clerk Auth
 
 ## Clerk Auth
 
