@@ -184,3 +184,47 @@ footer.shelf-site-footer{max-width:1320px;margin-top:28px;border-color:#d8dcd4;f
   .ledger-row-pin{max-width:68px;white-space:normal;line-height:1.4}
 }
 @media(prefers-reduced-motion:reduce){.ledger-row{transition:none}}
+
+
+/* Pricing belongs inside the working tool, not in a marketing landing page. */
+.ledger-price-page{max-width:1100px;margin:0 auto;padding:41px 8px 44px}
+.ledger-price-back{font-size:12px;font-weight:700;text-decoration:none;color:#54715c}
+.ledger-price-heading{margin:31px 0 26px}
+.ledger-price-heading p{color:#809184;font-size:11px;margin:0 0 9px}
+.ledger-price-heading h1{font-size:clamp(30px,3.6vw,42px);font-weight:780;letter-spacing:-.05em;margin:0 0 6px;color:#223b2b}
+.ledger-price-heading>span{font-size:13px;color:#687669}
+.ledger-price-fact{display:flex;align-items:start;gap:17px;background:#e9efe6;border-left:3px solid #50765a;padding:19px 24px;margin-bottom:30px}
+.ledger-price-fact>span{font-size:20px;color:#376c46}
+.ledger-price-fact strong{color:#293d2d;font-size:15px;letter-spacing:-.02em}
+.ledger-price-fact p{font-size:12px;line-height:1.85;color:#5c7160;margin:7px 0 0}
+.ledger-prices{border-top:2px solid #476c53}
+.ledger-price-option{display:grid;grid-template-columns:minmax(125px,1fr) minmax(105px,.76fr) minmax(230px,2.1fr) 176px;gap:20px;align-items:center;border-bottom:1px solid #d9e1d8;padding:29px 14px}
+.ledger-price-name>span{display:block;font-size:10px;color:#849483;margin-bottom:5px}
+.ledger-price-name strong{display:block;color:#243c2d;font-size:22px;letter-spacing:-.035em}
+.ledger-price-value strong{font-size:25px;letter-spacing:-.05em;color:#213c2b}
+.ledger-price-value small{display:block;font-size:11px;color:#809285;margin-top:5px}
+.ledger-price-features strong{font-size:15px;font-weight:750}
+.ledger-price-features p{font-size:12px;line-height:1.75;margin:7px 0 0;color:#748276}
+.ledger-price-action{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#294c38;border:1px solid #294c38;color:#fff;border-radius:3px;font-size:12px;font-weight:750;padding:12px 13px;min-height:42px}
+.ledger-price-action:hover:not(:disabled){background:#3b684c;color:#fff}
+.ledger-price-action--light{background:#fff;color:#315d42;border-color:#b7ccba}
+.ledger-price-action--light:hover{background:#ecf4ea;color:#315d42}
+.ledger-price-terms{padding:25px 0 0}
+.ledger-price-terms p{font-size:12px;line-height:1.8;color:#6e7b70;margin:0 0 7px}
+@media(max-width:920px){
+  .ledger-price-option{grid-template-columns:1.1fr 1fr 2fr;gap:13px}
+  .ledger-price-action{grid-column:3;justify-self:start;width:100%;margin-top:7px}
+}
+@media(max-width:700px){
+  .ledger-price-page{padding:28px 0 25px}
+  .ledger-price-heading{margin:26px 0 21px}
+  .ledger-price-heading h1{font-size:34px}
+  .ledger-price-fact{padding:17px 15px;gap:12px}
+  .ledger-price-fact strong{font-size:14px}
+  .ledger-price-option{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px 14px;padding:23px 5px}
+  .ledger-price-name strong{font-size:21px}
+  .ledger-price-value{text-align:right}
+  .ledger-price-features{grid-column:1/-1;padding:7px 0 2px}
+  .ledger-price-action{grid-column:1/-1;justify-self:stretch;margin-top:6px}
+  .ledger-price-terms{padding-top:19px}
+}
