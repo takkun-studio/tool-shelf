@@ -1,0 +1,72 @@
+name: Deploy Tool Shelf to existing Cloudflare
+# Never deploy on main push: the D1 migration and Worker must land before Pages.
+# Release from ship-tool-shelf/* branches only; existing main CI remains unchanged.
+on:
+  push:
+    branches:
+      - 'ship-tool-shelf/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tool-shelf-cloudflare-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Verify Cloudflare is connected before touching production
+        shell: bash
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Cloudflare is not linked to GitHub Actions yet. Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID once in repository Actions secrets."
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Reuse existing public frontend config (not secret keys)
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const assets = fs.readdirSync('dist/assets').filter(name => name.endsWith('.js'));
+          const bundle = assets.map(name => fs.readFileSync('dist/assets/' + name, 'utf8')).join('\n');
+          const clerk = bundle.match(/pk_(?:test|live)_[A-Za-z0-9_-]+/)?.[0];
+          const worker = bundle.match(/https:\/\/[A-Za-z0-9.-]+\.workers\.dev/)?.[0];
+          if (!clerk || !worker) throw new Error('Missing existing PUBLIC frontend configuration. Stop before touching production.');
+          fs.appendFileSync(process.env.GITHUB_ENV, `VITE_CLERK_PUBLISHABLE_KEY=${clerk}\nVITE_WORKER_API_URL=${worker}\n`);
+          NODE
+      - name: Run all existing safeguards
+        run: pnpm lint && pnpm typecheck && pnpm test && pnpm build
+      - name: Review pending D1 migrations
+        run: npx --yes wrangler@4 d1 migrations list tool-shelf-entitlements --remote
+      - name: Apply tracked D1 migrations without dropping existing data
+        run: npx --yes wrangler@4 d1 migrations apply tool-shelf-entitlements --remote
+      - name: Check PRO selections table exists
+        run: npx --yes wrangler@4 d1 execute tool-shelf-entitlements --remote --command "SELECT name FROM sqlite_master WHERE type='table' AND name='pro_selections';"
+      - name: Deploy Worker before exposing the PRO frontend
+        run: npx --yes wrangler@4 deploy
+      - name: Deploy frontend to existing Pages project
+        run: npx --yes wrangler@4 pages deploy dist --project-name takkun-tool-shelf --branch main
+      - name: Check new PRO API is reachable and protected
+        shell: bash
+        run: |
+          status=$(curl --silent --show-error --output /tmp/pro-response.json --write-out '%{http_code}' --max-time 20 \
+            --header 'Origin: https://takkun-tool-shelf.pages.dev' \
+            "$VITE_WORKER_API_URL/v1/pro/selections")
+          [ "$status" = "401" ] || { echo "::error::Expected unauthenticated 401; got HTTP $status"; cat /tmp/pro-response.json; exit 1; }
+          echo "Cloudflare Worker returned expected authentication boundary HTTP 401." >> "$GITHUB_STEP_SUMMARY"
