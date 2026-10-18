@@ -26,7 +26,7 @@ function ToolCard({ tool }: { tool: Tool }) {
   return <Link className="shelf-card" to={tool.route} aria-label={`${tool.name}、${level}ツールを開く`}>
     <span className="shelf-card-top"><span className={`shelf-icon shelf-icon-${tool.id}`}><ToolIcon id={tool.id}/></span><span className={`shelf-tag ${tool.access === 'free' ? 'is-free' : 'is-paid'}`}>{level}</span></span>
     <span className="shelf-card-copy"><span className="shelf-card-category">{tool.category}</span><strong>{tool.name}</strong><span>{tool.shortDescription}</span></span>
-    <span className="shelf-card-bottom"><span>ツールを開く</span><span aria-hidden="true" className="shelf-arrow">↗</span></span>
+    <span className="shelf-card-bottom"><span>{tool.access === 'free' ? '無料で開く' : 'ツールの詳細を見る'}</span><span aria-hidden="true" className="shelf-arrow">↗</span></span>
   </Link>;
 }
 
@@ -41,23 +41,28 @@ export function Home() {
     `${tool.name} ${tool.shortDescription} ${tool.category}`.toLocaleLowerCase('ja-JP').includes(query.trim().toLocaleLowerCase('ja-JP'))
   ).sort((a, b) => a.order - b.order), [access, category, query]);
   return <>
-    <section className="shelf-hero">
+    <section className="shelf-hero shelf-hero--workbench">
       <div className="shelf-hero-copy">
-        <span className="shelf-eyebrow"><span className="shelf-spark" aria-hidden="true"/> 小さな商売の、頼れる道具箱</span>
-        <h1>数字の悩みを、<br/><span>もっとシンプルに。</span></h1>
-        <p>値付け、利益、出店コスト、売上目標。<br/>個人販売と小さなお店のための計算ツールを、ひとつに。</p>
-        <div className="shelf-hero-actions"><a className="shelf-cta" href="#tool-catalog">ツールを探す <span aria-hidden="true">→</span></a><Link className="shelf-plain-link" to="/pricing">料金プランを見る <span aria-hidden="true">↗</span></Link></div>
-        <div className="shelf-hero-stats"><span><strong>10</strong> 種類の実用ツール</span><span className="shelf-stat-divider" aria-hidden="true"/><span><strong>3</strong> ツールを無料で</span></div>
+        <span className="shelf-eyebrow"><span className="shelf-spark" aria-hidden="true" /> 個人販売・小さなお店のための計算ツール</span>
+        <h1>この値段で、<br/><span>ちゃんと利益は残る？</span></h1>
+        <p>原価、出店費用、目標売上。<br/>必要な数字を入れて、次の判断をすばやく。</p>
+        <div className="shelf-hero-actions">
+          <Link className="shelf-cta" to="/tools/profit">まず利益を計算する <span aria-hidden="true">→</span></Link>
+          <a className="shelf-plain-link" href="#tool-catalog">全10ツールを見る <span aria-hidden="true">↓</span></a>
+        </div>
+        <div className="shelf-hero-stats"><span><strong>3</strong> ツールは無料</span><span className="shelf-stat-divider" aria-hidden="true"/><Link to="/pricing">料金プランを確認 <span aria-hidden="true">↗</span></Link></div>
       </div>
-      <div className="shelf-preview" aria-hidden="true">
-        <div className="shelf-preview-top"><span className="shelf-preview-dots"><i/><i/><i/></span><span>TOOL SHELF / OVERVIEW</span></div>
-        <div className="shelf-preview-inner"><span className="shelf-preview-kicker">さっと選んで、すぐ計算。</span><div className="shelf-preview-heading">必要な数字が、<br/>ひと目でわかる。</div><div className="shelf-preview-tiles"><div><span>01</span><b>原価・利益</b><i className="shelf-tile-line"/></div><div><span>02</span><b>損益分岐点</b><i className="shelf-tile-bars"><i/><i/><i/><i/></i></div><div><span>03</span><b>出店収支</b><i className="shelf-tile-ring"/></div></div></div>
-        <div className="shelf-preview-footer"><span className="shelf-preview-ok"/> 計算から保存まで、ひとつの画面で</div>
-      </div>
+      <aside className="shelf-quickstart" aria-label="無料ツールから始める">
+        <div className="shelf-quickstart-head"><span>まずは、ここから。</span><span className="shelf-quickstart-label">FREE TO USE</span></div>
+        <Link className="shelf-quickstart-item" to="/tools/profit"><span className="shelf-quickstart-number">01</span><span><strong>利益がいくら残るか知りたい</strong><small>原価・利益計算</small></span><span className="shelf-quickstart-arrow" aria-hidden="true">↗</span></Link>
+        <Link className="shelf-quickstart-item" to="/tools/breakeven"><span className="shelf-quickstart-number">02</span><span><strong>何個売れば黒字になる？</strong><small>損益分岐点計算</small></span><span className="shelf-quickstart-arrow" aria-hidden="true">↗</span></Link>
+        <Link className="shelf-quickstart-item" to="/tools/market"><span className="shelf-quickstart-number">03</span><span><strong>出店して利益が出る？</strong><small>マルシェ出店収支計算</small></span><span className="shelf-quickstart-arrow" aria-hidden="true">↗</span></Link>
+        <div className="shelf-quickstart-foot">会員登録前でも、無料ツールの内容を確認できます。</div>
+      </aside>
     </section>
 
     <section id="tool-catalog" className="shelf-catalog" aria-labelledby="catalog-title">
-      <div className="shelf-section-heading"><div><span className="shelf-section-kicker">EXPLORE THE TOOLS</span><h2 id="catalog-title">目的に合うツールを探す</h2><p>まずは無料ツールから。必要に応じて、さらに便利な計算も。</p></div><span className="shelf-results-count">{filtered.length} / {tools.length} ツール</span></div>
+      <div className="shelf-section-heading"><div><span className="shelf-section-kicker">TOOL DIRECTORY</span><h2 id="catalog-title">やりたいことに合うツールを。</h2><p>ツール名・用途で検索、またはカテゴリから選べます。</p></div><span className="shelf-results-count" role="status" aria-live="polite">{filtered.length} / {tools.length} ツール</span></div>
       <div className="shelf-toolbar">
         <label className="shelf-search"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ツール名や用途で検索" aria-label="ツールを検索" /></label>
         <div className="shelf-filter-tabs" role="group" aria-label="利用区分で絞り込む">
