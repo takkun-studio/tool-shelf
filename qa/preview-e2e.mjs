@@ -8,7 +8,7 @@ try {
   await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
   await page.locator('.handy-tool').first().waitFor();
   assert.equal(await page.locator('.handy-tool').count(), 10, 'all tools should be visible to guests');
-  assert.match(await page.locator('body').innerText(), /全10種類・すべて無料|登録なしで無料/);
+  assert.match(await page.locator('body').innerText(), /通常版は全10種類無料|登録なしで使えます/);
 
   assert.equal(await page.locator('.handy-mini-inputs input').count(), 3);
   await page.locator('.handy-mini-inputs input').nth(0).fill('3000');
@@ -42,7 +42,7 @@ try {
       assert.ok(width <= viewport + 1, route + ' overflows at ' + viewport + 'px: ' + width);
     }
   }
-  console.log('PASS: guest tool catalog, paid-tool math unlocked, CSV download, no initial errors, PC/mobile overflow');
+  console.log('PASS: guest normal tools stay free, CSV works, pricing redesign fits PC/mobile');
 } finally {
   await browser.close();
 }
