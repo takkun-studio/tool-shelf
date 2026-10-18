@@ -1,6 +1,6 @@
 # ツール棚 MVP
 
-個人販売・小規模出店向けのブラウザ内完結計算ツール。React + Vite + TypeScript + React Router + Vitest。全10ツールの単発計算・CSV出力は未登録でも無料。登録・月額課金は自分の棚の保存・登録枠の拡張に使います。
+個人販売・小規模出店向けのブラウザ内完結計算ツール。React + Vite + TypeScript + React Router + Vitest。全10ツールの単発計算・CSV出力は未登録でも無料。無料登録ではお気に入り3件の保存ができ、月額プランでは実際にPRO比較機能を利用できます。
 
 ## 起動
 
@@ -37,15 +37,15 @@
 2. `src/lib/calculators/index.ts` に計算分岐を追加
 3. `src/main.tsx` にrouteを追加
 
-未実装: 棚や試算のクラウド同期、CSV import。
+未実装: 無料お気に入りと通常試算のクラウド同期、CSV import。月480円のPRO選択5件はD1同期済み。
 
 ## 販売準備状態
 
-全10ツールの`access`は`free`。すべてブラウザ内で単発計算でき、ゲストでもCSV出力可能。サインイン済みなら試算をこのブラウザのlocalStorageに保存・再利用できます。無料の棚3枠、Basic（月480円）の棚5枠、Standard（月980円）の棚10枠はツールを並べ替えてすばやくアクセスするための枠数であり、計算機能のロックではありません。Unlimitedは将来構想で、現時点では販売しません。
+全10ツールの`access`は`free`。すべてブラウザ内で単発計算でき、ゲストでもCSV出力可能。サインイン済みなら試算をこのブラウザのlocalStorageに保存・再利用できます。無料会員はお気に入り3件、月480円（内部コード: basic）はD1保存した5件のPRO比較、月980円（内部コード: standard）は全10件のPRO比較が使えます。通常版の計算・CSVはどのプランも無料。Unlimitedは構想のみで販売しません。
 
 ## プラン権限レイヤー
 
-`src/lib/plans.ts` が `free / basic / standard / unlimited` と順序を定義し、フロントエンドの全ツールの`minimumPlan`は`free`。会員の棚プランはWorkerの `/v1/billing/status` で取得したD1/Stripe由来のプランを利用し、ログインユーザー別にブラウザ内の棚登録枠を Free3、Basic5、Standard10 に制限します。localStorageのプラン値やfrontend送信値は契約の正本には使用しません。
+`src/lib/plans.ts` が `free / basic / standard / unlimited` と順序を定義し、フロントエンドの全ツールの`minimumPlan`は`free`。会員のPROプランはWorkerが署名付きClerk JWTを確認し、Stripe Price ID・契約状態からD1内のプランを導出して判定します。月480円プランは `/v1/pro/selections` を使い、ユーザー単位のPRO選択を5件までD1で保存。スマホとPCは同一の選択状態を共有します。無料お気に入り3件と通常試算の保存は引き続きブラウザ内です。localStorageやfrontend送信のplanをPRO利用権限には使いません。
 
 ## Clerk Auth
 
@@ -57,7 +57,7 @@ Clerk Development instanceでtest modeの新規登録・確認コード・login�
 
 `worker/` はCloudflare Worker + D1の認可境界です。D1の`users`、`entitlements`、`webhook_events`は`worker/migrations/0001_initial.sql`で作成します。WorkerはClerk session JWTを公開JWKSで検証し、D1にentitlementがなければ`free`として扱います。frontendからのplan値は使いません。
 
-既存の `/v1/calculators/` 7 endpointには旧サブスクリプション権限チェックが残りますが、公開UIはこれらを呼び出さず、同じ純粋計算定義をフロントエンドに取り込んで10ツールすべて無料で計算します。Worker URLは契約状態確認と定期決済フローに使用します。旧APIは互換性のため保持し、認可・Stripe契約を勝手に緩和しません。
+既存の `/v1/calculators/` 7 endpointには旧サブスクリプション権限チェックが残りますが、公開UIはこれらを呼び出さず、同じ純粋計算定義をフロントエンドに取り込んで10ツールすべて無料で計算します。Worker URLは契約状態確認と定期決済フローに使用します。旧APIは互換性のため保持しますが、全ての旧有料計算APIもPRO選択とStripe契約で認可し、直接APIを叩いてPROを迂回できないようにしています。
 
 ## 最終検証（2026-09-05時点の記録）
 
@@ -66,6 +66,24 @@ Clerk Development instanceでtest modeの新規登録・確認コード・login�
 - CSV: UIから改行・カンマ・ダブルクォートを含むscenario名を保存・出力し、実ダウンロードCSVでUTF-8 BOM、CRLF、RFC 4180相当の`""` escapeとfield内改行の保持を確認
 - 10ツール拡張: 全10直URL、追加7ツールの主要計算、390 × 844での横スクロールなし、console error/warnなしを確認
 
-## 2026-10-18 課金設計の訂正
+## 2026-10-18 課金設計の訂正（バックアップ済み旧方針）
 
-未登録でも全10ツールを単発利用できることを正本とします。月額は『ツールの利用数』ではなく『自分の棚の登録枠と使いやすさ』に対するもの。ログイン済みユーザーの棚はこのブラウザごとに保存され、別端末との同期はありません。旧来の試算データ用localStorageは変更しません。
+未登録でも全10ツールを単発利用できることは今後も維持。**旧方針の月額『棚枠数だけ』は2026-10-18に撤回**。変更前の状態は次のGitHubバックアップブランチに保存。旧来の試算データ用localStorageは変更しません。
+
+## 2026-10-18 PRO契約仕様（現行作業）
+
+- **無料:** 全10通常計算・CSV、無料会員のお気に入り3件、ローカル試算保存。
+- **月480円（basic）:** 選んだ5種類のPRO比較。D1の `pro_selections` に格納し、PRO枠に入れ替える際は5件を一括更新。複数端末の同時更新はCAS版数で409を返し、画面で最新選択を再取得。
+- **月980円（standard）:** 全ツールのPRO比較。個別登録なし。今後の追加ツールも自動対象。
+- PRO版として **現在実装済みの追加機能は2案比較のみ**。両シナリオの入力・結果と数値差を返す。その他の拡張は完成していないため課金説明で約束しない。
+- 認可はWorkerがClerk JWT・Stripe Price・D1 `pro_selections` を毎回照合。ブラウザ保存だけでPRO版を解放しない。
+- バックアップ: [旧main](https://github.com/takkun-studio/tool-shelf/tree/backup/2026-10-18-before-pro-main)、[旧v4案](https://github.com/takkun-studio/tool-shelf/tree/backup/2026-10-18-before-pro-design-v4)。
+
+### 本番へ出す順番
+
+1. 現行Worker/D1とCloudflare Pagesの設定・前回バックアップ状態を確認。
+2. D1に **追加分のみ** migrationを適用: `pnpm exec wrangler d1 migrations apply tool-shelf-entitlements --remote`。既存3テーブルと契約データは削除しない。
+3. 新Workerを公開して `GET /v1/pro/selections` と `POST /v1/pro/compare/:id` を認証済みで確認。
+4. 新フロントをCloudflare Pagesに公開、Clerk/Stripe本番導線を実アカウントで確認。
+
+**PR作成だけではD1 migration・Worker・Cloudflare Pagesの公開は行われません。** CLIの認証状態とデプロイ権限が必要です。現在のプランは既存Stripe Price IDをそのまま使用します。
