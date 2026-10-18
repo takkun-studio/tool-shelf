@@ -23,6 +23,7 @@ export function ProCompare({ id, inputs }: { id: ToolId; inputs: Inputs }) {
   const [attempted, setAttempted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<CompareResult | null>(null);
+  const [comparedA, setComparedA] = useState('');
   const [error, setError] = useState('');
   const altErrors = validate(tool.fields, alternative);
   const compare = async () => {
@@ -42,6 +43,7 @@ export function ProCompare({ id, inputs }: { id: ToolId; inputs: Inputs }) {
       if (response.status === 403) { setError('このPRO版の利用権限がありません。契約と登録ツールを確認してください。'); return; }
       if (!response.ok) throw new Error('compare_failed');
       setResult(await response.json() as CompareResult);
+      setComparedA(JSON.stringify(inputs));
     } catch { setError('PRO比較に接続できません。元の試算は変更されていません。'); }
     finally { setBusy(false); }
   };
@@ -62,7 +64,8 @@ export function ProCompare({ id, inputs }: { id: ToolId; inputs: Inputs }) {
               <button type="button" className="pro-main-button" disabled={busy} onClick={() => { void compare(); }}>{busy ? '比較しています…' : 'A案とB案を比較'}</button>
             </div>
             {error && <p className="pro-error" role="alert">{error}</p>}
-            {result && <div className="pro-compare-results" aria-live="polite">
+            {result && comparedA !== JSON.stringify(inputs) && <p className="pro-error">A案の入力が変わりました。もう一度比較してください。</p>}
+            {result && comparedA === JSON.stringify(inputs) && <div className="pro-compare-results" aria-live="polite">
               <div><h3>A案</h3><ResultsView results={result.current}/></div>
               <div><h3>B案</h3><ResultsView results={result.alternative}/></div>
               <div className="pro-differences"><h3>差（B − A）</h3>
