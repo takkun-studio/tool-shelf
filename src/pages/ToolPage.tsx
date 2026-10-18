@@ -17,6 +17,8 @@ export function ToolPage({ id }: { id: ToolId }) {
   const tool = toolById(id);
   const { getToken, isLoaded, isSignedIn } = useAuth();
   const [inputs, setInputs] = useState<Inputs>(() => empty(id));
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [showErrors, setShowErrors] = useState(false);
   const [scenarios, setScenarios] = useState<Scenario[]>(() => loadScenarios());
   const [notice, setNotice] = useState(() => storageWarning());
   const [scenarioName, setScenarioName] = useState('');
@@ -80,6 +82,7 @@ export function ToolPage({ id }: { id: ToolId }) {
   const results = tool.access === 'paid' ? remoteResults : localResults;
   const save = () => {
     if (!isValid || !results) {
+      setShowErrors(true);
       setNotice('有効な値をすべて入力し、計算が完了してから保存してください。');
       return;
     }
@@ -120,8 +123,8 @@ export function ToolPage({ id }: { id: ToolId }) {
   return <>
     <Link className="back" to="/">← ツール一覧へ</Link>
     <section className="tool-heading"><p>{tool.access === 'paid' ? 'PRO対象' : tool.category}</p><h1>{tool.name}</h1><div>{tool.shortDescription}</div>{tool.access === 'paid' && <p className="pro-note">このツールは認証済みの{tool.minimumPlan === 'basic' ? 'Basic' : 'Standard'}以上のplanで利用できます。</p>}</section>
-    <div className="workspace"><section className="inputs"><h2>入力</h2>{tool.fields.map((field) => <NumberField key={field.key} field={field} value={inputs[field.key]} error={errors[field.key]} onChange={(value) => setInputs((current) => ({ ...current, [field.key]: value }))} />)}<button className="secondary" onClick={() => { setInputs(empty(id)); setNotice('入力をリセットしました。'); }}>入力をリセット</button></section><ResultsView results={results} message={tool.access === 'paid' ? remoteMessage : undefined} /></div>
+    <div className="workspace"><section className="inputs"><h2>入力</h2>{tool.fields.map((field) => <NumberField key={field.key} field={field} value={inputs[field.key]} error={showErrors || touched[field.key] ? errors[field.key] : undefined} onChange={(value) => { setTouched((current) => ({ ...current, [field.key]: true })); setInputs((current) => ({ ...current, [field.key]: value })); }} />)}<button className="secondary" onClick={() => { setInputs(empty(id)); setTouched({}); setShowErrors(false); setNotice('入力をリセットしました。'); }}>入力をリセット</button></section><ResultsView results={results} message={tool.access === 'paid' ? remoteMessage : undefined} /></div>
     <section className="actions"><h2>保存・CSV</h2>{notice && <p className="notice" role="status">{notice}</p>}<label>試算名（空欄なら日時から作成）<textarea value={scenarioName} onChange={(event) => setScenarioName(event.target.value)} style={{ width: '100%', minHeight: 46, marginTop: 8, padding: '8px 11px', font: 'inherit', fontSize: 17 }} /></label><div className="action-buttons"><button onClick={save}>この試算を保存</button><button className="secondary" disabled={!results} onClick={() => results && downloadCsv(tool, '未保存の試算', new Date().toISOString(), inputs, results)}>現在の試算をCSV出力</button></div></section>
-    <section className="saved"><h2>保存済み試算</h2>{own.length === 0 ? <p>まだ保存した試算はありません。</p> : <ul>{own.map((scenario) => <li key={scenario.id}><div><b>{scenario.name}</b><small>更新: {new Date(scenario.updatedAt).toLocaleString('ja-JP')}</small></div><div><button onClick={() => { setInputs(structuredClone(scenario.inputs)); setNotice('保存済み試算を読み込みました。'); }}>読み込み</button><button onClick={() => rename(scenario)}>名前変更</button><button onClick={() => remove(scenario)}>削除</button><button onClick={() => { void exportScenario(scenario); }}>CSV</button></div></li>)}</ul>}</section>
+    <section className="saved"><h2>保存済み試算</h2>{own.length === 0 ? <p>まだ保存した試算はありません。</p> : <ul>{own.map((scenario) => <li key={scenario.id}><div><b>{scenario.name}</b><small>更新: {new Date(scenario.updatedAt).toLocaleString('ja-JP')}</small></div><div><button onClick={() => { setInputs(structuredClone(scenario.inputs)); setTouched({}); setShowErrors(false); setNotice('保存済み試算を読み込みました。'); }}>読み込み</button><button onClick={() => rename(scenario)}>名前変更</button><button onClick={() => remove(scenario)}>削除</button><button onClick={() => { void exportScenario(scenario); }}>CSV</button></div></li>)}</ul>}</section>
   </>;
 }
