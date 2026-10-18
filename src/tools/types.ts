@@ -1,4 +1,4 @@
-export type FieldUnit = '円' | '%' | '個' | '件' | '時間' | '日' | '月' | '回';
+export type FieldUnit = '円' | '%' | '個' | '件' | '時間' | '日' | '月' | '年' | '回';
 export type FieldKind = 'money' | 'percent' | 'quantity';
 export type FieldOption = { value: number; label: string };
 
