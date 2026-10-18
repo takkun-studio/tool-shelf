@@ -1,0 +1,104 @@
+name: One-time Cloudflare Pages deploy
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ops/cloudflare-pages-deploy.trigger'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  deploy-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install and build the current main frontend
+        shell: bash
+        run: |
+          pnpm install --frozen-lockfile
+          node <<'NODE'
+          const fs = require('node:fs');
+          const assets = fs.readdirSync('dist/assets').filter(name => name.endsWith('.js'));
+          const bundle = assets.map(name => fs.readFileSync('dist/assets/' + name, 'utf8')).join('\n');
+          const clerk = bundle.match(/pk_(?:test|live)_[A-Za-z0-9_-]+/)?.[0];
+          const worker = bundle.match(/https:\/\/[A-Za-z0-9.-]+\.workers\.dev/)?.[0];
+          if (!clerk || !worker) throw new Error('Existing public frontend configuration was not found.');
+          fs.appendFileSync(process.env.GITHUB_ENV, `VITE_CLERK_PUBLISHABLE_KEY=${clerk}\nVITE_WORKER_API_URL=${worker}\n`);
+          NODE
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+          pnpm build
+          expected=$(grep -oE 'src="/assets/[^"]+"' dist/index.html | head -1 | cut -d '"' -f 2)
+          echo "EXPECTED_ASSET=$expected" >> "$GITHUB_ENV"
+
+      - name: Start Cloudflare device authorization and publish approval code
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4.119.0 login --device --browser=false > /tmp/wrangler-login.log 2>&1 &
+          login_pid=$!
+
+          for i in $(seq 1 45); do
+            if grep -q 'dash.cloudflare.com/oauth2/device' /tmp/wrangler-login.log 2>/dev/null; then
+              break
+            fi
+            if ! kill -0 "$login_pid" 2>/dev/null; then
+              cat /tmp/wrangler-login.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          auth_lines=$(grep -E 'dash.cloudflare.com/oauth2/device|enter the code|^[[:space:]]+[A-Za-z0-9_-]{6,}[[:space:]]*$' /tmp/wrangler-login.log | head -8 || true)
+          if [ -z "$auth_lines" ]; then
+            cat /tmp/wrangler-login.log
+            echo "::error::Cloudflare device authorization URL was not produced."
+            kill "$login_pid" 2>/dev/null || true
+            exit 1
+          fi
+
+          body=$(printf 'Cloudflare Pages本番反映の本人確認です。\n\n```\n%s\n```\n\n許可すると、この実行が現在のmainを既存Pages projectへ公開して本番assetまで確認します。' "$auth_lines")
+          gh api "repos/$GITHUB_REPOSITORY/issues/11/comments" -f body="$body" >/dev/null
+          wait "$login_pid"
+
+      - name: Confirm authenticated Cloudflare account
+        run: npx --yes wrangler@4.119.0 whoami
+
+      - name: Deploy current frontend to existing Pages project
+        run: npx --yes wrangler@4.119.0 pages deploy dist --project-name takkun-tool-shelf --branch main
+
+      - name: Verify the exact new asset is live
+        shell: bash
+        run: |
+          for attempt in $(seq 1 12); do
+            published=$(curl --fail --location --silent --show-error --max-time 15 https://takkun-tool-shelf.pages.dev/ || true)
+            if printf '%s' "$published" | grep -Fq "$EXPECTED_ASSET"; then
+              echo "Live Pages is serving $EXPECTED_ASSET"
+              exit 0
+            fi
+            sleep 5
+          done
+          observed=$(printf '%s' "$published" | grep -oE 'src="/assets/[^"]+"' | head -1 || true)
+          echo "::error::Expected $EXPECTED_ASSET, observed $observed"
+          exit 1
+
+      - name: Report Pages deployment success
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/issues/11/comments" -f body="Cloudflare Pages本番反映完了。新しいfrontend assetの配信を確認済み。" >/dev/null
