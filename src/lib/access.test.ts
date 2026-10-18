@@ -1,2 +1,22 @@
-import { describe, expect, it } from 'vitest'; import { accessibleToolCount, canAccessTool } from './access';
-describe('plan access',()=>{it('matches the declared tool counts',()=>{expect(accessibleToolCount('free')).toBe(3);expect(accessibleToolCount('basic')).toBe(5);expect(accessibleToolCount('standard')).toBe(10);expect(accessibleToolCount('unlimited')).toBe(10)});it('allows and rejects each plan correctly',()=>{expect(canAccessTool('free','profit')).toBe(true);expect(canAccessTool('free','discount')).toBe(false);expect(canAccessTool('basic','payout')).toBe(true);expect(canAccessTool('basic','service')).toBe(false);expect(canAccessTool('standard','investment')).toBe(true);expect(canAccessTool('unlimited','investment')).toBe(true)});it('fails closed for unknown values',()=>{expect(canAccessTool('paid','profit')).toBe(false);expect(canAccessTool('free','unknown')).toBe(false);expect(canAccessTool(undefined,'profit')).toBe(false)})});
+import { describe, expect, it } from 'vitest';
+import { accessibleToolCount, canAccessTool } from './access';
+import { tools } from './tools';
+import { shelfLimit, moveShelf } from './shelf';
+
+describe('open calculators and configurable shelf', () => {
+  it('allows every calculator on every real plan', () => {
+    for (const plan of ['free','basic','standard','unlimited']) {
+      expect(accessibleToolCount(plan)).toBe(10);
+      for (const tool of tools) expect(canAccessTool(plan,tool.id)).toBe(true);
+    }
+  });
+  it('refuses unknown plan and tool IDs without restricting guests on known calculators', () => {
+    expect(canAccessTool('other','profit')).toBe(false);
+    expect(canAccessTool('free','not-a-calculator')).toBe(false);
+  });
+  it('limits shelf capacity rather than calculator use', () => {
+    expect(shelfLimit).toEqual({ free:3, basic:5, standard:10 });
+    expect(moveShelf(['profit','market','target'], 'market', -1)).toEqual(['market','profit','target']);
+    expect(moveShelf(['profit','market'], 'profit', -1)).toEqual(['profit','market']);
+  });
+});
