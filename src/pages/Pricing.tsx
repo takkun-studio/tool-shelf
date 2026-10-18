@@ -1,5 +1,6 @@
 import { useAuth } from '@clerk/react';
 import { Link, useNavigate } from 'react-router-dom';
+import { tools } from '../lib/tools';
 
 const workerUrl = import.meta.env.VITE_WORKER_API_URL;
 
@@ -23,11 +24,11 @@ export function Pricing() {
   return <section className="pricing shelf-pricing">
     <p className="shelf-quiet-label">ツール棚の料金</p>
     <h1>通常版はすべて無料。<br/>PRO版だけ選ぶ。</h1>
-    <p>全10ツールの通常版とCSV出力は、登録や支払いなしで使えます。PRO版が必要な人だけ、5件か全件かを選べます。</p>
+    <p>全{tools.length}ツールの通常版とCSV出力は、登録や支払いなしで使えます。PRO版が必要な人だけ、5件か全件かを選べます。</p>
 
     <div className="shelf-pricing-basics">
       <h2>無料でできること</h2>
-      <p>全10ツールの通常計算とCSV出力。無料登録すると、よく使うツールを3件まで棚に置き、試算をこのブラウザに保存できます。</p>
+      <p>全{tools.length}ツールの通常計算とCSV出力。無料登録すると、よく使うツールを3件まで棚に置き、試算をこのブラウザに保存できます。</p>
     </div>
 
     <dl>

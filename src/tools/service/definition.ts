@@ -10,7 +10,7 @@ export const definition = {
   minimumPlan: 'free',
   category: 'サービス',
   order: 6,
-  fields: fields([["hourlyRate","目標時給","円","money"],["hours","作業時間","時間","quantity"],["expenses","1件あたり経費","円","money"]]),
+  fields: fields([["hourlyRate","目標時給","円","money"],["hours","作業時間","時間","quantity",{"allowDecimal":true}],["expenses","1件あたり経費","円","money"]]),
   status: 'published',
   workerApi: true,
 } satisfies ToolDefinition<'service'>;

@@ -59,7 +59,7 @@ export function Home() {
       <div className="shelf-intro-primary">
         <p className="shelf-quiet-label">個人販売・小さなお店の計算道具</p>
         <h1>数字を出す。<br/>判断は、自分でする。</h1>
-        <p>原価、出店費用、売上目標。必要な計算を、必要なときに。<br/>全10ツール、会員登録なしでも通常版は無料で使えます。</p>
+        <p>原価、出店費用、売上目標。必要な計算を、必要なときに。<br/>全{tools.length}ツール、会員登録なしでも通常版は無料で使えます。</p>
         <a className="shelf-intro-link" href="#tool-catalog">計算ツールを見る <span aria-hidden="true">↓</span></a>
       </div>
       <div className="shelf-intro-secondary">
