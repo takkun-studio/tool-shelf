@@ -9,7 +9,9 @@ import { parsed, valid, validate, type Inputs } from '../lib/validation';
 import { NumberField } from '../components/NumberField';
 import { ResultsView } from '../components/Results';
 
-const empty = (id: ToolId): Inputs => Object.fromEntries(toolById(id).fields.map((field) => [field.key, '']));
+const empty = (id: ToolId): Inputs => Object.fromEntries(
+  toolById(id).fields.map((field) => [field.key, field.defaultValue === undefined ? '' : String(field.defaultValue)]),
+);
 
 export function ToolPage({ id }: { id: ToolId }) {
   const tool = toolById(id);
@@ -22,7 +24,6 @@ export function ToolPage({ id }: { id: ToolId }) {
   const [scenarioName, setScenarioName] = useState('');
   const errors = useMemo(() => validate(tool.fields, inputs), [tool, inputs]);
   const isValid = valid(errors);
-  // All ten tools share local, subscription-free calculation. Access to the shelf is separate.
   const results = isValid ? calculate(id, parsed(inputs)) : undefined;
   const own = scenarios.filter((scenario) => scenario.toolId === id);
 
@@ -38,6 +39,7 @@ export function ToolPage({ id }: { id: ToolId }) {
     if (persist(next)) { setScenarios(next); setNotice('試算をこのブラウザに保存しました。'); setScenarioName(''); }
     else setNotice(storageWarning());
   };
+
   const rename = (scenario: Scenario) => {
     const name = window.prompt('試算名', scenario.name);
     if (name === null) return;
@@ -45,19 +47,27 @@ export function ToolPage({ id }: { id: ToolId }) {
     if (persist(next)) { setScenarios(next); setNotice('名前を変更しました。'); }
     else setNotice(storageWarning());
   };
+
   const remove = (scenario: Scenario) => {
     if (!window.confirm(`「${scenario.name}」を削除しますか？`)) return;
     const next = scenarios.filter((item) => item.id !== scenario.id);
     if (persist(next)) { setScenarios(next); setNotice('試算を削除しました。'); }
     else setNotice(storageWarning());
   };
+
   const exportScenario = (scenario: Scenario) => {
     try { downloadCsv(tool, scenario.name, scenario.updatedAt, scenario.inputs, calculate(id, parsed(scenario.inputs))); }
     catch { setNotice('CSVを出力できませんでした。'); }
   };
+
   return <>
     <Link className="back" to="/">← ツール一覧へ</Link>
-    <section className="tool-heading"><p>{tool.category} · 無料で使える計算ツール</p><h1>{tool.name}</h1><div>{tool.shortDescription}</div></section>
+    <section className="tool-heading">
+      <p>{tool.category} · 無料で使える計算ツール</p>
+      <h1>{tool.name}</h1>
+      <div>{tool.shortDescription}</div>
+      {'notice' in tool && tool.notice && <small>{tool.notice}</small>}
+    </section>
     <div className="workspace"><section className="inputs"><h2>入力</h2>{tool.fields.map((field) => <NumberField key={field.key} field={field} value={inputs[field.key]} error={showErrors || touched[field.key] ? errors[field.key] : undefined} onChange={(value) => { setTouched((current) => ({ ...current, [field.key]: true })); setInputs((current) => ({ ...current, [field.key]: value })); }}/>)}
       <button className="secondary" onClick={() => { setInputs(empty(id)); setTouched({}); setShowErrors(false); setNotice('入力をリセットしました。'); }}>入力をリセット</button>
     </section><ResultsView results={results}/></div>

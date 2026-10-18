@@ -56,8 +56,9 @@ export const readPaidInputs = (toolId: PaidToolId, value: unknown): Record<strin
     const input = source[field.key];
     if (
       typeof input !== 'number' ||
-      !Number.isSafeInteger(input) ||
+      !Number.isFinite(input) ||
       input < 0 ||
+      (!field.allowDecimal && field.kind !== 'percent' && !Number.isSafeInteger(input)) ||
       (field.kind === 'percent' && input > 100)
     ) return null;
     values[field.key] = input;

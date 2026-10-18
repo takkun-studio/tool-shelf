@@ -6,7 +6,7 @@ import { shelfLimit, moveShelf } from './shelf';
 describe('open calculators and configurable shelf', () => {
   it('allows every calculator on every real plan', () => {
     for (const plan of ['free','basic','standard','unlimited']) {
-      expect(accessibleToolCount(plan)).toBe(10);
+      expect(accessibleToolCount(plan)).toBe(40);
       for (const tool of tools) expect(canAccessTool(plan,tool.id)).toBe(true);
     }
   });

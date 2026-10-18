@@ -10,7 +10,20 @@ const cases: [PaidToolId, Record<string, number>, (number | null)[]][] = [
   ['investment', { initialCost: 10000, profitPerSale: 500, monthlyCount: 8 }, [20, 2.5, 10000, 4000]],
 ];
 describe('paid worker calculators', () => {
-  it.each(cases)('%s matches the existing calculation result', (toolId, inputs, expected) => { const actual = calculatePaid(toolId, inputs).rows.map((row) => row.value); actual.forEach((value, index) => typeof value === 'number' && typeof expected[index] === 'number' ? expect(value).toBeCloseTo(expected[index] as number) : expect(value).toBe(expected[index])); });
-  it.each(cases)('%s rejects invalid input and ignores forged plan fields', (toolId, inputs) => { expect(readPaidInputs(toolId, { ...inputs, plan: 'standard', role: 'admin' })).toEqual(inputs); expect(readPaidInputs(toolId, { ...inputs, [Object.keys(inputs)[0]]: -1 })).toBeNull(); expect(readPaidInputs(toolId, { ...inputs, [Object.keys(inputs)[0]]: 1.5 })).toBeNull(); });
-  it('rejects a percent over 100', () => expect(readPaidInputs('payout', { price: 1, cost: 0, shipping: 0, salesFeeRate: 101, paymentFeeRate: 0, fixedFee: 0, other: 0 })).toBeNull());
+  it.each(cases)('%s matches the existing calculation result', (toolId, inputs, expected) => {
+    const actual = calculatePaid(toolId, inputs).rows.map((row) => row.value);
+    actual.forEach((value, index) => typeof value === 'number' && typeof expected[index] === 'number' ? expect(value).toBeCloseTo(expected[index] as number) : expect(value).toBe(expected[index]));
+  });
+  it.each(cases)('%s rejects negatives and forged plan fields', (toolId, inputs) => {
+    expect(readPaidInputs(toolId, { ...inputs, plan: 'standard', role: 'admin' })).toEqual(inputs);
+    expect(readPaidInputs(toolId, { ...inputs, [Object.keys(inputs)[0]]: -1 })).toBeNull();
+  });
+  it('accepts reviewed decimal rates and decimal service hours', () => {
+    expect(readPaidInputs('payout', { price:1000,cost:400,shipping:100,salesFeeRate:6.6,paymentFeeRate:3.6,fixedFee:0,other:0 })?.salesFeeRate).toBe(6.6);
+    expect(readPaidInputs('service', { hourlyRate:2000,hours:2.5,expenses:500 })?.hours).toBe(2.5);
+  });
+  it('still rejects decimal money values and percent over 100', () => {
+    expect(readPaidInputs('payout', { price:1.5,cost:0,shipping:0,salesFeeRate:10,paymentFeeRate:0,fixedFee:0,other:0 })).toBeNull();
+    expect(readPaidInputs('payout', { price:1,cost:0,shipping:0,salesFeeRate:101,paymentFeeRate:0,fixedFee:0,other:0 })).toBeNull();
+  });
 });

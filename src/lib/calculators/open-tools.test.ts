@@ -14,8 +14,8 @@ const cases: Record<PaidToolId, Record<string, number>> = {
 };
 
 describe('all tools are accessible to unauthenticated visitors', () => {
-  it('makes all ten tools free in the catalog', () => {
-    expect(tools).toHaveLength(10);
+  it('makes all forty tools free in the catalog', () => {
+    expect(tools).toHaveLength(40);
     expect(tools.every((tool) => tool.access === 'free' && tool.minimumPlan === 'free')).toBe(true);
   });
   it.each(Object.entries(cases) as [PaidToolId, Record<string, number>][])('%s uses the same tested math without any account or token', (id, values) => {
