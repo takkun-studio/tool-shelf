@@ -276,3 +276,55 @@ footer.shelf-site-footer .shelf-footer-brand{color:#264d99}
 .actions button:not(.secondary){background:#264d99;border-color:#264d99;border-radius:0}
 .actions button:not(.secondary):hover:not(:disabled){background:#1e3c79}
 .actions,.saved{border-color:#cfd8e6}
+
+
+/* PRO is a working comparison tool, not a paywall for regular calculations. */
+.handy-pro-badge{display:inline-block;background:#f7e6a8;color:#684a1c;border:1px solid #dcb85e;padding:2px 5px;font-size:10px;font-weight:800;margin-top:7px}
+.handy-standard-info{font-size:13px;line-height:1.85;color:#3f5e9f;padding:24px 0 18px}
+.handy-swap,.pro-swap{background:#fffdf4;color:#233957;border:1px solid #c9b57b;padding:13px 12px;margin:10px 0;display:flex;flex-direction:column;gap:6px}
+.handy-swap strong,.pro-swap p{font-size:12px;line-height:1.7;margin:0 0 4px}
+.handy-swap button,.pro-swap button{background:#fff;border:1px solid #c6d2df;border-radius:0;color:#245393;padding:9px 12px;text-align:left;font-size:12px;font-weight:700}
+.handy-swap button:hover:not(:disabled),.pro-swap button:hover:not(:disabled){background:#eaf0fa}
+.handy-swap button:disabled,.pro-swap button:disabled{opacity:.55}
+.pro-workbench{border:2px solid #264d99;background:#fafbfe;margin:24px 0 26px;padding:0 23px 23px}
+.pro-workbench-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #cdd6e8;padding:15px 0 12px}
+.pro-workbench-head>div{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.pro-workbench-head h2{font-size:18px;margin:0;color:#25417d;line-height:1.6;font-weight:850}
+.pro-workbench-head>span{font-size:11px;color:#7384a5}
+.pro-flag{background:#f7c751;color:#23354e;font-size:11px;font-weight:900;letter-spacing:.045em;padding:5px 8px}
+.pro-help{font-size:13px;color:#546b8d;line-height:1.8;margin:16px 0}
+.pro-main-button,.pro-plan-link{display:inline-block;border:1px solid #264d99;border-radius:0;background:#264d99;color:white;padding:12px 18px;text-decoration:none;font-size:13px;font-weight:800}
+.pro-main-button:hover:not(:disabled),.pro-plan-link:hover{background:#193a7e;color:white}
+.pro-workbench-body{display:grid;grid-template-columns:minmax(210px,280px) minmax(0,1fr);align-items:start;gap:22px;padding-top:16px}
+.pro-compare-fields{border:1px solid #cbd5e3;background:#fff;padding:17px}
+.pro-compare-caption{font-size:17px;font-weight:850;color:#264d99;padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid #cdd8e7}
+.pro-compare-caption small{display:block;font-size:11px;color:#7b879a;font-weight:500;margin-top:5px}
+.pro-compare-fields .field{padding:10px 0}
+.pro-compare-fields .field label{font-size:12px}
+.pro-compare-fields input{max-width:100%}
+.pro-compare-fields .pro-main-button{margin-top:12px;width:100%}
+.pro-compare-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;grid-column:2}
+.pro-compare-results>div{min-width:0}
+.pro-compare-results h3{font-size:14px;color:#244c89;border-bottom:1px solid #c9d7e8;padding:4px 0 8px;margin:0 0 10px}
+.pro-compare-results .results{min-width:0;margin:0;background:#edf2fa;border:1px solid #d9e2ed;box-shadow:none}
+.pro-compare-results .results h2{font-size:15px}
+.pro-differences{grid-column:1/-1;background:#f8edce;padding:15px}
+.pro-differences dl{margin:0}
+.pro-differences dl>div{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid #e0d2a7}
+.pro-differences dt{color:#675b47;font-size:12px}
+.pro-differences dd{margin:0;color:#293d5e;font-size:13px;font-weight:850;font-variant-numeric:tabular-nums}
+.pro-error{grid-column:2;color:#a13634;font-size:12px;font-weight:700}
+@media(max-width:850px){
+  .pro-workbench-body{grid-template-columns:1fr}
+  .pro-compare-results{grid-column:1}
+  .pro-error{grid-column:1}
+}
+@media(max-width:740px){
+  .pro-workbench{margin:20px 0;padding:0 14px 16px}
+  .pro-workbench-head h2{font-size:16px}
+  .pro-workbench-head>span{font-size:10px}
+  .pro-compare-fields{padding:12px}
+  .pro-compare-results{grid-template-columns:1fr}
+  .pro-differences{grid-column:1}
+  .pro-compare-results .results{width:100%}
+}
