@@ -34,8 +34,9 @@ jobs:
           const clerk = bundle.match(/pk_(?:test|live)_[A-Za-z0-9_-]+/)?.[0];
           const worker = bundle.match(/https:\/\/[A-Za-z0-9.-]+\.workers\.dev/)?.[0];
           if (!clerk || !worker) throw new Error('Existing public frontend configuration was not found.');
-          fs.appendFileSync(process.env.GITHUB_ENV, `VITE_CLERK_PUBLISHABLE_KEY=${clerk}\nVITE_WORKER_API_URL=${worker}\n`);
+          fs.writeFileSync('/tmp/frontend-env.sh', 'export VITE_CLERK_PUBLISHABLE_KEY=' + clerk + '\nexport VITE_WORKER_API_URL=' + worker + '\n');
           NODE
+          source /tmp/frontend-env.sh
           pnpm lint
           pnpm typecheck
           pnpm test
