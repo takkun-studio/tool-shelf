@@ -8,6 +8,7 @@ import { toolById, type ToolId } from '../lib/tools';
 import { parsed, valid, validate, type Inputs } from '../lib/validation';
 import { NumberField } from '../components/NumberField';
 import { ResultsView } from '../components/Results';
+import { ProCompare } from '../components/ProCompare';
 
 const empty = (id: ToolId): Inputs => Object.fromEntries(toolById(id).fields.map((field) => [field.key, '']));
 
@@ -61,6 +62,7 @@ export function ToolPage({ id }: { id: ToolId }) {
     <div className="workspace"><section className="inputs"><h2>入力</h2>{tool.fields.map((field) => <NumberField key={field.key} field={field} value={inputs[field.key]} error={showErrors || touched[field.key] ? errors[field.key] : undefined} onChange={(value) => { setTouched((current) => ({ ...current, [field.key]: true })); setInputs((current) => ({ ...current, [field.key]: value })); }}/>)}
       <button className="secondary" onClick={() => { setInputs(empty(id)); setTouched({}); setShowErrors(false); setNotice('入力をリセットしました。'); }}>入力をリセット</button>
     </section><ResultsView results={results}/></div>
+    <ProCompare id={id} inputs={inputs}/>
     <section className="actions"><h2>結果を持ち帰る</h2>{notice && <p className="notice" role="status">{notice}</p>}
       <div className="action-buttons"><button className="secondary" disabled={!results} onClick={() => results && downloadCsv(tool, '未保存の試算', new Date().toISOString(), inputs, results)}>現在の試算をCSV出力（無料）</button></div>
       {isLoaded && !isSignedIn && <p className="shelf-signup-note">会員登録しなくても全ツールを計算できます。<Link to="/login">無料登録すると試算を保存できます →</Link></p>}
