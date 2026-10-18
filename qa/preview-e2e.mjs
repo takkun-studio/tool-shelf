@@ -8,7 +8,7 @@ try {
   await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
   await page.locator('.shelf-tool-row').first().waitFor();
   assert.equal(await page.locator('.shelf-tool-row').count(), 10, 'all tools should be visible to guests');
-  assert.match(await page.locator('body').innerText(), /全10ツール、会員登録なしでも無料/);
+  assert.match(await page.locator('body').innerText(), /全10ツール、会員登録なしでも通常版は無料/);
 
   await page.goto(base + '/tools/discount', { waitUntil: 'domcontentloaded' });
   await page.locator('#field-listPrice').waitFor();
