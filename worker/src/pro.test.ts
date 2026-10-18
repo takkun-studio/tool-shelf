@@ -10,17 +10,17 @@ function fakeEnv() {
         bind(...args: unknown[]) {
           return {
             async first() {
-              if (sql.startsWith('SELECT tool_ids_json')) return rows.get(String(args[0])) ?? null;
+              if (sql.trimStart().startsWith('SELECT tool_ids_json')) return rows.get(String(args[0])) ?? null;
               return null;
             },
             async run() {
-              if (sql.startsWith('CREATE TABLE')) return { meta: { changes: 0 } };
-              if (sql.startsWith('INSERT INTO pro_selections')) {
+              if (sql.trimStart().startsWith('CREATE TABLE')) return { meta: { changes: 0 } };
+              if (sql.trimStart().startsWith('INSERT INTO pro_selections')) {
                 const userId = String(args[0]);
                 if (!rows.has(userId)) rows.set(userId, { tool_ids_json: '[]', revision: 0 });
                 return { meta: { changes: 1 } };
               }
-              if (sql.startsWith('UPDATE pro_selections')) {
+              if (sql.trimStart().startsWith('UPDATE pro_selections')) {
                 const [json, userIdRaw, expectedRevisionRaw] = args;
                 const userId = String(userIdRaw);
                 const expectedRevision = Number(expectedRevisionRaw);
@@ -34,7 +34,7 @@ function fakeEnv() {
           };
         },
         async run() {
-          if (sql.startsWith('CREATE TABLE')) return { meta: { changes: 0 } };
+          if (sql.trimStart().startsWith('CREATE TABLE')) return { meta: { changes: 0 } };
           throw new Error('Unexpected unbound SQL: ' + sql);
         },
       };
