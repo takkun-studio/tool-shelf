@@ -4,14 +4,15 @@ import { tools } from './tools';
 import { shelfLimit, moveShelf } from './shelf';
 
 describe('open calculators and configurable shelf', () => {
-  it('allows every calculator on every real plan', () => {
+  it('allows every public calculator on every real plan', () => {
     for (const plan of ['free','basic','standard','unlimited']) {
-      expect(accessibleToolCount(plan)).toBe(40);
+      expect(accessibleToolCount(plan)).toBe(10);
       for (const tool of tools) expect(canAccessTool(plan,tool.id)).toBe(true);
     }
   });
-  it('refuses unknown plan and tool IDs without restricting guests on known calculators', () => {
+  it('refuses unknown plan and hidden/unknown tool IDs', () => {
     expect(canAccessTool('other','profit')).toBe(false);
+    expect(canAccessTool('free','tax-reserve')).toBe(false);
     expect(canAccessTool('free','not-a-calculator')).toBe(false);
   });
   it('limits shelf capacity rather than calculator use', () => {
