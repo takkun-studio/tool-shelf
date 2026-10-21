@@ -13,9 +13,9 @@ const cases: Record<PaidToolId, Record<string, number>> = {
   investment: { initialCost: 10000, profitPerSale: 500, monthlyCount: 8 },
 };
 
-describe('all tools are accessible to unauthenticated visitors', () => {
-  it('makes all forty tools free in the catalog', () => {
-    expect(tools).toHaveLength(40);
+describe('public tools are accessible to unauthenticated visitors', () => {
+  it('makes only the original ten tools public and free in the catalog', () => {
+    expect(tools).toHaveLength(10);
     expect(tools.every((tool) => tool.access === 'free' && tool.minimumPlan === 'free')).toBe(true);
   });
   it.each(Object.entries(cases) as [PaidToolId, Record<string, number>][])('%s uses the same tested math without any account or token', (id, values) => {

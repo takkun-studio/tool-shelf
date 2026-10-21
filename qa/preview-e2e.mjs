@@ -7,8 +7,9 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acce
 try {
   await page.goto(base + '/', { waitUntil: 'domcontentloaded' });
   await page.locator('.shelf-tool-row').first().waitFor();
-  assert.equal(await page.locator('.shelf-tool-row').count(), 40, 'all tools should be visible to guests');
-  assert.match(await page.locator('body').innerText(), /全40ツール、会員登録なしでも通常版は無料/);
+  assert.equal(await page.locator('.shelf-tool-row').count(), 10, 'only public tools should be visible');
+  assert.match(await page.locator('body').innerText(), /全10ツール、会員登録なしでも通常版は無料/);
+  assert.doesNotMatch(await page.locator('body').innerText(), /税金よけとく額計算|実質時給を見て泣く計算機|今日あと何個売れば帰れる/);
 
   await page.goto(base + '/tools/discount', { waitUntil: 'domcontentloaded' });
   for (const [key, value] of Object.entries({
@@ -17,28 +18,20 @@ try {
   await page.locator('.results').getByText('セール後利益').waitFor();
   assert.equal(await page.locator('.error').count(), 0, 'decimal rates must be accepted');
 
-  await page.goto(base + '/tools/tax-inclusive-exclusive', { waitUntil: 'domcontentloaded' });
-  await page.locator('#field-amount').fill('1100');
-  await page.locator('#field-taxRate').fill('10');
-  await page.locator('#field-direction').selectOption('1');
-  await page.locator('#field-rounding').selectOption('0');
-  assert.match(await page.locator('.results').innerText(), /1,000 円/);
-
-  await page.goto(base + '/tools/preorder-stock', { waitUntil: 'domcontentloaded' });
-  await page.locator('#field-reservations').fill('100');
-  await page.locator('#field-defectRate').fill('10');
-  await page.locator('#field-bufferRate').fill('5');
-  assert.match(await page.locator('.results').innerText(), /117 個/);
+  for (const hiddenRoute of ['/tools/tax-reserve', '/tools/preorder-stock', '/tools/real-hourly-wage']) {
+    await page.goto(base + hiddenRoute, { waitUntil: 'domcontentloaded' });
+    assert.match(await page.locator('body').innerText(), /ページが見つかりません/, hiddenRoute + ' must remain hidden');
+  }
 
   for (const viewport of [390, 1440]) {
     await page.setViewportSize({ width: viewport, height: 900 });
-    for (const route of ['/', '/pricing', '/tools/discount', '/tools/tax-inclusive-exclusive', '/tools/preorder-stock']) {
+    for (const route of ['/', '/pricing', '/tools/discount']) {
       await page.goto(base + route, { waitUntil: 'domcontentloaded' });
       const width = await page.evaluate(() => document.documentElement.scrollWidth);
       assert.ok(width <= viewport + 1, route + ' overflows at ' + viewport + 'px: ' + width);
     }
   }
-  console.log('PASS: 40 tools, decimal inputs, choice inputs, corrected preorder formula, PC/mobile overflow');
+  console.log('PASS: 10 public tools, 30 hidden additions, decimal inputs, PC/mobile overflow');
 } finally {
   await browser.close();
 }

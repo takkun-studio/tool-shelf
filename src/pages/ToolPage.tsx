@@ -15,6 +15,7 @@ const empty = (id: ToolId): Inputs => Object.fromEntries(
 
 export function ToolPage({ id }: { id: ToolId }) {
   const tool = toolById(id);
+  const toolNotice = 'notice' in tool && typeof tool.notice === 'string' ? tool.notice : undefined;
   const { isLoaded, isSignedIn } = useAuth();
   const [inputs, setInputs] = useState<Inputs>(() => empty(id));
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -66,7 +67,7 @@ export function ToolPage({ id }: { id: ToolId }) {
       <p>{tool.category} · 無料で使える計算ツール</p>
       <h1>{tool.name}</h1>
       <div>{tool.shortDescription}</div>
-      {'notice' in tool && tool.notice && <small>{tool.notice}</small>}
+      {toolNotice && <small>{toolNotice}</small>}
     </section>
     <div className="workspace"><section className="inputs"><h2>入力</h2>{tool.fields.map((field) => <NumberField key={field.key} field={field} value={inputs[field.key]} error={showErrors || touched[field.key] ? errors[field.key] : undefined} onChange={(value) => { setTouched((current) => ({ ...current, [field.key]: true })); setInputs((current) => ({ ...current, [field.key]: value })); }}/>)}
       <button className="secondary" onClick={() => { setInputs(empty(id)); setTouched({}); setShowErrors(false); setNotice('入力をリセットしました。'); }}>入力をリセット</button>
