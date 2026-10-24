@@ -1,0 +1,191 @@
+name: Reservation dashboard preview deploy
+
+on:
+  push:
+    branches: [reservation-dashboard-preview]
+    paths:
+      - 'reservation-preview/**'
+      - '.github/workflows/reservation-dashboard-preview.yml'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  deploy-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PREVIEW_URL: https://reservation-dashboard-preview.takkun-tool-shelf.pages.dev/
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify source artifact before deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f reservation-preview/index.html
+          grep -Fq '予約・予定管理' reservation-preview/index.html
+          grep -Fq 'Googleカレンダー同期・写真のAI文字読み取り・複数端末共有は未接続です' reservation-preview/index.html
+
+      - name: Start Cloudflare device authorization
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4.119.0 login --device --browser=false > /tmp/wrangler-login.log 2>&1 &
+          login_pid=$!
+
+          for i in $(seq 1 45); do
+            if grep -q 'dash.cloudflare.com/oauth2/device' /tmp/wrangler-login.log 2>/dev/null; then
+              break
+            fi
+            if ! kill -0 "$login_pid" 2>/dev/null; then
+              cat /tmp/wrangler-login.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          auth_lines=$(grep -E 'dash.cloudflare.com/oauth2/device|enter the code|^[[:space:]]+[A-Za-z0-9_-]{6,}[[:space:]]*$' /tmp/wrangler-login.log | head -8 || true)
+          if [ -z "$auth_lines" ]; then
+            cat /tmp/wrangler-login.log
+            kill "$login_pid" 2>/dev/null || true
+            exit 1
+          fi
+
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          body=$(printf '予約管理アプリのCloudflare Pagesプレビュー公開に必要な本人確認です。既存の本番Pagesには触れず、preview branchだけを公開します。\n\n```\n%s\n```\n\n実行: %s' "$auth_lines" "$run_url")
+          gh api "repos/$GITHUB_REPOSITORY/issues/6/comments" -f body="$body" >/dev/null
+          wait "$login_pid"
+
+      - name: Confirm Cloudflare account
+        run: npx --yes wrangler@4.119.0 whoami
+
+      - name: Deploy only reservation preview branch
+        shell: bash
+        run: |
+          npx --yes wrangler@4.119.0 pages deploy reservation-preview --project-name takkun-tool-shelf --branch reservation-dashboard-preview
+
+      - name: Verify public HTTP response
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in $(seq 1 12); do
+            headers=$(curl --fail --location --silent --show-error --max-time 15 -D - "$PREVIEW_URL" -o /tmp/reservation-live.html || true)
+            if printf '%s' "$headers" | tr -d '\r' | grep -Eiq '^content-type: *text/html([; ]|$)' && grep -Fq '予約・予定管理' /tmp/reservation-live.html; then
+              ok=1
+              break
+            fi
+            sleep 5
+          done
+          [ "$ok" = "1" ] || { echo "$headers"; exit 1; }
+          printf '%s\n' "$headers" | tr -d '\r' | grep -Ei '^HTTP/|^content-type:'
+          cmp -s reservation-preview/index.html /tmp/reservation-live.html || { echo "::error::Published HTML does not match source artifact"; exit 1; }
+
+      - name: Install Chromium for public UI verification
+        shell: bash
+        run: |
+          mkdir -p /tmp/reservation-e2e
+          cd /tmp/reservation-e2e
+          npm init -y >/dev/null 2>&1
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install chromium --with-deps
+
+      - name: Verify public PC and mobile UI interactively
+        shell: bash
+        run: |
+          cd /tmp/reservation-e2e
+          cat > check.cjs <<'NODE'
+          const { chromium } = require('playwright');
+
+          const url = process.env.PREVIEW_URL;
+          const assert = (ok, message) => { if (!ok) throw new Error(message); };
+
+          async function visible(page, selector) {
+            return page.locator(selector).isVisible().catch(() => false);
+          }
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            for (const profile of [
+              { name: 'desktop', viewport: { width: 1440, height: 900 } },
+              { name: 'mobile', viewport: { width: 390, height: 844 } },
+            ]) {
+              const context = await browser.newContext({ viewport: profile.viewport });
+              const page = await context.newPage();
+              await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+              await page.locator('#viewTitle').waitFor({ state: 'visible' });
+              assert((await page.locator('#viewTitle').textContent()).trim() === '全体管理', profile.name + ': initial view');
+
+              const side = await visible(page, '.side');
+              const mobileTabs = await visible(page, '.mobile-tabs');
+              if (profile.name === 'desktop') {
+                assert(side, 'desktop: sidebar must be visible');
+                assert(!mobileTabs, 'desktop: mobile tabs must be hidden');
+              } else {
+                assert(!side, 'mobile: sidebar must be hidden');
+                assert(mobileTabs, 'mobile: bottom tabs must be visible');
+              }
+
+              await page.locator('[data-view="month"]:visible').first().click();
+              assert((await page.locator('#viewTitle').textContent()).trim() === '月間表示', profile.name + ': month tab');
+              assert(await visible(page, '#month'), profile.name + ': month screen visible');
+
+              await page.locator('[data-view="detail"]:visible').first().click();
+              assert((await page.locator('#viewTitle').textContent()).trim() === '詳細表示', profile.name + ': detail tab');
+              assert(await visible(page, '#detail'), profile.name + ': detail screen visible');
+
+              await page.locator('[data-view="dashboard"]:visible').first().click();
+              await page.locator('#newBtn').click();
+              assert(await visible(page, '#editModal.open'), profile.name + ': add modal opens');
+              const date = await page.locator('#editDate').inputValue();
+              assert(/^\d{4}-\d{2}-\d{2}$/.test(date), profile.name + ': default date populated');
+              await page.locator('#editTime').fill('17:00');
+              await page.locator('#editEnd').fill('17:30');
+              await page.locator('#editName').fill('公開動作確認');
+              await page.locator('#editMenu').fill('QA');
+              await page.locator('#editForm button[type="submit"]').click();
+              await page.getByText('公開動作確認', { exact: false }).first().waitFor({ state: 'visible' });
+
+              const testEvent = page.locator('[data-edit]:visible', { hasText: '公開動作確認' }).first();
+              await testEvent.click();
+              assert(!(await page.locator('#deleteBtn').isHidden()), profile.name + ': edit/delete controls available');
+              page.once('dialog', dialog => dialog.accept());
+              await page.locator('#deleteBtn').click();
+              await page.waitForTimeout(150);
+              assert((await page.getByText('公開動作確認', { exact: false }).count()) === 0, profile.name + ': delete works');
+
+              await page.screenshot({ path: '/tmp/reservation-' + profile.name + '.png', fullPage: true });
+              await context.close();
+            }
+            await browser.close();
+            console.log('PUBLIC_UI_QA=PASS');
+          })().catch(error => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE
+          node check.cjs
+
+      - name: Upload public UI evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: reservation-dashboard-public-qa
+          path: |
+            /tmp/reservation-desktop.png
+            /tmp/reservation-mobile.png
+            /tmp/reservation-live.html
+          retention-days: 7
+
+      - name: Report success
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          gh api "repos/$GITHUB_REPOSITORY/issues/6/comments" -f body="予約管理プレビュー公開・実URLQA完了。PC/スマホ表示、3タブ切替、予定追加・削除、公開HTML一致、Content-Type text/html を確認。\n\n$PREVIEW_URL\n\n$run_url" >/dev/null
