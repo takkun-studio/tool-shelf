@@ -39,8 +39,38 @@ const pad=n=>String(n).padStart(2,'0'), localDate=d=>`${d.getFullYear()}-${pad(d
 const addDays=(s,days)=>{const a=s.split('-').map(Number);return localDate(new Date(a[0],a[1]-1,a[2]+days))};
 const today=localDate(new Date());const base=[{id:'b1',type:'booking',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'カット',note:''},{id:'b2',type:'booking',date:today,start:'14:30',end:'15:30',name:'佐藤様',menu:'カラー',note:''},{id:'b3',type:'booking',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'カット',note:''},{id:'p1',type:'personal',date:today,start:'13:00',end:'14:00',name:'私用・外出',menu:'',note:''},{id:'p2',type:'personal',date:addDays(today,1),start:'10:00',end:'11:30',name:'打ち合わせ',menu:'',note:''},{id:'l1',type:'ledger',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'カット',note:''},{id:'l2',type:'ledger',date:today,start:'15:00',end:'16:00',name:'佐藤様',menu:'カラー',note:'時刻が違うサンプル'},{id:'l3',type:'ledger',date:today,start:'16:30',end:'17:30',name:'田中様',menu:'カット',note:'台帳にだけあるサンプル'},{id:'l4',type:'ledger',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'カット',note:''}];
 let data,photos={},sel=today,view='dashboard',month=new Date(today+'T12:00'),modalType='booking';
-try{const raw=JSON.parse(localStorage.getItem('schedule-demo-v2'));data=Array.isArray(raw?.records)?raw.records:structuredClone(base)}catch{data=structuredClone(base)}
-function save(){try{localStorage.setItem('schedule-demo-v2',JSON.stringify({records:data}))}catch{toast('保存容量が不足しています')}}
+const storageKey='schedule-demo-v2';
+let storedSnapshot=null,storageBlocked=false,startupError='';
+function readRecords(value){
+  if(!value||!Array.isArray(value.records)||(value.version!==undefined&&value.version!==2))throw Error('Invalid records');
+  const ids=new Set();
+  return value.records.map(x=>{
+    if(!x||typeof x.id!=='string'||!x.id.trim()||ids.has(x.id)||!['booking','personal','ledger'].includes(x.type)||
+      typeof x.name!=='string'||!x.name.trim()||x.name.length>100||
+      typeof x.date!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(x.date)||x.date.startsWith('0000')||
+      !Number.isFinite(Date.parse(x.date+'T12:00:00Z'))||new Date(x.date+'T12:00:00Z').toISOString().slice(0,10)!==x.date||
+      typeof x.start!=='string'||typeof x.end!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(x.start)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(x.end)||x.start>=x.end||
+      (x.menu!==undefined&&(typeof x.menu!=='string'||x.menu.length>150))||
+      (x.note!==undefined&&(typeof x.note!=='string'||x.note.length>500)))throw Error('Invalid record');
+    ids.add(x.id);return {...x,menu:x.menu??'',note:x.note??''};
+  });
+}
+try{
+  storedSnapshot=localStorage.getItem(storageKey);
+  data=storedSnapshot===null?structuredClone(base):readRecords(JSON.parse(storedSnapshot));
+}catch{
+  data=[];storageBlocked=true;startupError='保存データを読み込めません。元データを保護するため変更を停止しています。JSON書き出しで退避してください';
+}
+function save(next){
+  if(storageBlocked){toast(startupError);return false}
+  try{
+    const records=readRecords({records:next});
+    if(localStorage.getItem(storageKey)!==storedSnapshot){toast('別の画面でデータが更新されています。再読み込みして確認してください');return false}
+    const serialized=JSON.stringify({records});
+    localStorage.setItem(storageKey,serialized);
+    storedSnapshot=serialized;data=records;return true;
+  }catch{toast('保存できませんでした。元のデータと入力内容を保持しています。保存容量・ブラウザの設定を確認してください');return false}
+}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmt(d){const dt=new Date(d+'T12:00');return `${dt.getFullYear()}年${dt.getMonth()+1}月${dt.getDate()}日（${'日月火水木金土'[dt.getDay()]}）`}
 function inDay(d){return data.filter(x=>x.date===d).sort((a,b)=>a.start.localeCompare(b.start))}
@@ -61,17 +91,24 @@ function renderDetail(){ $('#detailDate').textContent=fmt(sel);$('#datePicker').
 function issueHTML(x,i){if(x.kind==='overlap')return `<div class="compare"><h3>⚠ 予定の重複</h3><div class="values"><div>${esc(x.a.start)}〜${esc(x.a.end)}<strong>${esc(x.a.name)}</strong></div><div>${esc(x.b.start)}〜${esc(x.b.end)}<strong>${esc(x.b.name)}</strong></div></div><div class="section-note" style="margin-top:8px">どちらかの予定を編集して時間を調整してください。</div><div class="buttons"><button class="btn sm" data-edit="${esc(x.a.id)}">左を編集</button><button class="btn sm" data-edit="${esc(x.b.id)}">右を編集</button></div></div>`;const l=x.ledger,b=x.booking;const lid=l?.id||'',bid=b?.id||'';const label=x.kind==='mismatch'?'内容に違いがあります':x.kind==='only-ledger'?'台帳にだけあります':'カレンダーにだけあります';return `<div class="compare"><h3>⚠ ${esc(l?.name||b?.name)}：${label}</h3><div class="values"><div><small>手書き台帳</small><strong>${l?esc(l.start+'〜'+l.end):'登録なし'}</strong><small>${esc(l?.menu||'')}</small></div><div><small>カレンダー側</small><strong>${b?esc(b.start+'〜'+b.end):'登録なし'}</strong><small>${esc(b?.menu||'')}</small></div></div><div class="buttons">${l?`<button class="btn sm primary" data-reconcile="ledger" data-ledger="${esc(lid)}" data-booking="${esc(bid)}">台帳を採用</button>`:''}${b?`<button class="btn sm" data-reconcile="booking" data-ledger="${esc(lid)}" data-booking="${esc(bid)}">予定を採用</button>`:''}</div></div>`}
 function openModal(type='booking',record=null){$('#editForm').reset();$('#editId').value=record?.id||'';$('#editType').value=record?.type||type;$('#editDate').value=record?.date||sel;$('#editTime').value=record?.start||'10:00';$('#editEnd').value=record?.end||'11:00';$('#editName').value=record?.name||'';$('#editMenu').value=record?.menu||'';$('#editNote').value=record?.note||'';$('#deleteBtn').hidden=!record;$('#modalHeading').textContent=record?'予定を編集':'予定を追加';$('#editModal').classList.add('open');$('#editName').focus()}
 function closeModal(){$('#editModal').classList.remove('open')}
-function resolve(kind,lid,bid){const l=data.find(x=>x.id===lid),b=data.find(x=>x.id===bid);if(kind==='ledger'&&l){if(b){Object.assign(b,{date:l.date,start:l.start,end:l.end,name:l.name,menu:l.menu,note:l.note})}else data.push({...l,id:'b'+Date.now(),type:'booking'});}else if(kind==='booking'&&b){if(l){Object.assign(l,{date:b.date,start:b.start,end:b.end,name:b.name,menu:b.menu,note:b.note})}else data.push({...b,id:'l'+Date.now(),type:'ledger'});}save();render();toast('照合内容を試作データに反映しました')}
+function resolve(kind,lid,bid){
+  const next=structuredClone(data),l=next.find(x=>x.id===lid),b=next.find(x=>x.id===bid);
+  if(kind==='ledger'&&l){if(b){Object.assign(b,{date:l.date,start:l.start,end:l.end,name:l.name,menu:l.menu,note:l.note})}else next.push({...l,id:'b'+crypto.randomUUID(),type:'booking'});}
+  else if(kind==='booking'&&b){if(l){Object.assign(l,{date:b.date,start:b.start,end:b.end,name:b.name,menu:b.menu,note:b.note})}else next.push({...b,id:'l'+crypto.randomUUID(),type:'ledger'});}
+  else return;
+  if(!save(next))return;render();toast('照合内容を試作データに反映しました');
+}
 $$('[data-view]').forEach(x=>x.addEventListener('click',()=>setView(x.dataset.view)));
 document.addEventListener('click',e=>{const day=e.target.closest('[data-day]');if(day){setDate(day.dataset.day);setView('detail')}const go=e.target.closest('[data-goto]');if(go)setView(go.dataset.goto);const edit=e.target.closest('[data-edit]');if(edit){const r=data.find(x=>x.id===edit.dataset.edit);if(r)openModal(r.type,r)}const recon=e.target.closest('[data-reconcile]');if(recon)resolve(recon.dataset.reconcile,recon.dataset.ledger,recon.dataset.booking)});
 $('#newBtn').onclick=()=>openModal();$('#detailAdd').onclick=()=>openModal();$('#ledgerBtn').onclick=()=>openModal('ledger');$('#detailLedger').onclick=()=>openModal('ledger');$('#todayBtn').onclick=()=>{setDate(today);setView('dashboard')};$('#prevDay').onclick=()=>setDate(addDays(sel,-1));$('#nextDay').onclick=()=>setDate(addDays(sel,1));$('#detailPrev').onclick=()=>setDate(addDays(sel,-1));$('#detailNext').onclick=()=>setDate(addDays(sel,1));$('#datePicker').onchange=e=>{if(e.target.value)setDate(e.target.value)};$('#prevMonth').onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()-1,1);renderMonth()};$('#nextMonth').onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()+1,1);renderMonth()};$('#monthToday').onclick=()=>{month=new Date(today+'T12:00');renderMonth()};$('#closeModal').onclick=closeModal;$('#cancelBtn').onclick=closeModal;$('#editModal').onclick=e=>{if(e.target===$('#editModal'))closeModal()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-$('#editForm').onsubmit=e=>{e.preventDefault();const id=$('#editId').value,rec={id:id||'r'+Date.now(),type:$('#editType').value,date:$('#editDate').value,start:$('#editTime').value,end:$('#editEnd').value,name:$('#editName').value.trim(),menu:$('#editMenu').value.trim(),note:$('#editNote').value.trim()};if(!rec.name||!rec.date||!rec.start||!rec.end){toast('必須項目を入力してください');return}if(rec.start>=rec.end){toast('終了時刻は開始時刻より後にしてください');return}if(id){const i=data.findIndex(x=>x.id===id);if(i>=0)data[i]=rec}else data.push(rec);save();sel=rec.date;month=new Date(sel+'T12:00');closeModal();render();toast('予定を保存しました')};
-$('#deleteBtn').onclick=()=>{const id=$('#editId').value;if(!id)return;if(!confirm('この予定を削除しますか？'))return;data=data.filter(x=>x.id!==id);save();closeModal();render();toast('削除しました')};
+$('#editForm').onsubmit=e=>{e.preventDefault();const id=$('#editId').value,rec={id:id||'r'+crypto.randomUUID(),type:$('#editType').value,date:$('#editDate').value,start:$('#editTime').value,end:$('#editEnd').value,name:$('#editName').value.trim(),menu:$('#editMenu').value.trim(),note:$('#editNote').value.trim()};if(!rec.name||!rec.date||!rec.start||!rec.end){toast('必須項目を入力してください');return}if(rec.start>=rec.end){toast('終了時刻は開始時刻より後にしてください');return}const next=structuredClone(data);if(id){const i=next.findIndex(x=>x.id===id);if(i<0)return;next[i]={...next[i],...rec}}else next.push(rec);if(!save(next))return;sel=rec.date;month=new Date(sel+'T12:00');closeModal();render();toast('予定を保存しました')};
+$('#deleteBtn').onclick=()=>{const id=$('#editId').value;if(!id)return;if(!confirm('この予定を削除しますか？'))return;if(!save(data.filter(x=>x.id!==id)))return;closeModal();render();toast('削除しました')};
 $('#photoInput').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>8*1024*1024){toast('8MB以下の写真を選択してください');return}const reader=new FileReader();reader.onload=()=>{photos[sel]=String(reader.result);$('#photoPreview').innerHTML=`<div class="ledger-card"><strong>写真を選択しました</strong><small>写真はこの画面を閉じると消えます</small><img alt="台帳の写真" src="${photos[sel]}"></div>`;renderDetail();toast('写真を添付しました。内容は手入力で登録できます')};reader.readAsDataURL(f)};
-$('#exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify({version:2,records:data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yoyaku-demo-'+today+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
-$('#importInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const json=JSON.parse(await f.text());if(!Array.isArray(json.records)||json.records.some(x=>!x||!['booking','personal','ledger'].includes(x.type)||typeof x.name!=='string'||typeof x.date!=='string'||typeof x.start!=='string'||typeof x.end!=='string'))throw Error();if(!confirm('現在の試作データを読み込んだデータで置き換えますか？'))return;data=json.records;save();render();toast('読み込みました')}catch{toast('対応したJSON形式ではありません')}finally{e.target.value=''}};
-$('#resetBtn').onclick=()=>{if(!confirm('入力した試作データを消して初期状態に戻しますか？'))return;data=structuredClone(base);photos={};save();render();$('#photoPreview').innerHTML='';toast('初期状態に戻しました')};
+$('#exportBtn').onclick=()=>{if(storageBlocked&&storedSnapshot===null){toast('保存データにアクセスできないため書き出せません');return}const blob=new Blob([storageBlocked?storedSnapshot:JSON.stringify({version:2,records:data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yoyaku-demo-'+today+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$('#importInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const next=readRecords(JSON.parse(await f.text()));if(!confirm('現在の試作データを読み込んだデータで置き換えますか？'))return;if(!save(next))return;render();toast('読み込みました')}catch{toast('対応したJSON形式ではありません')}finally{e.target.value=''}};
+$('#resetBtn').onclick=()=>{if(!confirm('入力した試作データを消して初期状態に戻しますか？'))return;if(!save(structuredClone(base)))return;photos={};render();$('#photoPreview').innerHTML='';toast('初期状態に戻しました')};
 render();
+if(startupError)toast(startupError);
 })();
 </script>
 </body></html>
