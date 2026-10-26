@@ -535,3 +535,28 @@ test('他タブ更新を検知した保存は拒否し、入力フォームを�
   assert.match(app.elements.toast.textContent, /別の画面でデータが更新/);
   assertNoSuccessToast(app, '予定を保存しました');
 });
+
+
+test('Google Calendar連携は読み取り専用で、利用者本人のCalendar一覧と予定を取得する', () => {
+  assert.match(HTML, /id="googlePanel"/);
+  assert.match(HTML, /https:\/\/www\.googleapis\.com\/auth\/calendar\.readonly/);
+  assert.match(HTML, /\/users\/me\/calendarList/);
+  assert.match(HTML, /\/events\?/);
+  assert.doesNotMatch(HTML, /method:\s*['"](?:POST|PUT|PATCH|DELETE)['"]/);
+});
+
+test('GoogleアクセストークンをlocalStorageへ保存しない', () => {
+  assert.doesNotMatch(HTML, /localStorage\.setItem\([^\n;]*(?:googleAccessToken|access_token)/);
+  assert.match(HTML, /let googleAccessToken=''/);
+});
+
+test('Google予定は既存表示と空き時間判定へ合流するが読み取り専用', () => {
+  assert.match(HTML, /return \[\.\.\.data,\.\.\.googleEvents\]/);
+  assert.match(HTML, /Google予定は読み取り専用/);
+  assert.match(HTML, /予約の空き時間判定に反映/);
+});
+
+test('運営側OAuth設定が未投入でも既存アプリは起動できる構成', () => {
+  assert.match(HTML, /<meta name="google-client-id" content="">/);
+  assert.match(HTML, /運営側のGoogle OAuth設定がまだ入っていません/);
+});
