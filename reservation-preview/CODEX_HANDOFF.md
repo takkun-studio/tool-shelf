@@ -61,9 +61,11 @@ GitHub Actions + Playwrightで実URLに対して以下をPASS確認済み。
 - localStorageによる端末内保存
 - PC / スマホレスポンシブ
 - スマホで上部ヘッダー固定、下部3タブ固定、中央のみスクロール
+- Google Calendar読み取り連携コード（本人のCalendar一覧取得、予約用1つ＋予定参照用複数の選択、予定取得、月間・日別・空き時間判定への反映）
+- Google予定は読み取り専用。アクセストークンはメモリのみで、localStorage / JSON / Gitへ保存しない
 
 ## 未実装
-- Googleカレンダー実同期
+- Google OAuth Webクライアントの運営側設定と実Googleアカウントでの接続検証（コードは実装済み、client ID未設定）
 - 台帳写真のAI文字読み取り
 - PC・スマホ間のデータ共有
 - 実データ用バックエンド
