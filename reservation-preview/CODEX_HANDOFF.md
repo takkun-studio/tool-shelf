@@ -98,21 +98,39 @@ GitHub Actions + Playwrightで実URLに対して以下をPASS確認済み。
 13. コミット・pushまで行い、変更点と検証結果を残す
 
 ## 次にやること
-まず reservation-preview/index.html を読んで、実装済み機能とコード構造を確認する。
 
-外部仕様・料金・Google/Cloudflareの管理設定・OAuth条件・サービス選定はCodexが調査・判断しない。ChatGPT側で確認して確定仕様を渡す。
+次の実装は1段だけ進める。Google Calendarの**読み取り連携**を既存UIへ追加する。
 
-Codexは、渡された確定仕様の範囲だけを実装・テスト・commit/pushする。外部情報が必要になった場合は勝手にWeb調査・管理画面調査・構成決定をせず、不足事項として報告して止める。
+### Codexへ渡す確定実装仕様
+- 外部調査をしない。料金・OAuth審査・Cloudflare構成・サービス比較を調べない
+- 既存UI、配色、3画面構成、localStorage保存保護、既存28件テストを壊さない
+- Google接続後、その利用者本人がアクセスできるCalendar一覧を取得して選択UIを出す
+- Calendarは2役に分ける
+  - 予約カレンダー: 予約の登録・照合対象
+  - 予定カレンダー: 私用・仕事・講座・祝日等。複数選択可。予約不可時間の判定に使う
+- 予約カレンダーだけ見て本人の他予定を無視しない
+- 選択した予定Calendarの予定を月間表示・日別詳細へ読み取り表示する
+- 他予定が入っている時間を空き時間として扱わない
+- Google予定はこの段階では読み取り専用。追加・変更・削除は実装しない
+- Google Cloud project / API有効化 / OAuth client作成をエンドユーザーに要求するUIや説明を入れない
+- 開発者個人のCalendar名・ID・予定内容をハードコードしない
+- Google token / secretをGit・localStorage・JSON exportへ保存しない
+- OAuth client ID等の運営側設定値が未投入でも、既存アプリ本体は壊れず「Google接続は未設定」と分かる状態にする
+- Google連携失敗・権限拒否・期限切れでも既存台帳データを消さない
+- 既存の台帳照合ロジックは勝手に作り替えず、Google予定の読み取り表示と予約不可時間判定までを今回の範囲にする
+- 実装後は既存28件テストを維持し、Google未設定時・接続失敗時・複数予定Calendar選択時・予定重複時の回帰テストを追加する
+- commit / push先は reservation-dashboard-preview のみ。main / deploy / DB / Cloudflare設定は触らない
 
-実装優先順位はChatGPTから都度確定指示を渡す。現時点で未実装なのは以下。
-1. Googleカレンダー実同期
-2. 実データ保存
-3. 手書き台帳写真の読み取り
-4. 台帳とGoogle予定の照合ロジック本実装
-5. 変更 / キャンセル確認フロー
-6. PC・スマホ間共有
-7. 認証・実運用安全性
-8. 最終PC/スマホE2E
+### 今回やらないこと
+- D1 / Worker / backend作成
+- Google Calendarへの書き込み
+- refresh tokenの長期保存
+- OCR
+- 本番OAuth設定
+- deploy
+- main変更
+
+この段階が通ってから、次に台帳の端末間共有用バックエンドを実装する。
 
 ## Googleカレンダー実装時の固定仕様
 - Google Cloud project / Calendar API / OAuth client の登録・設定はアプリ運営側が用意する。エンドユーザーにGoogle Cloud登録、API有効化、OAuth client作成をさせない
