@@ -64,3 +64,34 @@ Branch base: `30ef06941065d1f8dddd697a9bc98b2b3ef4cd77`. All checks below apply 
 - Storage remains browser-local; the snapshot comparison is not a transactional cross-tab lock. Corrupt raw data export is preservation evidence, not a valid backup.
 
 Reproduce the deterministic suite with `node --test standalone-pro/v3/tests/calculators-check.cjs`. `tests/browser-check.cjs` additionally needs a compatible installed Playwright runtime and browser binaries; set `QA_PLAYWRIGHT_MODULE` if Playwright is outside the project, `QA_ENGINE=webkit` for WebKit, and optionally `QA_CHROMIUM_PATH` or `QA_BASE_URL`. Start a local static server on `127.0.0.1:18763` first. The one-time WebKit installation used only `/private/tmp/pro-qa-browsers` and did not change Safari settings or project dependencies.
+
+## Final sale assessment — 2026-10-30 (supersedes earlier HOLD decisions)
+
+Base was `60e1521c767766e6cacf471a040e7fe7569c2435`; see the commit containing this section for the finished source. The decisions below concern these independent offline HTML files and their tested features. They do not assert that checkout, paid delivery, a physical printer, or buyer acceptance has been tested. No changes to main, production, free tools, database, or pricing are included.
+
+| Product | Decision | Distinctive PRO value |
+| --- | --- | --- |
+| breakeven | 販売可能 | Goal quantity/revenue and quantity simulation |
+| channel | 販売可能 | A/B goal prices, quantities and comparison |
+| discount | 販売可能 | Safe discount ceiling and discount scenarios |
+| inventory | 販売可能 | Target stock, replenishment quantity and budget |
+| investment | 販売可能 | Whole-sale recovery and target-period analysis |
+| market | 販売可能 | Additional target quantity and sales simulation |
+| payout | 販売可能 | Payout/profit rates and price comparison |
+| profit | 条件付き販売可能 | Product comparison, target-price calculation and CSV import; distribute the current version, and use JSON for exact transfers to it. The older version cannot read its versioned CSV. |
+| service | 販売可能 | Goal-inclusive service fee and effective hourly rate |
+| target | 販売可能 | Additional goal and weekly sales target |
+
+The distinctive functions were assessed against the free tools in the earlier continuation; they provide product-specific calculations beyond shared history/export. Commercial demand and actual buyer testing remain unverified. These decisions are bounded by the following evidence and limitations, not a claim of exhaustive mathematical or accessibility certification.
+
+### Evidence after final HTML changes
+
+- `node --test standalone-pro/v3/tests/calculators-check.cjs`: 124/124. Covers decimal ceiling/floor boundaries, fractional inputs, zero, loss, invalid and extreme values, precision rejection and preservation of earlier tiny saved values. Exact decimal rational arithmetic avoids binary floating-point threshold errors; display still rounds as indicated by each product. New nonzero inputs smaller than `1e-100`, or decimal spellings that cannot be represented without loss by the storage number format, are rejected with an error. Existing stored values remain recoverable and out-of-range legacy values are identified rather than silently discarded.
+- `tests/browser-check.cjs`: Chromium and Playwright WebKit, 1280×800 and 390×844, 40/40 flows. Each exercised calculation including a decimal boundary, storage, keyboard edit and returned focus, delete, comparison, CSV, JSON backup, restore success/cancel/invalid input, overflow, input labels, print button, print media, HTML injection and local file save. Chromium additionally generated PDFs; WebKit print media and invocation were checked, not WebKit-generated PDFs.
+- `tests/stress-check.cjs`: Chromium 10/10, with 100 records and long unbroken names per product. A4 multi-page PDF extraction preserved every record identifier and all name characters; table and page width and row action labels were checked. Print table headings repeat, operations are hidden, and rows avoid page breaks. Representative pages for profit and market were visually inspected; no physical printer was used. The profit mobile table is intentionally horizontally scrollable within its container.
+- `tests/capacity-check.cjs`: Chromium 10/10. Nine products preserve all 500 records and profit all 5,000 records when another save exceeds the limit, report the limit, and reload the same data.
+- Visible text contrast was measured in the tested pages, muted text was corrected, input labels and distinct row-action accessible names were checked, and keyboard editing/focus was exercised. This is not a complete WCAG audit or full assistive-technology traversal. Physical iOS/Android, VoiceOver and TalkBack remain untested: device-specific keyboard/zoom, focus order and announcements may differ. These risks do not by themselves demonstrate a basic-operation failure in the tested environments.
+- Independent tester reran the calculator suite and separately checked decimal examples and loading/validation of prior JSON records across all ten. `pnpm test`: 102/102; `pnpm lint` and `pnpm build`: pass. Generated build outputs were restored, not committed.
+- The current profit version imports old `name` and current `name:csv-safe-v1` CSV headers; old versions reject the current header. Nine other products export CSV but do not have CSV import. JSON restore success, cancel and invalid-data protection were tested in every product. Data is browser-local: retain an external JSON backup. Snapshot comparison cannot guarantee atomic protection against simultaneous edits in separate tabs; exported corrupt raw data preserves evidence but is not itself a valid backup.
+
+Re-run the calculator suite and browser harness as in the preceding section. `tests/stress-check.cjs` also needs Chromium and `pdftotext`; `tests/capacity-check.cjs` needs Chromium. All browser scripts use the same Playwright environment variables and local test server. Failure to provide a real device, screen reader or printer is explicitly an unverified layer rather than a passed test.
