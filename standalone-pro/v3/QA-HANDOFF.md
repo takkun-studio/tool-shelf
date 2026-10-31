@@ -95,3 +95,43 @@ The distinctive functions were assessed against the free tools in the earlier co
 - The current profit version imports old `name` and current `name:csv-safe-v1` CSV headers; old versions reject the current header. Nine other products export CSV but do not have CSV import. JSON restore success, cancel and invalid-data protection were tested in every product. Data is browser-local: retain an external JSON backup. Snapshot comparison cannot guarantee atomic protection against simultaneous edits in separate tabs; exported corrupt raw data preserves evidence but is not itself a valid backup.
 
 Re-run the calculator suite and browser harness as in the preceding section. `tests/stress-check.cjs` also needs Chromium and `pdftotext`; `tests/capacity-check.cjs` needs Chromium. All browser scripts use the same Playwright environment variables and local test server. Failure to provide a real device, screen reader or printer is explicitly an unverified layer rather than a passed test.
+
+## Claude audit remediation — 2026-11-01 (supersedes all earlier sale decisions)
+
+**The earlier nine “販売可能” decisions and the profit conditional decision are withdrawn. All ten products remain HOLD, not sale-approved.** Base: `a9ba6a941d1a110825b46d403fd541e18d865282`, branch `product/profit-pro-standalone`. Claude's `audit-tests.tgz` was not found in the checked work locations; the tests added here were built from the reported reproduction conditions, not obtained from Claude.
+
+| Product | Free-output comparison and remediation | Decision |
+| --- | --- | --- |
+| breakeven | Contribution ratio added; zero/nonpositive contribution explained. | HOLD |
+| channel | A/B take-home amounts added; total fees at or above 100% warned without clamping losses. | HOLD |
+| discount | Selling fee and profit margin added; exact safe-discount logic retained. | HOLD |
+| inventory | Current stock and monthly sales restored in results; stock-duration definition explained. | HOLD |
+| investment | Initial cost restored in results; monthly sales terminology and undefined cases clarified. | HOLD |
+| market | Total cost, margin, per-item contribution and break-even sales added; comparison shows final profit. | HOLD |
+| payout | Combined-fee warning and profit in comparison added. | HOLD |
+| profit | Cost rate, whole-yen minimum price, strict UTF-8 CSV rejection, duplicate detection and editing controls added. | HOLD |
+| service | Free outputs retained; common storage, editing and comparison fixes applied. | HOLD |
+| target | Zero per-sale profit explained and four-week target described as an approximation. | HOLD |
+
+The free result definitions in `src/tools/*/calculate.ts` were compared with the ten PRO calculation/display paths. The initially missing inventory current stock/monthly sales, investment initial cost and profit cost rate were added; the other reported missing free outputs were also added. This is a source-level comparison, not independent buyer acceptance.
+
+### Changes and compatibility
+
+- Nine non-profit products announce saves, suppress rapid repeated identical saves, expose explicit edit/copy/cancel operations, retain the pre-edit draft on cancel, and label comparison values with units. Profit exposes edit/copy/cancel and new-input controls. Switching away from an active edit warns that unsaved changes will be discarded.
+- All ten distinguish unavailable storage from corrupt storage at initial load and subsequent save, validate records individually, isolate invalid records while retaining their original JSON text on ordinary writes, provide raw export and a twice-confirmed reset, and validate JSON before replacement. Restoration confirmation shows the old and replacement counts. Invalid whole-document JSON is preserved and blocks ordinary writes until recovery/reset. A raw export preserves evidence; it is not necessarily a valid backup that can be restored directly. Save an external valid JSON backup before replacing or resetting data. Local-storage stale-snapshot checking is not an atomic cross-tab lock.
+- Nine non-profit CSV exports have separate input and result columns, with numeric negatives retained as numeric values and textual spreadsheet formulas neutralized. Profit CSV v2 adds separate result columns; this version accepts the original `name`, v1 and v2 formats. Older versions cannot import the new v2 header; use the current version or an appropriate JSON backup. Import rejects invalid UTF-8, including invalid Shift_JIS bytes, and detects repeated data. Formula protection is retained for CSV names.
+- Result displays include units, loss wording and reasons for common undefined results. Keyboard edit/focus checks and live result regions were added; these do not establish complete assistive-technology support.
+
+### Verification and freshness
+
+- After the final HTML change, `node --test standalone-pro/v3/tests/calculators-check.cjs standalone-pro/v3/tests/claude-audit-check.cjs standalone-pro/v3/tests/profit-claude-check.cjs`: 243/243 passed. These are bounded test cases and do not cover every possible input or every Claude finding.
+- An independent tester checked representative expected calculations for all ten, focused editing and storage recovery, and ran the previous 231-case test set. The tester found an unavailable-storage messaging issue; the fix and additional profit editing fixes have subsequent regression tests. A second independent tester reran the final 243-case suite, checked actual localStorage getter failure and preservation for all ten, and checked profit edit-status transitions. Those passed; their separate Playwright environment was unavailable, so browser, stress and capacity runs above/below are the main agent’s checks.
+- Chromium and WebKit desktop and emulated mobile: 20/20 flows each passed `tests/browser-check.cjs` after the final HTML changes. Chromium `tests/audit-browser-check.cjs` passed 10/10 after the final HTML changes, including explicit edit status, draft preservation, save-as, and profit clear while editing. The browser checks cover representative save/edit/delete, CSV download, JSON backup/restore/cancel, print invocation/media, labels and local-file loading. Chromium `tests/keyboard-check.cjs` additionally passed 10/10 representative Tab/Enter flows for save, edit/cancel, save-as, CSV and JSON export, delete, JSON restore and print; file selection was supplied by Playwright after keyboard activation. A separate independent attempt could not start Chrome (SIGABRT) and therefore did not independently verify that keyboard run; the successful 10/10 result is the main agent’s run.
+- Chromium stress: 10/10 for 100 long-named records, mobile width and A4 PDF text extraction, after the comparison-layout change and before the later storage-message, profit edit-status, quarantine-label and clear-state edits. Capacity: 10/10, preserving 500 records (5,000 for profit) at the limit, before those later non-capacity edits. PDF generation/extraction is not a physical-printer test.
+- Repository `pnpm test`: 102/102; `pnpm lint` passed after the final HTML/test edit; `pnpm exec tsc -b` and `pnpm exec vite build --outDir /private/tmp/tool-shelf-pro-v3-build` passed after the final HTML changes.
+
+### Remaining before a sale decision
+
+- Keyboard traversal beyond the representative Chromium flows, real screen-reader announcements, actual iOS/Android devices, actual Excel behavior, physical printing, and customer/buyer acceptance remain unverified. The supplied audit archive was unavailable, and the new suite does not establish complete reproduction and regression coverage for every statement in the audit. Do not infer those checks passed from the bounded automated results.
+- Re-run the final independent verification after any further source change. Reproduce browser scripts with a local server on port 18763 and `QA_PLAYWRIGHT_MODULE`, `QA_CHROMIUM_PATH`, and (for WebKit) `PLAYWRIGHT_BROWSERS_PATH` set to available local runtimes. `tests/stress-check.cjs` additionally needs `pdftotext`.
+- No main merge, production deployment, free-tool change, database change or pricing change is authorized by this work. Next step: resolve any findings from the final independent tester, perform the remaining checks, and only then reassess each of the ten HOLD decisions.
