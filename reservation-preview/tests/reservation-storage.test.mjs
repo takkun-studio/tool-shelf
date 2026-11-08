@@ -556,7 +556,28 @@ test('Google予定は既存表示と空き時間判定へ合流するが読み�
   assert.match(HTML, /予約の空き時間判定に反映/);
 });
 
-test('運営側OAuth設定が未投入でも既存アプリは起動できる構成', () => {
-  assert.match(HTML, /<meta name="google-client-id" content="">/);
+test('Google OAuthの設定状態に応じて接続の案内を切り替えられる構成', () => {
+  assert.match(HTML, /<meta name="google-client-id" content="[^"]*">/);
   assert.match(HTML, /運営側のGoogle OAuth設定がまだ入っていません/);
+});
+test('台帳にだけ存在する予約も予約件数と空き時間に反映する', () => {
+  const app = createApp({ records: [
+    record({ id: 'ledger-only', type: 'ledger', start: '10:00', end: '11:00' }),
+  ] });
+  assert.equal(app.elements.metricBooking.textContent, '1件');
+  assert.equal(app.elements.metricOpen.textContent, '7時間');
+  assert.match(app.elements.compareList.innerHTML, /台帳にだけあります/);
+});
+test('同一内容の台帳とカレンダー予約は二重集計しない', () => {
+  const app = createApp({ records: [
+    record({ id: 'calendar-one', type: 'booking' }),
+    record({ id: 'ledger-one', type: 'ledger' }),
+  ] });
+  assert.equal(app.elements.metricBooking.textContent, '1件');
+  assert.equal(app.elements.metricOpen.textContent, '7時間');
+});
+test('予約も台帳もない日は営業枠の8時間を表示する', () => {
+  const app = createApp({ records: [] });
+  assert.equal(app.elements.metricBooking.textContent, '0件');
+  assert.equal(app.elements.metricOpen.textContent, '8時間');
 });
