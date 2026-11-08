@@ -1,0 +1,47 @@
+{
+  "note": "端末内OCRで使う外部ファイル。Gitには含めず、ビルド時に下記URLから取得してSHA-256を検証する。公開先では同じオリジンの ocr/vendor/ から配信する。",
+  "files": [
+    {
+      "file": "ort.wasm.min.js",
+      "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort.wasm.min.js",
+      "sha256": "c6bc9f8e1d0ecc3983a57910e6a30b2230a512bcd2e0207cd64306459c3de7b4",
+      "size": 49926,
+      "license": "MIT (ONNX Runtime Web 1.23.2, Microsoft)"
+    },
+    {
+      "file": "ort-wasm-simd-threaded.mjs",
+      "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort-wasm-simd-threaded.mjs",
+      "sha256": "90a557d15c02bac4504d95b67f431d8594635ed2a0a62a7f2cd83d090ff91d3e",
+      "size": 20321,
+      "license": "MIT (ONNX Runtime Web 1.23.2, Microsoft)"
+    },
+    {
+      "file": "ort-wasm-simd-threaded.wasm",
+      "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort-wasm-simd-threaded.wasm",
+      "sha256": "45eaee27761ad883742a8d4b8fce1538d60ce43b51adf1726fafccc59b8c1a15",
+      "size": 11905541,
+      "license": "MIT (ONNX Runtime Web 1.23.2, Microsoft)"
+    },
+    {
+      "file": "ppocrv5-mobile-det.onnx",
+      "url": "https://huggingface.co/bukuroo/PPOCRv5-ONNX/resolve/47b3e1b4e90c79737cb71f562a6c85809067c7a5/ppocrv5-mobile-det.onnx",
+      "sha256": "d7fe3ea74652890722c0f4d02458b7261d9f5ae6c92904d05707c9eb155c7924",
+      "size": 4748769,
+      "license": "Apache-2.0 (PaddleOCR PP-OCRv5_mobile_det, ONNX変換版)"
+    },
+    {
+      "file": "ppocrv5-mobile-rec.onnx",
+      "url": "https://huggingface.co/bukuroo/PPOCRv5-ONNX/resolve/47b3e1b4e90c79737cb71f562a6c85809067c7a5/ppocrv5-mobile-rec.onnx",
+      "sha256": "bf66820f48fa99f779974c4df78e5274a9d8e0458c4137e8c5357e40e2c3faf2",
+      "size": 16517247,
+      "license": "Apache-2.0 (PaddleOCR PP-OCRv5_mobile_rec, ONNX変換版)"
+    },
+    {
+      "file": "ppocrv5_dict.txt",
+      "url": "https://huggingface.co/webnn/PP-OCRv5-ONNX/resolve/006b4419a415072fbb16a1d7d0d8548f789a8fae/ch_PP-OCRv5_dict.txt",
+      "sha256": "d1979e9f794c464c0d2e0b70a7fe14dd978e9dc644c0e71f14158cdf8342af1b",
+      "size": 74012,
+      "license": "Apache-2.0 (PaddleOCR ppocrv5_dict.txt と同一内容)"
+    }
+  ]
+}

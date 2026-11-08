@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f6f8fc"><meta name="google-client-id" content="391695795854-39ol91ka76r3v7gf81i5qgels9ngenm9.apps.googleusercontent.com"><title>予約・予定管理 | ダッシュボード試作</title>
+<meta name="theme-color" content="#f6f8fc"><meta name="google-client-id" content="391695795854-39ol91ka76r3v7gf81i5qgels9ngenm9.apps.googleusercontent.com"><title>予約台帳 | 懐石料理店向け 試験版</title><link rel="icon" href="data:,">
 <style>
 :root{--ink:#19263d;--muted:#6f7d92;--blue:#365ddb;--bluelight:#edf2ff;--green:#117a66;--greenlight:#e5f7f1;--amber:#a35e08;--amberlight:#fff2d5;--red:#b72e49;--redlight:#fff0f2;--line:#e5eaf2;--surface:#fff;--bg:#f5f7fb;--radius:18px;--shadow:0 8px 30px #1c35500b}*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;color:var(--ink);background:var(--bg);font-size:15px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #94b7ff;outline-offset:2px}.app{max-width:1580px;margin:auto;min-height:100vh;display:grid;grid-template-columns:220px minmax(0,1fr)}.side{background:#162541;color:#e9efff;padding:27px 18px;display:flex;flex-direction:column;gap:14px}.logo{font-size:22px;font-weight:800;letter-spacing:.02em;padding:0 10px}.logo small{display:block;font-size:11px;font-weight:500;letter-spacing:.1em;color:#a8bce3;margin-top:8px}.side-section{color:#7f99c4;font-size:11px;letter-spacing:.13em;padding:14px 11px 0}.nav{border:0;text-align:left;border-radius:12px;background:transparent;color:#cbd8f2;width:100%;padding:14px;display:flex;align-items:center;gap:12px;font-weight:700}.nav.active{background:#3050a7;color:white}.nav:hover{background:#2a406c}.nav .ico{width:24px;font-size:19px}.side-bottom{margin-top:auto;border-top:1px solid #334563;padding:17px 10px;color:#a8bce3;font-size:12px;line-height:1.8}.main{min-width:0;padding:28px 34px 50px}.top{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}.eyebrow{font-size:12px;color:var(--blue);font-weight:800;letter-spacing:.12em}.top h1{margin:3px 0 0;font-size:27px;letter-spacing:-.03em}.top-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.btn{border:1px solid var(--line);background:white;color:var(--ink);padding:11px 16px;border-radius:11px;font-weight:750;min-height:43px}.btn:hover{border-color:#abbbe9;background:#f8faff}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.primary:hover{background:#254ecb}.btn.ghost{background:transparent}.btn.danger{border-color:#ffd6df;color:var(--red)}.btn.sm{padding:7px 10px;min-height:34px;font-size:13px}.demo-note{background:#fff9ea;border:1px solid #f3dfaa;color:#825500;border-radius:12px;padding:11px 15px;margin-bottom:22px;font-size:13px;line-height:1.7}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:19px}.metric{background:white;border:1px solid var(--line);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow)}.metric .label{font-size:13px;color:var(--muted);font-weight:700}.metric .value{font-size:32px;line-height:1.4;font-weight:850;font-variant-numeric:tabular-nums}.metric .sub{color:var(--muted);font-size:12px}.metric.warning .value{color:var(--red)}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:18px 20px;border-bottom:1px solid var(--line)}.panel-title{font-weight:800;font-size:17px}.small{font-size:12px;color:var(--muted)}.split{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);gap:17px;align-items:start}.timeline{padding:10px 16px 18px}.time-line{display:grid;grid-template-columns:60px minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px solid #f1f3f7;align-items:start}.time-label{font-size:13px;color:var(--muted);font-weight:800;text-align:right;padding-top:12px;font-variant-numeric:tabular-nums}.events{display:flex;flex-direction:column;gap:7px;min-height:35px}.event{border:0;border-left:4px solid var(--blue);text-align:left;padding:12px 14px;border-radius:10px;background:var(--bluelight);display:flex;gap:10px;align-items:center;justify-content:space-between;color:var(--ink);min-width:0}.event.booking{border-color:var(--green);background:var(--greenlight)}.event.personal{border-color:var(--blue);background:var(--bluelight)}.event.warn{border-color:#e79a25;background:var(--amberlight)}.event strong{font-size:14px}.event span{font-size:12px;color:var(--muted);display:block;margin-top:3px}.pill{white-space:nowrap;font-size:11px;font-weight:800;padding:5px 8px;border-radius:99px;color:var(--green);background:var(--greenlight)}.pill.warn{background:var(--amberlight);color:var(--amber)}.pill.bad{background:var(--redlight);color:var(--red)}.pill.blue{background:var(--bluelight);color:var(--blue)}.stack{display:flex;flex-direction:column;gap:16px}.alert-row{display:flex;gap:10px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:13px 2px}.alert-row:last-child{border-bottom:0}.alert-row strong{display:block;font-size:14px}.alert-row small{display:block;color:var(--muted);font-size:12px;margin-top:4px}.alert-list{padding:5px 19px 15px}.circle{width:9px;height:9px;background:#e7a127;flex:0 0 auto;border-radius:50%}.calendar{padding:20px}.cal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.cal-toolbar strong{font-size:24px}.cal-actions{display:flex;gap:7px}.weekdays,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.weekdays>div{text-align:center;padding:11px 0;color:var(--muted);font-size:13px;font-weight:800}.weekdays>div:first-child{color:var(--red)}.weekdays>div:last-child{color:var(--blue)}.cal-grid{border-top:1px solid var(--line);border-left:1px solid var(--line)}.day{background:#fff;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px;text-align:left;min-height:110px;overflow:hidden}.day:hover{background:#f6f9ff}.day.outside{color:#afb7c5;background:#fbfcfd}.day.selected{background:#eef3ff;box-shadow:inset 0 0 0 2px var(--blue)}.day .num{font-size:15px;font-weight:800;display:inline-grid;place-items:center;width:27px;height:27px;border-radius:50%}.day.today .num{background:var(--blue);color:white}.day-entry{display:block;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;margin-top:5px;padding:5px 7px;font-size:11px;border-radius:5px;background:var(--greenlight);color:#075d4e;font-weight:700}.day-entry.personal{background:var(--bluelight);color:var(--blue)}.day-entry.warn{background:var(--amberlight);color:#945a03}.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:14px}.legend b{color:var(--ink)}.detail-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:17px;align-items:start}.detail-list{padding:8px 18px 20px}.date-header{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.date-header h2{margin:0;font-size:22px}.record{display:flex;gap:12px;border-bottom:1px solid var(--line);padding:18px 3px;align-items:center}.record:last-child{border:0}.record-time{font-weight:850;min-width:55px;color:var(--ink)}.record-info{min-width:0;flex:1}.record-info strong{display:block;margin-bottom:6px}.record-info small{color:var(--muted)}.empty{padding:24px;color:var(--muted);font-size:14px;text-align:center}.form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800}.field input,.field select,.field textarea{border:1px solid #d7dfeb;border-radius:10px;background:#fff;padding:11px;min-width:0;font-weight:500;color:var(--ink)}.field textarea{resize:vertical;min-height:72px}.field.full{grid-column:1/-1}.data-label{font-weight:750;font-size:13px;margin-top:12px}.ledger-card{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:12px}.ledger-card img{display:block;max-width:100%;max-height:210px;object-fit:contain;margin:10px auto;border-radius:8px}.ledger-card strong{display:block;font-size:14px}.ledger-card small{color:var(--muted)}.compare{border:1px solid #f4d6a3;border-radius:12px;background:#fffaf1;padding:14px;margin-top:12px}.compare h3{margin:0 0 8px;font-size:15px}.compare .values{display:grid;grid-template-columns:1fr 1fr;gap:10px}.compare .values>div{background:white;padding:11px;border-radius:9px;font-size:13px}.compare .values strong{display:block;margin-top:6px}.compare .buttons{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.toolbar-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:#13213c90;display:none;align-items:center;justify-content:center;padding:16px;z-index:30}.modal.open{display:flex}.dialog{width:min(560px,100%);max-height:min(94vh,840px);overflow:auto;background:#fff;border-radius:18px;padding:24px;box-shadow:0 18px 65px #111b356b}.dialog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.dialog h2{margin:0;font-size:22px}.dialog footer{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}.toast{position:fixed;right:20px;bottom:18px;background:#17243e;color:#fff;padding:13px 17px;border-radius:12px;box-shadow:0 9px 30px #18294c40;z-index:40;display:none;max-width:400px}.toast.show{display:block}.screen{display:none}.screen.active{display:block}.mobile-tabs{display:none}.upload-btn{border:2px dashed #b9c9e2;border-radius:12px;padding:15px;text-align:center;background:#f9fbff;cursor:pointer;display:block;color:var(--blue);font-weight:750}.upload-btn input{display:none}.section-note{font-size:13px;color:var(--muted);line-height:1.7}.desktop-only{display:inline}.danger-zone{padding:12px 20px;border-top:1px solid var(--line)}
 @media(max-width:1100px){.app{grid-template-columns:77px minmax(0,1fr)}.side{padding:25px 9px}.logo{font-size:13px;padding:0 2px;text-align:center}.logo small,.side-section,.side-bottom,.nav .nav-text{display:none}.nav{justify-content:center;padding:12px}.nav .ico{font-size:23px}.main{padding:24px}.split,.detail-layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -20,50 +20,132 @@
 }
 @media (min-width:691px){.main-content {min-width:0;}}
 
-
-.ocr-box{margin-top:12px;padding:14px;border:1px solid #c9d6f4;border-radius:12px;background:#f9fbff}
-.ocr-box[hidden],.ocr-candidates[hidden]{display:none}
-.ocr-box textarea{display:block;width:100%;min-height:120px;resize:vertical;border:1px solid #cbd7e9;border-radius:8px;padding:9px;margin:8px 0 10px;white-space:pre-wrap}
-.ocr-box .ocr-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr 1.2fr;gap:6px;margin:8px 0 12px}
-.ocr-box .ocr-grid input{min-width:0;width:100%;padding:7px 5px;border:1px solid #cbd7e9;border-radius:7px;font-size:12px}
-.ocr-box .ocr-row{margin:12px 0 14px;padding:10px;border-radius:9px;background:#fff;border:1px solid #e2e9f5}
-@media(max-width:690px){.ocr-box .ocr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ocr-box .ocr-grid label:last-child{grid-column:1/-1}}
-
+/* ---- 懐石料理店向け：台帳・写真読取 ---- */
+[hidden]{display:none!important}
+.event.ledger{border-color:#7a5bd1;background:#f3efff}.day-entry.ledger{background:#f0ebff;color:#5b3fb5}.pill.ledger{background:#f0ebff;color:#5b3fb5}
+.day-more{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.guest{font-variant-numeric:tabular-nums}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.btn.big{min-height:52px;font-size:16px;width:100%}
+.ocr-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:14px;padding:0;list-style:none}
+.ocr-steps li{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 6px;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
+.ocr-steps li b{display:block;font-size:16px}
+.ocr-steps li.done{color:var(--green);border-color:#bfe6da;background:var(--greenlight)}
+.ocr-steps li.now{color:#fff;background:var(--blue);border-color:var(--blue)}
+.ocr-layout{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.15fr);gap:17px;align-items:start}
+.ocr-body{padding:16px}
+.ocr-photo img{display:block;width:100%;max-height:360px;object-fit:contain;border-radius:10px;background:#eef1f6;margin-top:10px}
+.ocr-photo .meta{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:8px;font-size:12px;color:var(--muted)}
+.upload-btn.big{padding:20px 12px;font-size:16px}
+.ocr-status{margin-top:12px;padding:11px 12px;border-radius:10px;background:#f4f7fc;font-size:14px;line-height:1.6}
+.ocr-status.error{background:var(--redlight);color:var(--red);font-weight:700}
+.ocr-status.ok{background:var(--greenlight);color:#075d4e}
+.ocr-status.busy{background:var(--bluelight);color:var(--blue);font-weight:700}
+.ocr-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ocr-raw{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fbfcfe}
+.ocr-raw summary{cursor:pointer;font-weight:800;font-size:13px}
+.ocr-raw textarea{display:block;width:100%;min-height:150px;margin:10px 0;border:1px solid #cbd7e9;border-radius:8px;padding:9px;font:inherit;font-size:16px;line-height:1.6}
+.legend-chips{display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
+.chip{display:inline-block;border-radius:99px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}
+.chip.ok{background:var(--greenlight);color:var(--green)}.chip.check{background:var(--amberlight);color:var(--amber)}.chip.missing{background:var(--redlight);color:var(--red)}.chip.edited{background:var(--bluelight);color:var(--blue)}
+.cand{border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:12px;background:#fff}
+.cand.invalid{border-color:#f0a8b7;box-shadow:0 0 0 2px #fde3e9}
+.cand.blocked{background:#f6f7f9;opacity:.85}
+.cand.off{opacity:.65}
+.cand-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.cand-head label{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
+.cand-head input[type=checkbox]{width:22px;height:22px}
+.cand-src{font-size:12px;color:var(--muted);background:#f6f8fb;border-radius:8px;padding:7px 9px;margin-bottom:10px;word-break:break-all}
+.cand-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.cf{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;min-width:0}
+.cf .cf-label{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.cf input{border:1px solid #d7dfeb;border-radius:9px;padding:9px;min-width:0;width:100%;font-weight:500;color:var(--ink);background:#fff;font-size:15px}
+.cf.st-missing input{border-color:#f0a8b7;background:#fff8f9}
+.cf.st-check input{border-color:#f0c879;background:#fffcf3}
+.cf.bad input{border-color:var(--red);box-shadow:0 0 0 2px #fde3e9}
+.cf.wide{grid-column:span 2}.cf.full{grid-column:1/-1}
+.cf-note{font-size:11px;font-weight:600;color:var(--amber);line-height:1.5}
+.cf.st-missing .cf-note{color:var(--red)}
+.cand-msg{margin-top:10px;font-size:13px;line-height:1.6}
+.cand-msg div{padding:6px 9px;border-radius:8px;margin-top:5px}
+.cand-msg .err{background:var(--redlight);color:var(--red);font-weight:700}
+.cand-msg .warn{background:var(--amberlight);color:#7a4705}
+.cand-msg .info{background:var(--bluelight);color:#2849ad}
+.confirm-row{border-bottom:1px solid var(--line);padding:11px 2px;font-size:14px;line-height:1.7}
+.confirm-row:last-child{border:0}
+.confirm-row strong{font-size:15px}
+.confirm-row .warn{color:var(--amber);font-size:12px;font-weight:700}
+.ocr-sticky{position:sticky;bottom:0;background:linear-gradient(to top,#fff 75%,#fff0);padding:12px 0 2px;display:flex;gap:8px;flex-wrap:wrap}
+.ocr-sticky .btn{flex:1 1 auto}
+.privacy{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+@media(min-width:1101px){.ocr-layout>.panel:first-child{position:sticky;top:12px}}
+@media(max-width:1100px){.ocr-layout{grid-template-columns:1fr}}
+@media(max-width:690px){
+  .mobile-tabs{grid-template-columns:repeat(4,1fr)}
+  .mobile-tabs button{font-size:11px}
+  .field input,.field select,.field textarea,.cf input,.settings-grid input{font-size:16px}
+  .cand-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cf.wide{grid-column:1/-1}
+  .ocr-steps li{font-size:11px;padding:7px 2px}
+  .settings-grid{grid-template-columns:1fr 1fr}
+  .day-more{font-size:9px}
+  .top .eyebrow{display:none}
+  .top-actions{flex-wrap:nowrap}
+}
 </style>
 </head>
 <body>
-<!-- demo-status: Googleの実アカウント同期未確認・写真OCR試験中・複数端末共有は未接続です -->
-<div class="app"><aside class="side"><div class="logo">予約・予定管理<small>かんたん管理ダッシュボード</small></div><div class="side-section">スケジュール</div><button class="nav active" data-view="dashboard"><span class="ico">▦</span><span class="nav-text">全体管理</span></button><button class="nav" data-view="month"><span class="ico">▦</span><span class="nav-text">月間表示</span></button><button class="nav" data-view="detail"><span class="ico">▤</span><span class="nav-text">詳細表示</span></button><div class="side-bottom">試作版 / デモデータ<br>この端末内にのみ保存されます。<br>Googleカレンダーは利用者ごとに接続します。</div></aside>
-<main class="main"><header class="top"><div><div class="eyebrow">SCHEDULE MANAGER / PROTOTYPE</div><h1 id="viewTitle">全体管理</h1></div><div class="top-actions"><button class="btn" id="todayBtn">今日へ</button><button class="btn primary" id="newBtn">＋ 予定を追加</button></div></header>
-<div class="main-content" id="mainContent"><div class="demo-note"><b>操作できる試作版</b>：表示中の予約・予定は架空のサンプルです。変更はこのブラウザ内だけに保存されます。Googleカレンダーは運営側の接続設定後、利用者本人がログインして読み取り同期できます。写真の文字読み取りは試験機能です。読み取り精度は要確認、複数端末共有は未接続です。</div>
-<section id="dashboard" class="screen active"><div class="metrics"><div class="metric"><div class="label">選択日の予約</div><div class="value" id="metricBooking">0件</div><div class="sub">台帳とカレンダーを合算</div></div><div class="metric"><div class="label">個人予定</div><div class="value" id="metricPersonal">0件</div><div class="sub">選択日の予定</div></div><div class="metric warning"><div class="label">要確認</div><div class="value" id="metricIssue">0件</div><div class="sub">不一致・重複を検出</div></div><div class="metric"><div class="label">予約の空き</div><div class="value" id="metricOpen">-</div><div class="sub">10:00〜18:00の空き時間</div></div></div>
-<div class="split"><div class="panel"><div class="panel-heading"><div><div class="panel-title" id="timelineTitle">今日の予定</div><div class="small">緑：予約　青：個人予定　黄：要確認</div></div><div class="toolbar-inline"><button class="btn sm" id="prevDay">‹ 前日</button><button class="btn sm" id="nextDay">翌日 ›</button></div></div><div class="timeline" id="timeline"></div></div><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">確認が必要な項目</span><button class="btn sm" data-goto="detail">詳細を見る →</button></div><div class="alert-list" id="issueList"></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">手書き台帳</span><span class="small">写真を添付</span></div><div style="padding:16px"><label class="upload-btn">＋ 台帳の写真を選ぶ<input id="photoInput" type="file" accept="image/*"></label><div class="section-note" style="margin-top:10px">写真の文字読み取りを試せます。読み取り結果は必ず確認・修正してから登録してください。</div><div id="photoPreview"></div>
-<div class="ocr-box">
-  <strong>写真の文字読み取り（試験中）</strong>
-  <div class="section-note">写真を選び「文字を読み取る」を押すと、端末内で日本語OCRを実行します。初回のみ認識用データの通信が必要です。自動登録はしません。</div>
-  <label class="section-note" style="display:block;margin:8px 0"><input id="ocrEnhance" type="checkbox"> 薄い文字を補正して再挑戦</label>
-  <button class="btn sm primary" id="ocrReadBtn" disabled>写真から文字を読み取る</button>
-  <div id="ocrStatus" class="section-note" role="status" aria-live="polite" style="margin-top:9px">まず台帳の写真を選んでください。</div>
-  <div id="ocrOutput" hidden>
-    <label class="field full" style="margin-top:10px">読み取り結果（修正できます）
-      <textarea id="ocrText" spellcheck="false" placeholder="11/09 10:00-11:00 山田様 ご会食"></textarea>
-    </label>
-    <button class="btn sm" id="ocrParseBtn">予約候補に分ける</button>
-    <div id="ocrCandidates" class="ocr-candidates"></div>
-    <button class="btn sm primary" id="ocrSaveBtn" hidden>内容を確認して台帳に登録</button>
-  </div>
-</div><button class="btn" style="width:100%;margin-top:12px" id="ledgerBtn">＋ 台帳の内容を入力</button></div></div><div class="panel" id="googlePanel"><div class="panel-heading"><span class="panel-title">Googleカレンダー</span><span class="small" id="googleStatus">未接続</span></div><div style="padding:16px"><div class="section-note" id="googleHelp">利用者本人のGoogleカレンダーを読み取り、予約用と予定確認用を分けて表示します。</div><div class="toolbar-inline" style="margin-top:12px"><button class="btn sm primary" id="googleConnectBtn">Googleに接続</button><button class="btn sm" id="googleSyncBtn" disabled>予定を同期</button><button class="btn sm" id="googleDisconnectBtn" hidden>接続解除</button></div><div id="googleCalendarPicker" hidden style="margin-top:14px"><label class="field full">予約カレンダー<select id="googleReservationCalendar"><option value="">選択してください</option></select></label><div class="data-label">予定として見るカレンダー</div><div id="googleBusyCalendars" class="section-note" style="display:grid;gap:7px;margin-top:8px"></div><div class="section-note" style="margin-top:10px">ここで選んだ私用・仕事・講座・祝日などの予定は、月間・日別表示と予約の空き時間判定に反映します。</div></div></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">データ管理</span></div><div style="padding:16px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="exportBtn">JSON書き出し</button><label class="btn sm" style="cursor:pointer">JSON読み込み<input id="importInput" type="file" accept="application/json,.json" style="display:none"></label><button class="btn sm danger" id="resetBtn">試作データに戻す</button></div></div></div></div></section>
-<section id="month" class="screen"><div class="panel"><div class="calendar"><div class="cal-toolbar"><strong id="monthTitle"></strong><div class="cal-actions"><button class="btn sm" id="prevMonth">‹</button><button class="btn sm" id="monthToday">今月</button><button class="btn sm" id="nextMonth">›</button></div></div><div class="weekdays"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div><div class="cal-grid" id="calGrid"></div><div class="legend"><span>● <b style="color:var(--green)">予約</b></span><span>● <b style="color:var(--blue)">個人予定</b></span><span>● <b style="color:var(--amber)">要確認</b></span><span>日付タップで詳細を表示</span></div></div></div></section>
-<section id="detail" class="screen"><div class="date-header"><button class="btn sm" id="detailPrev">‹ 前日</button><h2 id="detailDate"></h2><button class="btn sm" id="detailNext">翌日 ›</button><input id="datePicker" type="date" class="btn" aria-label="日付を選択"></div><div class="detail-layout"><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">この日の予定</span><button class="btn sm primary" id="detailAdd">＋ 追加</button></div><div class="detail-list" id="detailList"></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">台帳とカレンダーの照合</span><span class="small" id="compareCount"></span></div><div style="padding:6px 17px 18px" id="compareList"></div></div></div><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">この日の手書き台帳</span></div><div style="padding:16px"><div class="section-note">画像を添付して、読み取った内容を手入力で確認できます。</div><div id="detailPhoto"></div><button class="btn" id="detailLedger" style="width:100%;margin-top:12px">＋ 台帳の予定を入力</button></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">操作について</span></div><div style="padding:16px" class="section-note">予約・個人予定・手書き台帳の入力と編集ができます。「台帳を採用」「予定を採用」で不一致を試しに解消できます。操作内容は試作用の端末内保存です。</div></div></div></div></section>
-</div></main></div><nav class="mobile-tabs"><button class="active" data-view="dashboard">▦ 全体管理</button><button data-view="month">▦ 月間表示</button><button data-view="detail">▤ 詳細表示</button></nav>
-<div class="modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="modalHeading"><div class="dialog"><div class="dialog-top"><h2 id="modalHeading">予定を追加</h2><button class="btn sm" id="closeModal" aria-label="閉じる">✕</button></div><form id="editForm"><input id="editId" type="hidden"><div class="form-row"><label class="field full">予定の種類<select id="editType"><option value="booking">カレンダー上の予約</option><option value="personal">個人予定</option><option value="ledger">手書き台帳の予約</option></select></label><label class="field">日付<input id="editDate" type="date" required></label><label class="field">開始時刻<input id="editTime" type="time" required></label><label class="field">終了時刻<input id="editEnd" type="time" required></label><label class="field">名前・件名<input id="editName" maxlength="100" placeholder="例：山田様 / 通院" required></label><label class="field full">メニュー・内容<input id="editMenu" maxlength="150" placeholder="例：カット・カラー"></label><label class="field full">メモ<textarea id="editNote" maxlength="500" placeholder="伝達事項など"></textarea></label></div><footer><button type="button" class="btn danger" id="deleteBtn" hidden>削除</button><button type="button" class="btn" id="cancelBtn">戻る</button><button type="submit" class="btn primary">保存する</button></footer></form></div></div><div class="toast" id="toast" role="status"></div>
+<!-- demo-status: 懐石料理店向け試験版。写真OCRは端末内処理。Googleの実アカウント同期未確認・複数端末共有は未接続です -->
+<div class="app"><aside class="side"><div class="logo">予約台帳<small>懐石料理店向け 予約・予定管理</small></div><div class="side-section">スケジュール</div><button class="nav active" data-view="dashboard"><span class="ico">▦</span><span class="nav-text">全体管理</span></button><button class="nav" data-view="month"><span class="ico">▦</span><span class="nav-text">月間表示</span></button><button class="nav" data-view="detail"><span class="ico">▤</span><span class="nav-text">詳細表示</span></button><div class="side-section">手書き台帳</div><button class="nav" data-view="ocr"><span class="ico">◉</span><span class="nav-text">写真から登録</span></button><div class="side-bottom">試験版 / サンプルデータ<br>この端末内にのみ保存されます。<br>写真の文字読み取りは端末内で行い、外部へ送信しません。</div></aside>
+<main class="main"><header class="top"><div><div class="eyebrow">KAISEKI RESERVATIONS / TRIAL</div><h1 id="viewTitle">全体管理</h1></div><div class="top-actions"><button class="btn" id="todayBtn">今日へ</button><button class="btn primary" id="newBtn">＋ 予約・予定</button></div></header>
+<div class="main-content" id="mainContent"><div class="demo-note"><b>懐石料理店向けの試験版</b>：最初に表示される予約は架空のサンプルです。変更はこのブラウザ内だけに保存されます。台帳の写真読み取りは端末内で処理し、写真やお客様の情報を外部へ送りません（初回のみ読み取り用データ約33MBを読み込みます）。読み取り結果は必ず確認・修正してから登録してください。営業時間・座席数などの店舗情報は未設定です。</div>
+<section id="dashboard" class="screen active"><div class="metrics"><div class="metric"><div class="label">選択日の予約</div><div class="value" id="metricBooking">0件</div><div class="sub" id="metricGuests">台帳とカレンダーを合算</div></div><div class="metric"><div class="label">個人予定</div><div class="value" id="metricPersonal">0件</div><div class="sub">選択日の予定</div></div><div class="metric warning"><div class="label">要確認</div><div class="value" id="metricIssue">0件</div><div class="sub">不一致・重複を検出</div></div><div class="metric"><div class="label">予約の空き</div><div class="value" id="metricOpen">-</div><div class="sub" id="metricOpenSub">営業時間を設定すると表示</div></div></div>
+<div class="split"><div class="panel"><div class="panel-heading"><div><div class="panel-title" id="timelineTitle">今日の予定</div><div class="small">緑：予約　紫：台帳のみ　青：個人予定　黄：要確認</div></div><div class="toolbar-inline"><button class="btn sm" id="prevDay">‹ 前日</button><button class="btn sm" id="nextDay">翌日 ›</button></div></div><div class="timeline" id="timeline"></div></div><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">確認が必要な項目</span><button class="btn sm" data-goto="detail">詳細を見る →</button></div><div class="alert-list" id="issueList"></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">手書き台帳</span><span class="small">写真から登録</span></div><div style="padding:16px"><button class="btn primary big" data-goto="ocr" id="dashOcrBtn">◉ 台帳の写真から予約を登録</button><div class="section-note" style="margin-top:10px">写真を選ぶと、日付・時間・お名前・人数・ご予約内容を読み取って候補にします。確認・修正してから登録します。</div><button class="btn" style="width:100%;margin-top:12px" id="ledgerBtn">＋ 台帳の内容を手入力</button></div></div><div class="panel" id="googlePanel"><div class="panel-heading"><span class="panel-title">Googleカレンダー</span><span class="small" id="googleStatus">未接続</span></div><div style="padding:16px"><div class="section-note" id="googleHelp">利用者本人のGoogleカレンダーを読み取り、予約用と予定確認用を分けて表示します。</div><div class="toolbar-inline" style="margin-top:12px"><button class="btn sm primary" id="googleConnectBtn">Googleに接続</button><button class="btn sm" id="googleSyncBtn" disabled>予定を同期</button><button class="btn sm" id="googleDisconnectBtn" hidden>接続解除</button></div><div id="googleCalendarPicker" hidden style="margin-top:14px"><label class="field full">予約カレンダー<select id="googleReservationCalendar"><option value="">選択してください</option></select></label><div class="data-label">予定として見るカレンダー</div><div id="googleBusyCalendars" class="section-note" style="display:grid;gap:7px;margin-top:8px"></div><div class="section-note" style="margin-top:10px">ここで選んだ私用・仕事・講座・祝日などの予定は、月間・日別表示と予約の空き時間判定に反映します。</div></div></div></div><div class="panel" id="settingsPanel"><div class="panel-heading"><span class="panel-title">店舗の設定</span><span class="small" id="settingsState">未設定</span></div><form id="settingsForm" style="padding:16px"><div class="section-note" style="margin-bottom:10px">実際の営業時間・席数は入っていません。必要な項目だけ入力してください。空欄の項目は判定に使いません。</div><div class="settings-grid"><label class="field">営業開始<input id="setOpen" type="time"></label><label class="field">営業終了<input id="setClose" type="time"></label><label class="field">標準の利用時間（分）<input id="setDuration" type="number" min="15" max="720" step="5" inputmode="numeric" placeholder="例：120"></label><label class="field">同じ時間帯の予約上限（組）<input id="setCapacity" type="number" min="1" max="99" inputmode="numeric" placeholder="空欄＝確認しない"></label></div><div class="section-note" style="margin-top:8px">営業時間を入れると「6時」などの午前/午後を読み取り時に判定し、空き時間も表示します。標準の利用時間は、台帳に終了時刻がない予約の仮の終了時刻に使います。</div><button type="submit" class="btn sm primary" style="margin-top:10px">設定を保存</button></form></div><div class="panel"><div class="panel-heading"><span class="panel-title">データ管理</span></div><div style="padding:16px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="exportBtn">JSON書き出し</button><label class="btn sm" style="cursor:pointer">JSON読み込み<input id="importInput" type="file" accept="application/json,.json" style="display:none"></label><button class="btn sm danger" id="resetBtn">サンプルデータに戻す</button></div></div></div></div></section>
+<section id="month" class="screen"><div class="panel"><div class="calendar"><div class="cal-toolbar"><strong id="monthTitle"></strong><div class="cal-actions"><button class="btn sm" id="prevMonth">‹</button><button class="btn sm" id="monthToday">今月</button><button class="btn sm" id="nextMonth">›</button></div></div><div class="weekdays"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div><div class="cal-grid" id="calGrid"></div><div class="legend"><span>● <b style="color:var(--green)">予約</b></span><span>● <b style="color:#5b3fb5">台帳のみ</b></span><span>● <b style="color:var(--blue)">個人予定</b></span><span>● <b style="color:var(--amber)">要確認</b></span><span>日付タップで詳細を表示</span></div></div></div></section>
+<section id="detail" class="screen"><div class="date-header"><button class="btn sm" id="detailPrev">‹ 前日</button><h2 id="detailDate"></h2><button class="btn sm" id="detailNext">翌日 ›</button><input id="datePicker" type="date" class="btn" aria-label="日付を選択"></div><div class="detail-layout"><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">この日の予定</span><button class="btn sm primary" id="detailAdd">＋ 追加</button></div><div class="detail-list" id="detailList"></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">台帳とカレンダーの照合</span><span class="small" id="compareCount"></span></div><div style="padding:6px 17px 18px" id="compareList"></div></div></div><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">この日の手書き台帳</span></div><div style="padding:16px"><div class="section-note">写真から登録した日付には、その写真を表示します（この画面を開いている間）。</div><div id="detailPhoto"></div><button class="btn primary" data-goto="ocr" style="width:100%;margin-top:12px">◉ 写真から予約を登録</button><button class="btn" id="detailLedger" style="width:100%;margin-top:10px">＋ 台帳の予定を手入力</button></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">操作について</span></div><div style="padding:16px" class="section-note">予約・個人予定・手書き台帳の入力と編集ができます。「台帳を採用」「予定を採用」で台帳とカレンダーの不一致を解消できます。Googleの予定は読み取り専用です。</div></div></div></div></section>
+<section id="ocr" class="screen">
+<ol class="ocr-steps" id="ocrSteps"><li data-step="photo"><b>①</b>写真</li><li data-step="read"><b>②</b>読み取り</li><li data-step="review"><b>③</b>確認・修正</li><li data-step="confirm"><b>④</b>登録</li></ol>
+<div class="ocr-layout">
+ <div class="panel"><div class="panel-heading"><span class="panel-title">① 台帳の写真</span><span class="small" id="ocrDraftState"></span></div><div class="ocr-body">
+  <label class="upload-btn big" id="photoPick">◉ 写真を撮る・選ぶ<input id="photoInput" type="file" accept="image/*"></label>
+  <div class="ocr-photo" id="photoPreview"></div>
+  <button class="btn primary big" id="ocrReadBtn" style="margin-top:12px" disabled>② 文字を読み取る</button>
+  <label class="section-note" style="display:flex;gap:8px;align-items:center;margin-top:10px"><input id="ocrEnhance" type="checkbox"> 薄い文字を強めに補正して読み取る</label>
+  <div id="ocrStatus" class="ocr-status" role="status" aria-live="polite">台帳の写真を選んでください。</div>
+  <div class="ocr-actions" id="ocrErrorActions" hidden><button class="btn sm primary" id="ocrRetryBtn">もう一度読み取る</button><button class="btn sm" id="ocrManualBtn">手入力で候補を作る</button></div>
+  <details class="ocr-raw" id="ocrRawBox" hidden><summary>読み取った文字を見る・直す</summary><textarea id="ocrText" spellcheck="false" placeholder="例：11/14 18:00 山田様 4名 会席コース"></textarea><button class="btn sm" id="ocrParseBtn">この文字から候補を作り直す</button></details>
+  <div class="privacy">写真と読み取り結果はこの端末内だけで処理し、外部のOCRサービスへ送りません。作業中の写真と候補はこの端末に一時保存され、登録が終わると消去されます。<button class="btn sm ghost" id="ocrDiscardBtn" hidden>作業を破棄</button></div>
+ </div></div>
+ <div class="panel" id="ocrReviewPanel"><div class="panel-heading"><span class="panel-title" id="ocrReviewTitle">③ 予約候補の確認・修正</span><span class="legend-chips"><span class="chip ok">読取</span><span class="chip check">要確認</span><span class="chip missing">未読取</span><span class="chip edited">修正済</span></span></div><div class="ocr-body">
+  <div id="ocrCandidates"><div class="empty">写真を読み取ると、ここに予約の候補が表示されます。</div></div>
+  <button class="btn" id="ocrAddRowBtn" style="width:100%">＋ 候補を手入力で追加</button>
+  <div class="ocr-sticky" id="ocrReviewActions" hidden><button class="btn primary big" id="ocrConfirmBtn">④ 登録内容の確認へ</button></div>
+  <div id="ocrConfirm" hidden><div class="section-note" style="margin-bottom:6px">以下の内容で「手書き台帳の予約」として登録します。Googleカレンダーには書き込みません。</div><div id="ocrConfirmList"></div><div class="ocr-sticky"><button class="btn big" id="ocrBackBtn" style="flex:1 1 40%">戻って修正</button><button class="btn primary big" id="ocrSaveBtn" style="flex:1 1 55%">この内容で登録</button></div></div>
+  <div id="ocrDone" hidden></div>
+ </div></div>
+</div>
+</section>
+</div></main></div><nav class="mobile-tabs"><button class="active" data-view="dashboard">▦ 全体管理</button><button data-view="month">▦ 月間</button><button data-view="detail">▤ 詳細</button><button data-view="ocr">◉ 写真登録</button></nav>
+<div class="modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="modalHeading"><div class="dialog"><div class="dialog-top"><h2 id="modalHeading">予定を追加</h2><button class="btn sm" id="closeModal" aria-label="閉じる">✕</button></div><form id="editForm"><input id="editId" type="hidden"><div class="form-row"><label class="field full">予定の種類<select id="editType"><option value="booking">カレンダー上の予約</option><option value="ledger">手書き台帳の予約</option><option value="personal">個人予定</option></select></label><label class="field">日付<input id="editDate" type="date" required></label><label class="field">人数<input id="editGuests" type="number" min="1" max="999" inputmode="numeric" placeholder="例：4"></label><label class="field">開始時刻<input id="editTime" type="time" required></label><label class="field">終了時刻<input id="editEnd" type="time" required></label><label class="field full">お名前・件名<input id="editName" maxlength="100" placeholder="例：山田様 / 仕入れ" required></label><label class="field full">ご予約内容<input id="editMenu" maxlength="150" placeholder="例：会席コース・お祝い"></label><label class="field full">備考<textarea id="editNote" maxlength="500" placeholder="アレルギー・お部屋の希望・伝達事項など"></textarea></label></div><footer><button type="button" class="btn danger" id="deleteBtn" hidden>削除</button><button type="button" class="btn" id="cancelBtn">戻る</button><button type="submit" class="btn primary">保存する</button></footer></form></div></div><div class="toast" id="toast" role="status"></div>
+<script src="ocr/ocr-parse.js"></script>
 <script>
 (()=>{'use strict';
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const pad=n=>String(n).padStart(2,'0'), localDate=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const addDays=(s,days)=>{const a=s.split('-').map(Number);return localDate(new Date(a[0],a[1]-1,a[2]+days))};
-const today=localDate(new Date());const base=[{id:'b1',type:'booking',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'ご会食',note:''},{id:'b2',type:'booking',date:today,start:'14:30',end:'15:30',name:'佐藤様',menu:'お食事',note:''},{id:'b3',type:'booking',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'ご会食',note:''},{id:'p1',type:'personal',date:today,start:'13:00',end:'14:00',name:'私用・外出',menu:'',note:''},{id:'p2',type:'personal',date:addDays(today,1),start:'10:00',end:'11:30',name:'打ち合わせ',menu:'',note:''},{id:'l1',type:'ledger',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'ご会食',note:''},{id:'l2',type:'ledger',date:today,start:'15:00',end:'16:00',name:'佐藤様',menu:'お食事',note:'時刻が違うサンプル'},{id:'l3',type:'ledger',date:today,start:'16:30',end:'17:30',name:'田中様',menu:'ご会食',note:'台帳にだけあるサンプル'},{id:'l4',type:'ledger',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'ご会食',note:''}];
+const today=localDate(new Date());const base=[{id:'b1',type:'booking',date:today,start:'12:00',end:'14:00',name:'山田様',guests:4,menu:'昼の会席',note:''},{id:'b2',type:'booking',date:today,start:'18:00',end:'20:00',name:'佐藤様',guests:6,menu:'お祝い会席',note:''},{id:'b3',type:'booking',date:addDays(today,2),start:'18:30',end:'20:30',name:'鈴木様',guests:2,menu:'会席コース',note:''},{id:'p1',type:'personal',date:today,start:'15:00',end:'16:00',name:'仕入れ・打ち合わせ',menu:'',note:''},{id:'p2',type:'personal',date:addDays(today,1),start:'10:00',end:'11:30',name:'私用',menu:'',note:''},{id:'l1',type:'ledger',date:today,start:'12:00',end:'14:00',name:'山田様',guests:4,menu:'昼の会席',note:''},{id:'l2',type:'ledger',date:today,start:'18:30',end:'20:30',name:'佐藤様',guests:6,menu:'お祝い会席',note:'時刻が違うサンプル'},{id:'l3',type:'ledger',date:today,start:'19:00',end:'21:00',name:'田中様',guests:3,menu:'会席コース',note:'台帳にだけあるサンプル'},{id:'l4',type:'ledger',date:addDays(today,2),start:'18:30',end:'20:30',name:'鈴木様',guests:2,menu:'会席コース',note:''}];
 let data,photos={},sel=today,view='dashboard',month=new Date(today+'T12:00'),modalType='booking';
+const OcrParse=(typeof window!=='undefined'&&window.KaisekiOcrParse)||globalThis.KaisekiOcrParse||null;
+const settingsKey='schedule-settings-v1';
+let settings={openTime:'',closeTime:'',defaultDuration:'',capacity:''};
+function cleanSettings(x){
+  const t=v=>typeof v==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(v)?v:'';
+  const n=(v,min,max)=>{const k=Number(v);return v!==''&&v!==null&&v!==undefined&&Number.isInteger(k)&&k>=min&&k<=max?k:''};
+  const out={openTime:t(x?.openTime),closeTime:t(x?.closeTime),defaultDuration:n(x?.defaultDuration,15,720),capacity:n(x?.capacity,1,99)};
+  if(!out.openTime||!out.closeTime||out.openTime>=out.closeTime){out.openTime='';out.closeTime=''}
+  return out;
+}
+try{const raw=localStorage.getItem(settingsKey);if(raw)settings=cleanSettings(JSON.parse(raw))}catch{}
 const googlePrefsKey='schedule-google-prefs-v1';
 let googleAccessToken='',googleTokenClient=null,googleCalendars=[],googleEvents=[],googleScriptPromise=null,googleSyncing=false;
 let googlePrefs={reservationId:'',busyIds:[]};
@@ -94,8 +176,9 @@ function readRecords(value){
       !Number.isFinite(Date.parse(x.date+'T12:00:00Z'))||new Date(x.date+'T12:00:00Z').toISOString().slice(0,10)!==x.date||
       typeof x.start!=='string'||typeof x.end!=='string'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(x.start)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(x.end)||x.start>=x.end||
       (x.menu!==undefined&&(typeof x.menu!=='string'||x.menu.length>150))||
-      (x.note!==undefined&&(typeof x.note!=='string'||x.note.length>500)))throw Error('Invalid record');
-    ids.add(x.id);return {...x,menu:x.menu??'',note:x.note??''};
+      (x.note!==undefined&&(typeof x.note!=='string'||x.note.length>500))||
+      (x.guests!==undefined&&x.guests!==null&&x.guests!==''&&(!Number.isInteger(x.guests)||x.guests<1||x.guests>999)))throw Error('Invalid record');
+    ids.add(x.id);const r={...x,menu:x.menu??'',note:x.note??''};if(r.guests===null||r.guests==='')delete r.guests;return r;
   });
 }
 try{
@@ -119,8 +202,22 @@ function fmt(d){const dt=new Date(d+'T12:00');return `${dt.getFullYear()}年${dt
 function inDay(d){return [...data,...googleEvents].filter(x=>x.date===d).sort((a,b)=>a.start.localeCompare(b.start))}
 function cal(d){return inDay(d).filter(x=>x.type!=='ledger')}
 function ledger(d){return inDay(d).filter(x=>x.type==='ledger')}
-function sameName(a,b){return a.name.trim().replace(/\s/g,'')===b.name.trim().replace(/\s/g,'')}
-function compare(d){const b=cal(d).filter(x=>x.type==='booking'),l=ledger(d),results=[],used=new Set();for(const a of l){const c=b.find(x=>!used.has(x.id)&&sameName(a,x));if(c){used.add(c.id);if(a.start!==c.start||a.end!==c.end||a.menu!==c.menu)results.push({kind:'mismatch',ledger:a,booking:c,label:'台帳とカレンダーが不一致'});}else results.push({kind:'only-ledger',ledger:a,label:'台帳にだけある予約'});}for(const a of b)if(!used.has(a.id))results.push({kind:'only-calendar',booking:a,label:'カレンダーにだけある予約'});const booked=cal(d);for(let i=0;i<booked.length;i++)for(let j=i+1;j<booked.length;j++)if(booked[i].start<booked[j].end&&booked[j].start<booked[i].end)results.push({kind:'overlap',a:booked[i],b:booked[j],label:'予定が重複しています'});return results}
+function normName(s){return String(s??'').normalize('NFKC').trim().replace(/\s/g,'').replace(/(様|さま|殿)$/,'')}
+function sameName(a,b){return normName(a.name)===normName(b.name)}
+/* 台帳とカレンダー予約の対応付け（同日・同名を先着で対応） */
+function matchLedger(d){const b=cal(d).filter(x=>x.type==='booking'),l=ledger(d),pairs=[],onlyLedger=[],used=new Set();for(const a of l){const c=b.find(x=>!used.has(x.id)&&sameName(a,x));if(c){used.add(c.id);pairs.push([a,c])}else onlyLedger.push(a)}return {pairs,onlyLedger,onlyCalendar:b.filter(x=>!used.has(x.id))}}
+/* カレンダー側の予約を使っている場合だけ「台帳にだけある」を確認対象にする */
+function calendarSideInUse(){return Boolean((googleAccessToken&&googlePrefs.reservationId)||data.some(x=>x.type==='booking'))}
+function reservationsOf(d){const m=matchLedger(d);return [...cal(d).filter(x=>x.type==='booking'),...m.onlyLedger].sort((a,b)=>a.start.localeCompare(b.start))}
+function compare(d){const m=matchLedger(d),results=[];for(const [a,c] of m.pairs)if(a.start!==c.start||a.end!==c.end||a.menu!==c.menu||(a.guests??'')!==(c.guests??'')&&a.guests!==undefined&&c.guests!==undefined)results.push({kind:'mismatch',ledger:a,booking:c,label:'台帳とカレンダーが不一致'});if(calendarSideInUse())for(const a of m.onlyLedger)results.push({kind:'only-ledger',ledger:a,label:'台帳にだけある予約'});for(const a of m.onlyCalendar)results.push({kind:'only-calendar',booking:a,label:'カレンダーにだけある予約'});
+  const res=reservationsOf(d),personal=cal(d).filter(x=>x.type==='personal');
+  // 個人予定と予約・個人予定同士の時間の重なり
+  for(let i=0;i<personal.length;i++){for(const r of res)if(personal[i].start<r.end&&r.start<personal[i].end)results.push({kind:'overlap',a:r.start<=personal[i].start?r:personal[i],b:r.start<=personal[i].start?personal[i]:r,label:'予定が重複しています'});for(let j=i+1;j<personal.length;j++)if(personal[i].start<personal[j].end&&personal[j].start<personal[i].end)results.push({kind:'overlap',a:personal[i],b:personal[j],label:'予定が重複しています'})}
+  // 同じお名前の予約が同じ日に複数
+  const seen=new Map();for(const r of res){const k=normName(r.name);if(seen.has(k))results.push({kind:'overlap',a:seen.get(k),b:r,label:'同じお名前の予約が同じ日に複数あります'});else seen.set(k,r)}
+  // 予約上限（設定時のみ）
+  if(settings.capacity){const starts=[...new Set(res.map(r=>r.start))];for(const t of starts){const n=res.filter(r=>r.start<=t&&t<r.end);if(n.length>settings.capacity){results.push({kind:'capacity',items:n,at:t,label:`同じ時間帯の予約が上限（${settings.capacity}組）を超えています`});break}}}
+  return results}
 function googleCalendarName(id){
   return googleCalendars.find(x=>x.id===id)?.summaryOverride||googleCalendars.find(x=>x.id===id)?.summary||'Googleカレンダー';
 }
@@ -303,26 +400,33 @@ function disconnectGoogle(){
   try{if(token&&typeof window!=='undefined'&&window.google?.accounts?.oauth2)window.google.accounts.oauth2.revoke(token,()=>{});}catch{}
   render();toast('Googleカレンダーの接続を解除しました');
 }
-function toast(msg){const x=$('#toast');x.textContent=msg;x.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>x.classList.remove('show'),2700)}
-function setView(next){view=next;$$('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===next));$$('.screen').forEach(x=>x.classList.toggle('active',x.id===next));$('#viewTitle').textContent=({dashboard:'全体管理',month:'月間表示',detail:'詳細表示'})[next];$('#mainContent').scrollTop=0;render()}
+function toast(msg){const x=$('#toast');x.textContent=msg;x.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>x.classList.remove('show'),3200)}
+const VIEW_TITLES={dashboard:'全体管理',month:'月間表示',detail:'詳細表示',ocr:'台帳の写真から登録'};
+function setView(next){if(!VIEW_TITLES[next])return;view=next;$$('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===next));$$('.screen').forEach(x=>x.classList.toggle('active',x.id===next));$('#viewTitle').textContent=VIEW_TITLES[next];$('#mainContent').scrollTop=0;render()}
 function setDate(d){const oldMonth=month.getFullYear()*12+month.getMonth();sel=d;month=new Date(d+'T12:00');render();if(googleAccessToken&&oldMonth!==month.getFullYear()*12+month.getMonth())syncGoogleEvents()}
-function durationOpen(d){const slots=[];for(let h=10;h<18;h++)for(let m=0;m<60;m+=30){const start=`${pad(h)}:${pad(m)}`,end=m===30?`${pad(h+1)}:00`:`${pad(h)}:30`;if(!inDay(d).some(x=>x.start<end&&x.end>start))slots.push(start)}const count=slots.length*0.5;return `${count}時間`}
-function render(){const all=cal(sel),issues=compare(sel);renderGooglePanel();const ocrButton=$('#ocrReadBtn');if(ocrButton)ocrButton.disabled=!photos[sel]||ocrBusy;$('#metricBooking').textContent=`${all.filter(x=>x.type==='booking').length+issues.filter(x=>x.kind==='only-ledger').length}件`;$('#metricPersonal').textContent=`${all.filter(x=>x.type==='personal').length}件`;$('#metricIssue').textContent=`${issues.length}件`;$('#metricOpen').textContent=durationOpen(sel);$('#timelineTitle').textContent=`${fmt(sel)} の予定`;renderTimeline(all);renderIssue(issues);renderMonth();renderDetail();}
-function renderTimeline(all){const wrap=$('#timeline');let html='';for(let h=9;h<=19;h++){const events=all.filter(x=>Number(x.start.split(':')[0])===h);html+=`<div class="time-line"><div class="time-label">${pad(h)}:00</div><div class="events">${events.map(x=>eventHTML(x)).join('')}</div></div>`}wrap.innerHTML=html;}
-function eventHTML(x){const warn=compare(x.date).some(a=>[a.ledger?.id,a.booking?.id,a.a?.id,a.b?.id].includes(x.id));const tag=x.readOnly?'div':'button',edit=x.readOnly?'':` data-edit="${esc(x.id)}"`;const label=x.readOnly?(x.type==='booking'?'Google予約':'Google予定'):(x.type==='personal'?'個人':'予約');return `<${tag} class="event ${esc(x.type)} ${warn?'warn':''}"${edit}><div><strong>${esc(x.start)}〜${esc(x.end)}　${esc(x.name)}</strong><span>${esc(x.menu|| (x.type==='personal'?'個人予定':'予約'))}${x.readOnly?'・読み取り専用':''}</span></div><span class="pill ${warn?'warn':x.type==='personal'?'blue':''}">${warn?'要確認':esc(label)}</span></${tag}>`}
-function renderIssue(issues){$('#issueList').innerHTML=issues.length?issues.slice(0,7).map(x=>`<div class="alert-row"><span class="circle"></span><div style="flex:1"><strong>${esc(x.ledger?.name||x.booking?.name||x.a?.name)}：${esc(x.label)}</strong><small>${esc(x.ledger?.start||x.booking?.start||x.a?.start)}</small></div><button class="btn sm" data-goto="detail">確認</button></div>`).join(''):'<div class="empty">現在、確認が必要な項目はありません。</div>'}
-function renderMonth(){const yr=month.getFullYear(),mo=month.getMonth();$('#monthTitle').textContent=`${yr}年 ${mo+1}月`;const begin=new Date(yr,mo,1),offset=begin.getDay(),cells=Math.ceil((offset+new Date(yr,mo+1,0).getDate())/7)*7;let html='';for(let i=0;i<cells;i++){const dt=new Date(yr,mo,1-offset+i),d=localDate(dt),x=inDay(d),warnings=compare(d);let labels=x.filter(a=>a.type!=='ledger').slice(0,2).map(a=>`<span class="day-entry ${esc(a.type)}">${esc(a.start)} ${esc(a.name)}</span>`).join('');if(warnings.length)labels+=`<span class="day-entry warn">⚠ 要確認 ${warnings.length}件</span>`;html+=`<button class="day ${dt.getMonth()!==mo?'outside':''} ${d===sel?'selected':''} ${d===today?'today':''}" data-day="${d}" aria-label="${fmt(d)} 詳細を表示"><span class="num">${dt.getDate()}</span>${labels}</button>`}$('#calGrid').innerHTML=html;}
-function renderDetail(){ $('#detailDate').textContent=fmt(sel);$('#datePicker').value=sel;const all=inDay(sel);$('#detailList').innerHTML=all.length?all.map(x=>`<div class="record"><div class="record-time">${esc(x.start)}</div><div class="record-info"><strong>${esc(x.name)}</strong><small>${esc(x.end)}まで・${x.readOnly?(x.type==='booking'?'Google予約':'Google予定'):x.type==='personal'?'個人予定':x.type==='ledger'?'手書き台帳':'カレンダー予約'}${x.menu?'・'+esc(x.menu):''}${x.readOnly?'・読み取り専用':''}</small></div>${x.readOnly?'':`<button class="btn sm" data-edit="${esc(x.id)}">編集</button>`}</div>`).join(''):'<div class="empty">この日の予定はありません。</div>';const issues=compare(sel);$('#compareCount').textContent=issues.length?`${issues.length}件の確認事項`:'一致';$('#compareList').innerHTML=issues.length?issues.map((x,i)=>issueHTML(x,i)).join(''):'<div class="empty">台帳とカレンダーの照合で不一致はありません。</div>';$('#detailPhoto').innerHTML=photos[sel]?`<div class="ledger-card"><small>添付した台帳写真（この画面内のみ）</small><img src="${photos[sel]}" alt="手書き台帳の写真"></div>`:'<div class="empty" style="padding:16px">この日付の写真は未添付です。</div>';}
-function issueHTML(x,i){if(x.kind==='overlap'){const aEdit=x.a.readOnly?'':`<button class="btn sm" data-edit="${esc(x.a.id)}">左を編集</button>`,bEdit=x.b.readOnly?'':`<button class="btn sm" data-edit="${esc(x.b.id)}">右を編集</button>`;return `<div class="compare"><h3>⚠ 予定の重複</h3><div class="values"><div>${esc(x.a.start)}〜${esc(x.a.end)}<strong>${esc(x.a.name)}</strong></div><div>${esc(x.b.start)}〜${esc(x.b.end)}<strong>${esc(x.b.name)}</strong></div></div><div class="section-note" style="margin-top:8px">${x.a.readOnly||x.b.readOnly?'Google予定は読み取り専用です。変更が必要な場合はGoogleカレンダー側で調整してください。':'どちらかの予定を編集して時間を調整してください。'}</div><div class="buttons">${aEdit}${bEdit}</div></div>`}const l=x.ledger,b=x.booking;const lid=l?.id||'',bid=b?.id||'';const label=x.kind==='mismatch'?'内容に違いがあります':x.kind==='only-ledger'?'台帳にだけあります':'カレンダーにだけあります';if(b?.readOnly)return `<div class="compare"><h3>⚠ ${esc(l?.name||b?.name)}：${label}</h3><div class="values"><div><small>手書き台帳</small><strong>${l?esc(l.start+'〜'+l.end):'登録なし'}</strong><small>${esc(l?.menu||'')}</small></div><div><small>Googleカレンダー</small><strong>${esc(b.start+'〜'+b.end)}</strong><small>${esc(b.menu||'')}</small></div></div><div class="section-note" style="margin-top:8px">Google予定は読み取り専用です。自動反映はせず、差分だけ確認します。</div></div>`;return `<div class="compare"><h3>⚠ ${esc(l?.name||b?.name)}：${label}</h3><div class="values"><div><small>手書き台帳</small><strong>${l?esc(l.start+'〜'+l.end):'登録なし'}</strong><small>${esc(l?.menu||'')}</small></div><div><small>カレンダー側</small><strong>${b?esc(b.start+'〜'+b.end):'登録なし'}</strong><small>${esc(b?.menu||'')}</small></div></div><div class="buttons">${l?`<button class="btn sm primary" data-reconcile="ledger" data-ledger="${esc(lid)}" data-booking="${esc(bid)}">台帳を採用</button>`:''}${b?`<button class="btn sm" data-reconcile="booking" data-ledger="${esc(lid)}" data-booking="${esc(bid)}">予定を採用</button>`:''}</div></div>`}
-function openModal(type='booking',record=null){$('#editForm').reset();$('#editId').value=record?.id||'';$('#editType').value=record?.type||type;$('#editDate').value=record?.date||sel;$('#editTime').value=record?.start||'10:00';$('#editEnd').value=record?.end||'11:00';$('#editName').value=record?.name||'';$('#editMenu').value=record?.menu||'';$('#editNote').value=record?.note||'';$('#deleteBtn').hidden=!record;$('#modalHeading').textContent=record?'予定を編集':'予定を追加';$('#editModal').classList.add('open');$('#editName').focus()}
+const toMin=t=>{const p=t.split(':');return Number(p[0])*60+Number(p[1])};
+function durationOpen(d){if(!settings.openTime||!settings.closeTime)return '未設定';const o=toMin(settings.openTime),c=toMin(settings.closeTime),busy=[...reservationsOf(d),...cal(d).filter(x=>x.type==='personal')];let free=0;for(let m=o;m<c;m+=30){const s=`${pad(Math.floor(m/60))}:${pad(m%60)}`,e2=Math.min(m+30,c),e=`${pad(Math.floor(e2/60))}:${pad(e2%60)}`;if(!busy.some(x=>x.start<e&&x.end>s))free+=e2-m}return `${free/60}時間`}
+function guestText(x){return Number.isInteger(x?.guests)?`${x.guests}名`:''}
+function typeLabel(x){return x.readOnly?(x.type==='booking'?'Google予約':'Google予定'):x.type==='personal'?'個人予定':x.type==='ledger'?'手書き台帳':'カレンダー予約'}
+function render(){const res=reservationsOf(sel),issues=compare(sel),all=[...res,...cal(sel).filter(x=>x.type==='personal')].sort((a,b)=>a.start.localeCompare(b.start));renderGooglePanel();renderSettings();$('#metricBooking').textContent=`${res.length}件`;const g=res.reduce((a,x)=>a+(Number.isInteger(x.guests)?x.guests:0),0),unknown=res.filter(x=>!Number.isInteger(x.guests)).length;$('#metricGuests').textContent=res.length?`計${g}名${unknown?`（人数未記入${unknown}件）`:''}`:'台帳とカレンダーを合算';$('#metricPersonal').textContent=`${cal(sel).filter(x=>x.type==='personal').length}件`;$('#metricIssue').textContent=`${issues.length}件`;$('#metricOpen').textContent=durationOpen(sel);$('#metricOpenSub').textContent=settings.openTime?`${settings.openTime}〜${settings.closeTime}の空き時間`:'営業時間を設定すると表示';$('#timelineTitle').textContent=`${fmt(sel)} の予定`;renderTimeline(all);renderIssue(issues);renderMonth();renderDetail();renderOcr()}
+function renderTimeline(all){const wrap=$('#timeline');const hours=all.map(x=>Number(x.start.split(':')[0]));const first=Math.min(9,...hours,settings.openTime?Number(settings.openTime.slice(0,2)):9),last=Math.max(21,...hours,settings.closeTime?Number(settings.closeTime.slice(0,2)):21);let html='';for(let h=first;h<=last;h++){const events=all.filter(x=>Number(x.start.split(':')[0])===h);html+=`<div class="time-line"><div class="time-label">${pad(h)}:00</div><div class="events">${events.map(x=>eventHTML(x)).join('')}</div></div>`}wrap.innerHTML=html;}
+function eventHTML(x){const warn=compare(x.date).some(a=>[a.ledger?.id,a.booking?.id,a.a?.id,a.b?.id,...(a.items||[]).map(i=>i.id)].includes(x.id));const tag=x.readOnly?'div':'button',edit=x.readOnly?'':` data-edit="${esc(x.id)}"`;const label=x.readOnly?(x.type==='booking'?'Google予約':'Google予定'):(x.type==='personal'?'個人':x.type==='ledger'?'台帳':'予約');const g=guestText(x);return `<${tag} class="event ${esc(x.type)} ${warn?'warn':''}"${edit}><div><strong>${esc(x.start)}〜${esc(x.end)}　${esc(x.name)}${g?`　<span class="guest" style="display:inline;font-size:13px;color:var(--ink)">${g}</span>`:''}</strong><span>${esc(x.menu|| (x.type==='personal'?'個人予定':'予約'))}${x.readOnly?'・読み取り専用':''}</span></div><span class="pill ${warn?'warn':x.type==='personal'?'blue':x.type==='ledger'?'ledger':''}">${warn?'要確認':esc(label)}</span></${tag}>`}
+function issueName(x){return x.ledger?.name||x.booking?.name||x.a?.name||x.items?.[0]?.name||''}
+function renderIssue(issues){$('#issueList').innerHTML=issues.length?issues.slice(0,7).map(x=>`<div class="alert-row"><span class="circle"></span><div style="flex:1"><strong>${esc(x.kind==='capacity'?x.at+'〜':issueName(x))}：${esc(x.label)}</strong><small>${esc(x.ledger?.start||x.booking?.start||x.a?.start||x.at||'')}</small></div><button class="btn sm" data-goto="detail">確認</button></div>`).join(''):'<div class="empty">現在、確認が必要な項目はありません。</div>'}
+function renderMonth(){const yr=month.getFullYear(),mo=month.getMonth();$('#monthTitle').textContent=`${yr}年 ${mo+1}月`;const begin=new Date(yr,mo,1),offset=begin.getDay(),cells=Math.ceil((offset+new Date(yr,mo+1,0).getDate())/7)*7;let html='';for(let i=0;i<cells;i++){const dt=new Date(yr,mo,1-offset+i),d=localDate(dt),entries=[...reservationsOf(d),...cal(d).filter(x=>x.type==='personal')].sort((a,b)=>a.start.localeCompare(b.start)),warnings=compare(d);let labels=entries.slice(0,3).map(a=>`<span class="day-entry ${esc(a.type)}">${esc(a.start)} ${esc(a.name)}${a.guests?` ${esc(a.guests)}名`:''}</span>`).join('');if(entries.length>3)labels+=`<span class="day-more">ほか${entries.length-3}件</span>`;if(warnings.length)labels+=`<span class="day-entry warn">⚠ 要確認 ${warnings.length}件</span>`;html+=`<button class="day ${dt.getMonth()!==mo?'outside':''} ${d===sel?'selected':''} ${d===today?'today':''}" data-day="${d}" aria-label="${fmt(d)} ${entries.length}件 詳細を表示"><span class="num">${dt.getDate()}</span>${labels}</button>`}$('#calGrid').innerHTML=html;}
+function renderDetail(){ $('#detailDate').textContent=fmt(sel);$('#datePicker').value=sel;const all=inDay(sel);$('#detailList').innerHTML=all.length?all.map(x=>`<div class="record"><div class="record-time">${esc(x.start)}</div><div class="record-info"><strong>${esc(x.name)}${guestText(x)?`　${esc(guestText(x))}`:''}</strong><small>${esc(x.end)}まで・${typeLabel(x)}${x.menu?'・'+esc(x.menu):''}${x.note?'・'+esc(x.note):''}${x.readOnly?'・読み取り専用':''}</small></div>${x.readOnly?'':`<button class="btn sm" data-edit="${esc(x.id)}">編集</button>`}</div>`).join(''):'<div class="empty">この日の予定はありません。</div>';const issues=compare(sel);$('#compareCount').textContent=issues.length?`${issues.length}件の確認事項`:'一致';$('#compareList').innerHTML=issues.length?issues.map((x,i)=>issueHTML(x,i)).join(''):'<div class="empty">台帳とカレンダーの照合で不一致はありません。</div>';$('#detailPhoto').innerHTML=photos[sel]?`<div class="ledger-card"><small>この日の予約を登録した台帳写真（この画面内のみ）</small><img src="${esc(photos[sel])}" alt="手書き台帳の写真"></div>`:'<div class="empty" style="padding:16px">この日付の写真はありません。</div>';}
+function issueHTML(x,i){if(x.kind==='capacity')return `<div class="compare"><h3>⚠ ${esc(x.at)}〜 ${esc(x.label)}</h3><div class="section-note">${x.items.map(r=>esc(`${r.start}〜${r.end} ${r.name}${guestText(r)?' '+guestText(r):''}`)).join('<br>')}</div><div class="section-note" style="margin-top:8px">上限は「店舗の設定」で変更できます。</div></div>`;if(x.kind==='overlap'){const aEdit=x.a.readOnly?'':`<button class="btn sm" data-edit="${esc(x.a.id)}">左を編集</button>`,bEdit=x.b.readOnly?'':`<button class="btn sm" data-edit="${esc(x.b.id)}">右を編集</button>`;return `<div class="compare"><h3>⚠ ${esc(x.label==='予定が重複しています'?'予定の重複':x.label)}</h3><div class="values"><div>${esc(x.a.start)}〜${esc(x.a.end)}<strong>${esc(x.a.name)}</strong></div><div>${esc(x.b.start)}〜${esc(x.b.end)}<strong>${esc(x.b.name)}</strong></div></div><div class="section-note" style="margin-top:8px">${x.a.readOnly||x.b.readOnly?'Google予定は読み取り専用です。変更が必要な場合はGoogleカレンダー側で調整してください。':'どちらかの予定を編集して調整してください。'}</div><div class="buttons">${aEdit}${bEdit}</div></div>`}const l=x.ledger,b=x.booking;const lid=l?.id||'',bid=b?.id||'';const label=x.kind==='mismatch'?'内容に違いがあります':x.kind==='only-ledger'?'台帳にだけあります':'カレンダーにだけあります';const side=r=>r?`<strong>${esc(r.start+'〜'+r.end)}</strong><small>${esc([guestText(r),r.menu].filter(Boolean).join('・'))}</small>`:'<strong>登録なし</strong>';if(b?.readOnly)return `<div class="compare"><h3>⚠ ${esc(l?.name||b?.name)}：${label}</h3><div class="values"><div><small>手書き台帳</small>${side(l)}</div><div><small>Googleカレンダー</small>${side(b)}</div></div><div class="section-note" style="margin-top:8px">Google予定は読み取り専用です。自動反映はせず、差分だけ確認します。</div></div>`;return `<div class="compare"><h3>⚠ ${esc(l?.name||b?.name)}：${label}</h3><div class="values"><div><small>手書き台帳</small>${side(l)}</div><div><small>カレンダー側</small>${side(b)}</div></div><div class="buttons">${l?`<button class="btn sm primary" data-reconcile="ledger" data-ledger="${esc(lid)}" data-booking="${esc(bid)}">台帳を採用</button>`:''}${b?`<button class="btn sm" data-reconcile="booking" data-ledger="${esc(lid)}" data-booking="${esc(bid)}">予定を採用</button>`:''}</div></div>`}
+function openModal(type='booking',record=null){$('#editForm').reset();$('#editId').value=record?.id||'';$('#editType').value=record?.type||type;$('#editDate').value=record?.date||sel;const dflt=settings.defaultDuration||60;$('#editTime').value=record?.start||'12:00';const em=toMin('12:00')+dflt;$('#editEnd').value=record?.end||(em<1440?`${pad(Math.floor(em/60))}:${pad(em%60)}`:'23:59');$('#editGuests').value=Number.isInteger(record?.guests)?String(record.guests):'';$('#editName').value=record?.name||'';$('#editMenu').value=record?.menu||'';$('#editNote').value=record?.note||'';$('#deleteBtn').hidden=!record;$('#modalHeading').textContent=record?'予定を編集':'予定を追加';$('#editModal').classList.add('open');$('#editName').focus()}
 function closeModal(){$('#editModal').classList.remove('open')}
 function resolve(kind,lid,bid){
   const next=structuredClone(data),l=next.find(x=>x.id===lid),b=next.find(x=>x.id===bid);
-  if(kind==='ledger'&&l){if(b){Object.assign(b,{date:l.date,start:l.start,end:l.end,name:l.name,menu:l.menu,note:l.note})}else next.push({...l,id:'b'+crypto.randomUUID(),type:'booking'});}
-  else if(kind==='booking'&&b){if(l){Object.assign(l,{date:b.date,start:b.start,end:b.end,name:b.name,menu:b.menu,note:b.note})}else next.push({...b,id:'l'+crypto.randomUUID(),type:'ledger'});}
+  const copy=(to,from)=>{Object.assign(to,{date:from.date,start:from.start,end:from.end,name:from.name,menu:from.menu,note:from.note});if(Number.isInteger(from.guests))to.guests=from.guests;else delete to.guests};
+  if(kind==='ledger'&&l){if(b){copy(b,l)}else next.push({...l,id:'b'+crypto.randomUUID(),type:'booking'});}
+  else if(kind==='booking'&&b){if(l){copy(l,b)}else next.push({...b,id:'l'+crypto.randomUUID(),type:'ledger'});}
   else return;
-  if(!save(next))return;render();toast('照合内容を試作データに反映しました');
+  if(!save(next))return;render();toast('照合内容を反映しました');
 }
+function renderSettings(){const st=$('#settingsState');if(!st)return;const parts=[];if(settings.openTime)parts.push(`営業 ${settings.openTime}〜${settings.closeTime}`);if(settings.defaultDuration)parts.push(`標準${settings.defaultDuration}分`);if(settings.capacity)parts.push(`上限${settings.capacity}組`);st.textContent=parts.length?parts.join('・'):'未設定';const f=document.activeElement;if(!['setOpen','setClose','setDuration','setCapacity'].includes(f?.id)){$('#setOpen').value=settings.openTime;$('#setClose').value=settings.closeTime;$('#setDuration').value=settings.defaultDuration===''?'':String(settings.defaultDuration);$('#setCapacity').value=settings.capacity===''?'':String(settings.capacity)}}
 $$('[data-view]').forEach(x=>x.addEventListener('click',()=>setView(x.dataset.view)));
 document.addEventListener('click',e=>{const day=e.target.closest('[data-day]');if(day){setDate(day.dataset.day);setView('detail')}const go=e.target.closest('[data-goto]');if(go)setView(go.dataset.goto);const edit=e.target.closest('[data-edit]');if(edit){const r=data.find(x=>x.id===edit.dataset.edit);if(r)openModal(r.type,r)}const recon=e.target.closest('[data-reconcile]');if(recon)resolve(recon.dataset.reconcile,recon.dataset.ledger,recon.dataset.booking)});
 const googleConnectBtn=$('#googleConnectBtn'),googleSyncBtn=$('#googleSyncBtn'),googleDisconnectBtn=$('#googleDisconnectBtn'),googleReservationCalendar=$('#googleReservationCalendar'),googleBusyCalendars=$('#googleBusyCalendars');
@@ -344,151 +448,131 @@ if(googleBusyCalendars)googleBusyCalendars.addEventListener('change',e=>{
   if(googleAccessToken)syncGoogleEvents();
 });
 $('#newBtn').onclick=()=>openModal();$('#detailAdd').onclick=()=>openModal();$('#ledgerBtn').onclick=()=>openModal('ledger');$('#detailLedger').onclick=()=>openModal('ledger');$('#todayBtn').onclick=()=>{setDate(today);setView('dashboard')};$('#prevDay').onclick=()=>setDate(addDays(sel,-1));$('#nextDay').onclick=()=>setDate(addDays(sel,1));$('#detailPrev').onclick=()=>setDate(addDays(sel,-1));$('#detailNext').onclick=()=>setDate(addDays(sel,1));$('#datePicker').onchange=e=>{if(e.target.value)setDate(e.target.value)};$('#prevMonth').onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()-1,1);renderMonth();if(googleAccessToken)syncGoogleEvents()};$('#nextMonth').onclick=()=>{month=new Date(month.getFullYear(),month.getMonth()+1,1);renderMonth();if(googleAccessToken)syncGoogleEvents()};$('#monthToday').onclick=()=>{month=new Date(today+'T12:00');renderMonth();if(googleAccessToken)syncGoogleEvents()};$('#closeModal').onclick=closeModal;$('#cancelBtn').onclick=closeModal;$('#editModal').onclick=e=>{if(e.target===$('#editModal'))closeModal()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-$('#editForm').onsubmit=e=>{e.preventDefault();const id=$('#editId').value,rec={id:id||'r'+crypto.randomUUID(),type:$('#editType').value,date:$('#editDate').value,start:$('#editTime').value,end:$('#editEnd').value,name:$('#editName').value.trim(),menu:$('#editMenu').value.trim(),note:$('#editNote').value.trim()};if(!rec.name||!rec.date||!rec.start||!rec.end){toast('必須項目を入力してください');return}if(rec.start>=rec.end){toast('終了時刻は開始時刻より後にしてください');return}const next=structuredClone(data);if(id){const i=next.findIndex(x=>x.id===id);if(i<0)return;next[i]={...next[i],...rec}}else next.push(rec);if(!save(next))return;sel=rec.date;month=new Date(sel+'T12:00');closeModal();render();toast('予定を保存しました')};
+$('#editForm').onsubmit=e=>{e.preventDefault();const id=$('#editId').value,gRaw=String($('#editGuests').value??'').trim(),rec={id:id||'r'+crypto.randomUUID(),type:$('#editType').value,date:$('#editDate').value,start:$('#editTime').value,end:$('#editEnd').value,name:$('#editName').value.trim(),menu:$('#editMenu').value.trim(),note:$('#editNote').value.trim()};if(!rec.name||!rec.date||!rec.start||!rec.end){toast('必須項目を入力してください');return}if(rec.start>=rec.end){toast('終了時刻は開始時刻より後にしてください');return}if(gRaw){const g=Number(gRaw);if(!Number.isInteger(g)||g<1||g>999){toast('人数は1〜999の整数で入力してください');return}rec.guests=g}const next=structuredClone(data);if(id){const i=next.findIndex(x=>x.id===id);if(i<0)return;next[i]={...next[i],...rec};if(!gRaw)delete next[i].guests}else next.push(rec);if(!save(next))return;sel=rec.date;month=new Date(sel+'T12:00');closeModal();render();toast('予定を保存しました')};
 $('#deleteBtn').onclick=()=>{const id=$('#editId').value;if(!id)return;if(!confirm('この予定を削除しますか？'))return;if(!save(data.filter(x=>x.id!==id)))return;closeModal();render();toast('削除しました')};
-$('#photoInput').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>8*1024*1024){toast('8MB以下の写真を選択してください');return}const targetDate=sel;const reader=new FileReader();reader.onload=()=>{photos[targetDate]=String(reader.result);if(sel===targetDate){$('#ocrReadBtn').disabled=false;$('#photoPreview').innerHTML=`<div class="ledger-card"><strong>写真を選択しました</strong><small>写真はこの画面を閉じると消えます</small><img alt="台帳の写真" src="${photos[targetDate]}"></div>`}renderDetail();toast('写真を添付しました。内容は手入力で登録できます')};reader.readAsDataURL(f)};
-$('#exportBtn').onclick=()=>{if(storageBlocked&&storedSnapshot===null){toast('保存データにアクセスできないため書き出せません');return}const blob=new Blob([storageBlocked?storedSnapshot:JSON.stringify({version:2,records:data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yoyaku-demo-'+today+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
-$('#importInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const next=readRecords(JSON.parse(await f.text()));if(!confirm('現在の試作データを読み込んだデータで置き換えますか？'))return;if(!save(next))return;render();toast('読み込みました')}catch{toast('対応したJSON形式ではありません')}finally{e.target.value=''}};
-$('#resetBtn').onclick=()=>{if(!confirm('入力した試作データを消して初期状態に戻しますか？'))return;if(!save(structuredClone(base)))return;photos={};render();$('#photoPreview').innerHTML='';toast('初期状態に戻しました')};
+$('#settingsForm').onsubmit=e=>{e.preventDefault();const raw={openTime:$('#setOpen').value,closeTime:$('#setClose').value,defaultDuration:String($('#setDuration').value??'').trim(),capacity:String($('#setCapacity').value??'').trim()};if((raw.openTime||raw.closeTime)&&(!raw.openTime||!raw.closeTime||raw.openTime>=raw.closeTime)){toast('営業時間は開始と終了の両方を、終了が後になるように入力してください');return}const next=cleanSettings({...raw,defaultDuration:raw.defaultDuration===''?'':Number(raw.defaultDuration),capacity:raw.capacity===''?'':Number(raw.capacity)});if(raw.defaultDuration!==''&&next.defaultDuration===''){toast('標準の利用時間は15〜720分の整数で入力してください');return}if(raw.capacity!==''&&next.capacity===''){toast('予約上限は1〜99の整数で入力してください');return}try{localStorage.setItem(settingsKey,JSON.stringify(next))}catch{toast('設定を保存できませんでした。入力内容は画面に残しています');return}settings=next;render();toast('店舗の設定を保存しました')};
+$('#exportBtn').onclick=()=>{if(storageBlocked&&storedSnapshot===null){toast('保存データにアクセスできないため書き出せません');return}const blob=new Blob([storageBlocked?storedSnapshot:JSON.stringify({version:2,records:data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yoyaku-daicho-'+today+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$('#importInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const next=readRecords(JSON.parse(await f.text()));if(!confirm('現在のデータを読み込んだデータで置き換えますか？'))return;if(!save(next))return;render();toast('読み込みました')}catch{toast('対応したJSON形式ではありません')}finally{e.target.value=''}};
+$('#resetBtn').onclick=()=>{if(!confirm('入力したデータを消してサンプルデータに戻しますか？'))return;if(!save(structuredClone(base)))return;photos={};render();toast('初期状態に戻しました')};
 
-let ocrWorkerPromise=null,ocrBusy=false;
-function parseOcrRows(text, fallbackDate){
-  const rows=[],year=Number(fallbackDate.slice(0,4));
-  const normalized=String(text||'').normalize('NFKC').replace(/[〜～－–—]/g,'-');
-  for(const line of normalized.split(/\r?\n/)){
-    const m=line.trim().match(/^(?:[^\d]*\s*)?(?:(\d{4})[\/-])?(\d{1,2})[\/-](\d{1,2})\s+(\d{1,2}):(\d{2})\s*[-~]\s*(\d{1,2}):(\d{2})\s+(.+)$/);
-    if(!m)continue;
-    const y=Number(m[1]||year),mo=Number(m[2]),day=Number(m[3]);
-    const dateObj=new Date(y,mo-1,day);
-    if(dateObj.getFullYear()!==y||dateObj.getMonth()!==mo-1||dateObj.getDate()!==day)continue;
-    const start=pad(Number(m[4]))+':'+pad(Number(m[5])),end=pad(Number(m[6]))+':'+pad(Number(m[7]));
-    if(Number(m[4])>23||Number(m[5])>59||Number(m[6])>23||Number(m[7])>59||start>=end)continue;
-    const tail=m[8].trim().replace(/\s+/g,' ');
-    const n=tail.match(/^(.+?)(?:様)?\s+(.+)$/);
-    if(!n)continue;
-    const name=n[1].replace(/様$/,'').trim(),menu=n[2].trim();
-    if(!name||name.length>100||menu.length>150)continue;
-    rows.push({date:y+'-'+pad(mo)+'-'+pad(day),start,end,name,menu});
-  }
-  return rows;
-}
-function ocrStatusText(message){const el=$('#ocrStatus');if(el)el.textContent=message}
-function ocrRenderRows(rows){
-  const area=$('#ocrCandidates'),saveBtn=$('#ocrSaveBtn');
-  if(!area||!saveBtn)return;
-  saveBtn.hidden=!rows.length;
-  area.innerHTML=rows.length?rows.map((r,i)=>'<div class="ocr-row" data-ocr-row="'+i+'"><b>予約候補 '+(i+1)+'</b><div class="ocr-grid">'+
-    [['date','日付','date'],['start','開始','time'],['end','終了','time'],['name','名前','text'],['menu','内容','text']].map(f=>
-      '<label class="field">'+f[1]+'<input data-ocr-field="'+f[0]+'" type="'+f[2]+'" value="'+esc(r[f[0]])+'" maxlength="'+(f[0]==='name'?100:f[0]==='menu'?150:16)+'"></label>').join('')+
-    '</div></div>').join(''):'<div class="section-note" style="margin:10px 0">予約の形に分けられませんでした。読み取り結果を修正して、もう一度「予約候補に分ける」を押してください。例：11/09 10:00-11:00 山田様 ご会食</div>';
-}
-let ocrScriptPromise=null;
-function ocrLoadEngine(){
-  if(window.Tesseract)return Promise.resolve();
-  if(ocrScriptPromise)return ocrScriptPromise;
-  ocrScriptPromise=new Promise((resolve,reject)=>{
-    const script=document.createElement('script');
-    script.src='https://cdn.jsdelivr.net/npm/tesseract.js@7.0.0/dist/tesseract.min.js';
-    script.async=true;
-    script.onload=()=>window.Tesseract?resolve():reject(Error('文字読み取りエンジンを読み込めませんでした'));
-    script.onerror=()=>reject(Error('文字読み取りエンジンの通信に失敗しました'));
-    document.head.appendChild(script);
-  }).catch(err=>{ocrScriptPromise=null;throw err});
-  return ocrScriptPromise;
-}
-async function ocrPreprocess(source,enhance){
-  const image=new Image();
-  await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(Error('写真を開けませんでした'));image.src=source});
-  const scale=Math.min(1,1900/Math.max(image.naturalWidth,image.naturalHeight));
-  const canvas=document.createElement('canvas');
-  canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
-  canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
-  const ctx=canvas.getContext('2d',{willReadFrequently:enhance});
-  if(!ctx)throw Error('写真を処理できませんでした');
-  ctx.drawImage(image,0,0,canvas.width,canvas.height);
-  if(enhance){
-    const data=ctx.getImageData(0,0,canvas.width,canvas.height);
-    const pixels=data.data, histogram=new Uint32Array(256);
-    for(let i=0;i<pixels.length;i+=4){const gray=Math.round((pixels[i]*77+pixels[i+1]*150+pixels[i+2]*29)/256);histogram[gray]++}
-    const cutoff=Math.floor(canvas.width*canvas.height*.01);
-    let lo=0,hi=255,n=0;
-    for(;lo<255;lo++){n+=histogram[lo];if(n>=cutoff)break}
-    n=0;
-    for(;hi>0;hi--){n+=histogram[hi];if(n>=cutoff)break}
-    if(hi>lo+15){
-      for(let i=0;i<pixels.length;i+=4){
-        const gray=Math.round((pixels[i]*77+pixels[i+1]*150+pixels[i+2]*29)/256);
-        const v=Math.max(0,Math.min(255,Math.round((gray-lo)*255/(hi-lo))));
-        pixels[i]=pixels[i+1]=pixels[i+2]=v;
-      }
-      ctx.putImageData(data,0,0);
-    }
-  }
-  return canvas;
-}
-async function ocrReadPhoto(){
-  const date=sel,source=photos[date],readBtn=$('#ocrReadBtn');
-  if(!source){ocrStatusText('先に写真を選んでください');return}
-  if(readBtn.disabled)return;
-  readBtn.disabled=true;ocrBusy=true;
-  $('#ocrOutput').hidden=true;
-  ocrRenderRows([]);
-  ocrStatusText('読み取りエンジンを準備しています…');
-  try{
-    await ocrLoadEngine();
-    if(!ocrWorkerPromise){
-      ocrWorkerPromise=window.Tesseract.createWorker(['jpn','eng'],1,{
-        logger:m=>{if(m.status==='recognizing text')ocrStatusText('文字を読み取り中：'+Math.round((m.progress||0)*100)+'%')}
-      }).catch(err=>{ocrWorkerPromise=null;throw err});
-    }
-    const worker=await ocrWorkerPromise;
-    const prepared=await ocrPreprocess(source,$('#ocrEnhance').checked);
-    const result=await worker.recognize(prepared);
-    $('#ocrText').value=String(result?.data?.text||'');
-    $('#ocrOutput').hidden=false;
-    const rows=parseOcrRows($('#ocrText').value,date);
-    ocrRenderRows(rows);
-    ocrStatusText('読み取り終了：予約候補 '+rows.length+'件。原文と照合してから登録してください。');
-  }catch(err){
-    ocrStatusText('読み取り失敗：'+String(err?.message||err)+'。画像と通信を確認してください。');
-  }finally{ocrBusy=false;readBtn.disabled=!photos[sel]}
-}
-const ocrReadBtn=$('#ocrReadBtn'),ocrParseBtn=$('#ocrParseBtn'),ocrSaveBtn=$('#ocrSaveBtn');
-if(ocrReadBtn)ocrReadBtn.onclick=ocrReadPhoto;
-if(ocrParseBtn)ocrParseBtn.onclick=()=>{const rows=parseOcrRows($('#ocrText').value,sel);ocrRenderRows(rows);ocrStatusText('修正した文字から予約候補 '+rows.length+'件を抽出しました。')};
-if(ocrSaveBtn)ocrSaveBtn.onclick=()=>{
-  const candidates=[];
-  for(const row of Array.from(document.querySelectorAll('[data-ocr-row]'))){
-    const get=field=>row.querySelector('[data-ocr-field="'+field+'"]')?.value?.trim()||'';
-    const candidate={date:get('date'),start:get('start'),end:get('end'),name:get('name'),menu:get('menu')};
-    const ymd=candidate.date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    const dt=ymd?new Date(Number(ymd[1]),Number(ymd[2])-1,Number(ymd[3])):null;
-    if(!dt||localDate(dt)!==candidate.date||!/^([01]\d|2[0-3]):[0-5]\d$/.test(candidate.start)||
-       !/^([01]\d|2[0-3]):[0-5]\d$/.test(candidate.end)||candidate.start>=candidate.end||
-       !candidate.name||candidate.name.length>100||candidate.menu.length>150){
-      ocrStatusText('入力に不備があります。日付・開始・終了・名前を修正してください。');return;
-    }
-    candidates.push(candidate);
-  }
-  if(!candidates.length)return;
-  const seen=new Set(data.filter(x=>x.type==='ledger').map(x=>[x.date,x.start,x.end,x.name].join('|')));
-  const additions=[];
-  for(const c of candidates){
-    const key=[c.date,c.start,c.end,c.name].join('|');
-    if(seen.has(key))continue;
-    seen.add(key);
-    additions.push({id:'l'+crypto.randomUUID(),type:'ledger',...c,note:'写真OCRから確認して入力'});
-  }
-  if(!additions.length){ocrStatusText('同じ日付・時間・名前の台帳予約はすでに登録されています。');return}
-  if(!confirm(additions.length+'件を手書き台帳の予約として登録しますか？'))return;
-  if(!save([...data,...additions]))return;
-  ocrRenderRows([]);
-  render();
-  ocrStatusText('確認済みの台帳予約 '+additions.length+'件を登録しました。');
-};
+/* ================= 台帳の写真 → 端末内OCR → 確認・修正 → 登録 ================= */
+const OCR_FIELDS=[['date','日付','date',''],['start','開始','time',''],['end','終了','time',''],['guests','人数','number',''],['name','お名前','text','wide'],['content','ご予約内容','text','wide'],['note','備考','text','full']];
+const STATUS_LABEL={ok:'読取',check:'要確認',missing:'未読取',edited:'修正済',manual:'手入力'};
+const ocr={image:null,imageBytes:null,draftPhotoOk:true,imageUrl:'',imageName:'',text:'',lineMeta:[],rows:[],step:'photo',busy:false,registering:false,error:'',done:null,draftOk:true,restored:false};
+let ocrSeq=0,ocrDraftTimer=null,ocrEngineScript=null;
+function ocrSettingsOpts(){return {baseDate:sel,openTime:settings.openTime,closeTime:settings.closeTime,defaultDuration:settings.defaultDuration||120,maxGuests:200}}
+function ocrNewId(){return 'c'+(++ocrSeq)+'-'+Date.now().toString(36)}
+function ocrRowFromParsed(p){const f={};for(const [k] of OCR_FIELDS){const v=p[k]||{value:'',status:'missing',note:''};f[k]={value:v.value===undefined||v.value===null?'':String(v.value),status:v.status,note:v.note||''}}
+  if(f.name.value&&p.name?.status==='ok'&&!/(様|さま|殿)$/.test(f.name.value))f.name.value+='様';
+  if(f.note.status==='ok'&&!f.note.value)f.note.status='ok';
+  return {id:ocrNewId(),include:true,src:p.raw||'',low:Boolean(p.lowConfidence),f}}
+function ocrBlankRow(){const f={};for(const [k] of OCR_FIELDS)f[k]={value:k==='date'?sel:'',status:'manual',note:''};return {id:ocrNewId(),include:true,src:'',low:false,f,manual:true}}
+function ocrCandidate(r){const g=r.f.guests.value.trim();return {date:r.f.date.value.trim(),start:r.f.start.value.trim(),end:r.f.end.value.trim(),name:r.f.name.value.trim(),guests:g===''?'':Number(g),content:r.f.content.value.trim(),note:r.f.note.value.trim()}}
+function ocrFieldErrors(c){const e={};if(!OcrParse)return e;if(!OcrParse.isValidIsoDate(c.date))e.date=c.date?'存在しない日付です':'日付を入力してください';if(!OcrParse.isValidTime(c.start))e.start=c.start?'時刻が正しくありません':'開始時刻を入力してください';if(!OcrParse.isValidTime(c.end))e.end=c.end?'時刻が正しくありません':'終了時刻を入力してください';else if(OcrParse.isValidTime(c.start)&&c.start>=c.end)e.end='終了は開始より後にしてください';if(!c.name)e.name='お名前を入力してください';if(c.guests!==''&&(!Number.isInteger(c.guests)||c.guests<1||c.guests>200))e.guests='1〜200の整数';return e}
+/* 各候補の状態：入力エラー・登録済みとの重複・同じ取込内の重複・注意 */
+function ocrAnalyze(){const existing=[...data,...googleEvents],keys=new Map();return ocr.rows.map(r=>{const c=ocrCandidate(r),fe=ocrFieldErrors(c),errors=OcrParse?OcrParse.validateCandidate(c,{maxGuests:200}):[],out={row:r,c,fe,errors,blocked:'',warns:[],infos:[]};
+    if(!Object.keys(fe).length&&OcrParse){const d=OcrParse.findDuplicates(c,existing);if(d.exact.length)out.blocked=`登録済みの台帳予約と同じです（${d.exact[0].date} ${d.exact[0].start} ${d.exact[0].name}）`;
+      const k=[c.date,c.start,OcrParse.normalizeName(c.name)].join('|');if(!out.blocked&&r.include){if(keys.has(k))out.blocked=`この取込の候補${keys.get(k)}と同じ予約です`;else keys.set(k,ocr.rows.indexOf(r)+1)}
+      d.calendar.forEach(x=>out.infos.push(`カレンダーの予約（${x.start} ${x.name}）と同じ内容です。登録すると照合で一致扱いになります`));
+      d.sameDay.forEach(x=>out.warns.push(`同じ日に同じお名前の予約があります（${x.start}〜${x.end}・${typeLabel(x)}）`));
+      const ov=OcrParse.overlapping(c,existing).filter(x=>x.type==='personal');ov.forEach(x=>out.warns.push(`個人予定「${x.name}」（${x.start}〜${x.end}）と時間が重なります`));
+      if(settings.capacity){const n=existing.filter(x=>x.type!=='personal'&&x.date===c.date&&x.start<c.end&&c.start<x.end).length;if(n+1>settings.capacity)out.warns.push(`同じ時間帯の予約が上限（${settings.capacity}組）を超えます`)}}
+    if(c.guests==='')out.warns.push('人数が未入力です');
+    for(const [k,label] of OCR_FIELDS)if(r.f[k].status==='check')out.warns.push(`${label}：${r.f[k].note||'読み取り結果を確認してください'}`);
+    return out})}
+function ocrStatusText(msg,kind){const el=$('#ocrStatus');if(!el)return;el.textContent=msg;el.className='ocr-status'+(kind?' '+kind:'')}
+function ocrSetStep(step){ocr.step=step;$$('#ocrSteps [data-step]').forEach(li=>{const order=['photo','read','review','confirm'],i=order.indexOf(li.dataset.step),cur=order.indexOf(step==='done'?'confirm':step);li.classList.toggle('now',i===cur&&step!=='done');li.classList.toggle('done',i<cur||step==='done')})}
+function renderOcr(){if(!$('#ocr'))return;const prev=$('#photoPreview');if(prev){prev.innerHTML=ocr.imageUrl?`<img src="${esc(ocr.imageUrl)}" alt="選んだ台帳の写真"><div class="meta"><span>${esc(ocr.imageName||'台帳の写真')}</span><a href="${esc(ocr.imageUrl)}" target="_blank" rel="noopener">拡大して見る</a></div>`:''}
+  const pick=$('#photoPick');if(pick&&pick.firstChild)pick.firstChild.textContent=ocr.image?'◉ 別の写真にする':'◉ 写真を撮る・選ぶ';
+  const read=$('#ocrReadBtn');if(read){read.disabled=!ocr.image||ocr.busy;read.textContent=ocr.busy?'読み取り中…':ocr.rows.length||ocr.text?'② もう一度読み取る':'② 文字を読み取る'}
+  const raw=$('#ocrRawBox');if(raw)raw.hidden=!ocr.text&&!ocr.rows.length;
+  const ea=$('#ocrErrorActions');if(ea)ea.hidden=!ocr.error;
+  const disc=$('#ocrDiscardBtn');if(disc)disc.hidden=!(ocr.image||ocr.rows.length||ocr.text);
+  const ds=$('#ocrDraftState');if(ds)ds.textContent=!ocr.draftOk?'一時保存できません':(ocr.image||ocr.rows.length)?'作業内容を一時保存中':'';
+  const conf=$('#ocrConfirm'),done=$('#ocrDone'),list=$('#ocrCandidates'),acts=$('#ocrReviewActions'),add=$('#ocrAddRowBtn');
+  const inConfirm=ocr.step==='confirm',isDone=ocr.step==='done';
+  if(conf)conf.hidden=!inConfirm;if(done)done.hidden=!isDone;if(list)list.hidden=inConfirm||isDone;if(add)add.hidden=inConfirm||isDone;if(acts)acts.hidden=inConfirm||isDone||!ocr.rows.length;
+  $('#ocrReviewTitle').textContent=inConfirm?'④ 登録内容の最終確認':isDone?'登録しました':'③ 予約候補の確認・修正';
+  if(isDone&&done&&ocr.done){done.innerHTML=`<div class="ocr-status ok">${ocr.done.count}件を手書き台帳の予約として登録しました。</div><div class="ocr-actions"><button class="btn primary" data-ocr-goto="month">月間カレンダーで見る</button><button class="btn" data-ocr-goto="detail">${esc(fmt(ocr.done.first))}の詳細</button><button class="btn" id="ocrNextBtn">続けて別の写真を読み取る</button></div>`}
+  if(!inConfirm&&!isDone&&list&&!list.contains(document.activeElement))ocrRenderCandidates();
+  ocrSetStep(ocr.step)}
+function ocrRenderCandidates(){const list=$('#ocrCandidates');if(!list)return;if(!ocr.rows.length){list.innerHTML=`<div class="empty">${ocr.text?'予約の形に分けられる行がありませんでした。「読み取った文字を見る・直す」で文字を直すか、「候補を手入力で追加」してください。':'写真を読み取ると、ここに予約の候補が表示されます。'}</div>`;return}
+  const info=ocrAnalyze();list.innerHTML=info.map((a,i)=>{const r=a.row;return `<div class="cand" data-cand="${esc(r.id)}"><div class="cand-head"><label><input type="checkbox" data-cand-check ${r.include&&!a.blocked?'checked':''} ${a.blocked?'disabled':''}> 予約候補 ${i+1}</label><button class="btn sm ghost" data-cand-remove aria-label="候補${i+1}を削除">削除</button></div>${r.src?`<div class="cand-src">読み取り：「${esc(r.src)}」${r.low?'<br><b style="color:var(--amber)">読み取りの確信度が低い行です。写真と見比べてください</b>':''}</div>`:'<div class="cand-src">手入力の候補</div>'}<div class="cand-grid">${OCR_FIELDS.map(([k,label,type,cls])=>{const fv=r.f[k];return `<label class="cf ${cls} st-${esc(fv.status)}" data-cf="${k}"><span class="cf-label">${label}<span class="chip ${esc(fv.status==='manual'?'edited':fv.status)}">${STATUS_LABEL[fv.status]||''}</span></span><input data-f="${k}" type="${type}" value="${esc(fv.value)}" ${type==='number'?'min="1" max="200" inputmode="numeric"':''} maxlength="${k==='note'?500:k==='content'?150:k==='name'?100:20}" autocomplete="off"><span class="cf-note">${esc(fv.status==='check'||fv.status==='missing'?fv.note:'')}</span></label>`}).join('')}</div><div class="cand-msg"></div></div>`}).join('');
+  info.forEach(ocrPaintCard)}
+function ocrPaintCard(a){const card=document.querySelector(`[data-cand="${a.row.id}"]`);if(!card)return;const on=a.row.include&&!a.blocked;card.classList.toggle('blocked',Boolean(a.blocked));card.classList.toggle('off',!on&&!a.blocked);card.classList.toggle('invalid',on&&Object.keys(a.fe).length>0);for(const [k] of OCR_FIELDS){const el=card.querySelector(`[data-cf="${k}"]`);if(el)el.classList.toggle('bad',on&&Boolean(a.fe[k]))}
+  const cb=card.querySelector('[data-cand-check]');if(cb){cb.disabled=Boolean(a.blocked);cb.checked=on}
+  const msg=card.querySelector('.cand-msg');if(msg)msg.innerHTML=[a.blocked?`<div class="err">登録できません：${esc(a.blocked)}</div>`:'',...(on?Object.values(a.fe).map(x=>`<div class="err">${esc(x)}</div>`):[]),...(on?a.warns.filter(w=>!/^(日付|開始|終了|人数|お名前|ご予約内容|備考)：/.test(w)).map(x=>`<div class="warn">${esc(x)}</div>`):[]),...(on?a.infos.map(x=>`<div class="info">${esc(x)}</div>`):[])].join('')}
+function ocrRepaintAll(){ocrAnalyze().forEach(ocrPaintCard)}
+/* ---- 下書き（写真・読み取り結果・修正中の候補）を端末内に一時保存 ---- */
+const DRAFT_DB='kaiseki-reservation-ocr',DRAFT_STORE='draft';
+function draftOpen(){return new Promise((res,rej)=>{if(typeof indexedDB==='undefined')return rej(Error('no idb'));const rq=indexedDB.open(DRAFT_DB,1);rq.onupgradeneeded=()=>rq.result.createObjectStore(DRAFT_STORE);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error||Error('idb'))})}
+async function draftTx(mode,fn){const db=await draftOpen();try{return await new Promise((res,rej)=>{const tx=db.transaction(DRAFT_STORE,mode),st=tx.objectStore(DRAFT_STORE),rq=fn(st);tx.oncomplete=()=>res(rq?.result);tx.onerror=()=>rej(tx.error||Error('idb'));tx.onabort=()=>rej(tx.error||Error('idb abort'))})}finally{db.close()}}
+/* 写真はBlobのままだと保存できないブラウザ（Safariのプライベートブラウズ等）があるため、バイト列で保存する */
+async function ocrImageBytes(){if(!ocr.image)return null;if(ocr.imageBytes&&ocr.imageBytes.src===ocr.image)return ocr.imageBytes;try{const buf=await ocr.image.arrayBuffer();ocr.imageBytes={src:ocr.image,buf,type:ocr.image.type||'image/jpeg'};return ocr.imageBytes}catch{return null}}
+async function draftSaveNow(){clearTimeout(ocrDraftTimer);if(!ocr.image&&!ocr.rows.length&&!ocr.text){return draftClear()}const bytes=await ocrImageBytes();const rec={imageBuf:bytes?bytes.buf:null,imageType:bytes?bytes.type:'',imageName:ocr.imageName,text:ocr.text,lineMeta:ocr.lineMeta,rows:JSON.parse(JSON.stringify(ocr.rows)),step:ocr.step==='confirm'?'review':ocr.step,savedAt:Date.now()};
+  try{await draftTx('readwrite',st=>st.put(rec,'current'));ocr.draftPhotoOk=true;if(!ocr.draftOk){ocr.draftOk=true;renderOcrMeta()}}
+  catch{try{await draftTx('readwrite',st=>st.put({...rec,imageBuf:null,imageType:''},'current'));if(ocr.draftPhotoOk!==false){ocr.draftPhotoOk=false;toast('写真は一時保存できませんでした（候補と修正内容は保存しています）')}}catch{if(ocr.draftOk){ocr.draftOk=false;renderOcrMeta();toast('作業内容を一時保存できません。登録が終わるまでこの画面を閉じないでください')}}}}
+function draftSaveSoon(){clearTimeout(ocrDraftTimer);ocrDraftTimer=setTimeout(draftSaveNow,400)}
+async function draftClear(){try{await draftTx('readwrite',st=>st.delete('current'))}catch{}}
+function renderOcrMeta(){const ds=$('#ocrDraftState');if(ds)ds.textContent=!ocr.draftOk?'一時保存できません':(ocr.image||ocr.rows.length)?'作業内容を一時保存中':''}
+async function draftRestore(){try{const d=await draftTx('readonly',st=>st.get('current'));if(!d||(!d.imageBuf&&!d.image&&!(d.rows||[]).length&&!d.text))return;const restoredImage=d.imageBuf?new Blob([d.imageBuf],{type:d.imageType||'image/jpeg'}):(d.image instanceof Blob?d.image:null);if(restoredImage){ocr.image=restoredImage;ocr.imageName=d.imageName||'台帳の写真';try{ocr.imageUrl=URL.createObjectURL(restoredImage)}catch{}}ocr.text=String(d.text||'');ocr.lineMeta=Array.isArray(d.lineMeta)?d.lineMeta:[];ocr.rows=Array.isArray(d.rows)?d.rows.filter(r=>r&&r.f&&r.id):[];ocr.rows.forEach(r=>{for(const [k] of OCR_FIELDS)if(!r.f[k])r.f[k]={value:'',status:'missing',note:''}});const had=ocr.rows.length;if(OcrParse)ocr.rows=ocr.rows.filter(r=>!OcrParse.findDuplicates(ocrCandidate(r),data).exact.length);if(had&&!ocr.rows.length){if(ocr.imageUrl)try{URL.revokeObjectURL(ocr.imageUrl)}catch{}ocr.image=null;ocr.imageUrl='';ocr.imageName='';ocr.text='';ocr.lineMeta=[];draftClear();return}ocr.step=ocr.rows.length?'review':ocr.image?'read':'photo';ocr.restored=true;$('#ocrText').value=ocr.text;ocrStatusText('前回の作業（写真・読み取り結果・修正中の候補）を復元しました。続きから確認できます。','ok');renderOcr();toast('台帳の読み取り作業を復元しました')}catch{ocr.draftOk=typeof indexedDB!=='undefined'?false:true}}
+/* ---- 写真の選択 ---- */
+function ocrSetImage(file){if(!file)return;if(!/^image\//.test(file.type||'')&&!/\.(jpe?g|png|heic|heif|webp|gif|bmp)$/i.test(file.name||'')){ocrStatusText('画像ファイルを選んでください。','error');return}if(file.size>30*1024*1024){ocrStatusText('写真が大きすぎます（30MBまで）。','error');return}
+  if(ocr.rows.some(r=>r.f&&Object.values(r.f).some(v=>v.status==='edited'))&&!confirm('修正中の候補があります。新しい写真にすると候補は消えます。よろしいですか？'))return;
+  if(ocr.imageUrl)try{URL.revokeObjectURL(ocr.imageUrl)}catch{}
+  ocr.image=file;ocr.imageName=file.name||'台帳の写真';ocr.imageUrl=URL.createObjectURL(file);ocr.text='';ocr.lineMeta=[];ocr.rows=[];ocr.error='';ocr.done=null;ocr.step='read';$('#ocrText').value='';
+  ocrStatusText('写真を選びました。「② 文字を読み取る」を押してください。');renderOcr();draftSaveNow()}
+function ocrLoadEngine(){if(window.KaisekiOcrEngine)return Promise.resolve();if(ocrEngineScript)return ocrEngineScript;ocrEngineScript=new Promise((res,rej)=>{const s=document.createElement('script');s.src='ocr/ocr-engine.js?v=20261109';s.async=true;s.onload=()=>window.KaisekiOcrEngine?res():rej(Error('読み取り機能を初期化できませんでした'));s.onerror=()=>{s.remove();rej(Error('読み取り機能のファイルを読み込めませんでした（通信を確認してください）'))};document.head.appendChild(s)}).catch(err=>{ocrEngineScript=null;throw err});return ocrEngineScript}
+async function ocrRun(){if(ocr.busy||!ocr.image)return;if(!OcrParse){ocrStatusText('読み取り結果を分ける機能を読み込めていません。ページを再読み込みしてください。','error');return}
+  if(ocr.rows.some(r=>Object.values(r.f).some(v=>v.status==='edited'))&&!confirm('修正中の候補があります。読み取り直すと候補は作り直されます。よろしいですか？'))return;
+  ocr.busy=true;ocr.error='';renderOcr();ocrStatusText('読み取りを準備しています…','busy');
+  try{await ocrLoadEngine();const result=await window.KaisekiOcrEngine.recognize(ocr.image,{enhance:$('#ocrEnhance').checked},m=>ocrStatusText(m,'busy'));
+    ocr.text=String(result.text||'');ocr.lineMeta=(result.lines||[]).map(l=>({score:l.score,minChar:l.minChar}));$('#ocrText').value=ocr.text;
+    const parsed=OcrParse.parseLedgerText(ocr.text,ocrSettingsOpts(),ocr.lineMeta);ocr.rows=parsed.rows.map(ocrRowFromParsed);ocr.step='review';
+    const nCheck=ocr.rows.filter(r=>['date','start','name','guests'].some(k=>r.f[k].status!=='ok')).length;
+    if(!ocr.text.trim())ocrStatusText('文字を見つけられませんでした。明るい場所で台帳全体を正面から撮り直すか、手入力で候補を追加してください。','error');
+    else if(!ocr.rows.length){ocrStatusText('文字は読み取れましたが、予約の形（日付・時間・お名前）に分けられませんでした。「読み取った文字を見る・直す」で確認してください。','error');$('#ocrRawBox').open=true}
+    else{ocrStatusText(`読み取り完了：予約候補 ${ocr.rows.length}件（うち確認が必要 ${nCheck}件）。写真と見比べて修正してください。まだ登録されていません。`,'ok');ocr.scrollToReview=true}
+  }catch(err){ocr.error=String(err?.message||err);ocrStatusText('読み取りに失敗しました：'+ocr.error+'。写真と入力内容は残っています。','error')}
+  finally{ocr.busy=false;renderOcr();draftSaveNow();if(ocr.scrollToReview){ocr.scrollToReview=false;const panel=$('#ocrReviewPanel');if(panel&&panel.scrollIntoView&&window.innerWidth<1100)setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),250)}}}
+function ocrReparse(){if(!OcrParse)return;const text=$('#ocrText').value;if(ocr.rows.some(r=>Object.values(r.f).some(v=>v.status==='edited'))&&!confirm('修正中の候補は作り直されます。よろしいですか？'))return;ocr.text=text;ocr.lineMeta=[];ocr.rows=OcrParse.parseLedgerText(text,ocrSettingsOpts()).rows.map(ocrRowFromParsed);ocr.step=ocr.rows.length?'review':ocr.step;ocrStatusText(`文字から予約候補 ${ocr.rows.length}件を作り直しました。まだ登録されていません。`,ocr.rows.length?'ok':'error');renderOcr();draftSaveNow()}
+function ocrGoConfirm(){const info=ocrAnalyze(),chosen=info.filter(a=>a.row.include&&!a.blocked);if(!chosen.length){ocrStatusText('登録する候補が選ばれていません。','error');toast('登録する候補にチェックを入れてください');return}
+  const bad=chosen.filter(a=>Object.keys(a.fe).length||a.errors.length);if(bad.length){ocrRepaintAll();const first=document.querySelector(`[data-cand="${bad[0].row.id}"]`);if(first&&first.scrollIntoView)first.scrollIntoView({block:'center'});toast(`入力に不備のある候補が${bad.length}件あります。赤い項目を直すか、チェックを外してください`);return}
+  const isEndNote=w=>/^終了：終了時刻は台帳にないため/.test(w),endNotes=chosen.filter(a=>a.warns.some(isEndNote)).length;
+  $('#ocrConfirmList').innerHTML=(endNotes?`<div class="ocr-status" style="margin:0 0 6px">終了時刻が台帳にない${endNotes}件は、開始の${settings.defaultDuration||120}分後を仮の終了時刻にしています（店舗の設定で変更できます）。</div>`:'')+chosen.map((a,i)=>{const c=a.c,warns=a.warns.filter(w=>!isEndNote(w));return `<div class="confirm-row"><strong>${i+1}. ${esc(fmt(c.date))} ${esc(c.start)}〜${esc(c.end)}　${esc(c.name)}</strong><br>人数：${c.guests===''?'<b style="color:var(--amber)">未入力</b>':esc(c.guests+'名')}　ご予約内容：${esc(c.content||'（なし）')}${c.note?`<br>備考：${esc(c.note)}`:''}${warns.length?`<div class="warn">確認：${warns.map(esc).join(' ／ ')}</div>`:''}${a.infos.length?`<div class="section-note">${a.infos.map(esc).join(' ／ ')}</div>`:''}</div>`}).join('')+(info.length>chosen.length?`<div class="section-note" style="margin-top:8px">チェックを外した候補・登録済みの候補（${info.length-chosen.length}件）は登録しません。</div>`:'');
+  ocr.step='confirm';renderOcr();const top=$('#ocrReviewPanel');if(top&&top.scrollIntoView)top.scrollIntoView({block:'start'})}
+function ocrRegister(){if(ocr.registering)return;ocr.registering=true;const btn=$('#ocrSaveBtn');if(btn)btn.disabled=true;
+  try{const info=ocrAnalyze(),chosen=info.filter(a=>a.row.include&&!a.blocked&&!Object.keys(a.fe).length&&!a.errors.length);if(!chosen.length){ocr.step='review';renderOcr();toast('登録できる候補がありません');return}
+    const additions=chosen.map(a=>{const c=a.c,rec={id:'l'+crypto.randomUUID(),type:'ledger',date:c.date,start:c.start,end:c.end,name:c.name,menu:c.content,note:c.note,source:'photo-ocr'};if(c.guests!=='')rec.guests=c.guests;return rec});
+    if(!save([...data,...additions])){ocrStatusText('保存できませんでした。写真・候補・修正内容はそのまま残っています。','error');return}
+    clearTimeout(ocrDraftTimer);
+    const registeredIds=new Set(chosen.map(a=>a.row.id));
+    if(ocr.imageUrl)for(const r of additions){try{photos[r.date]=ocr.imageUrl}catch{}}
+    ocr.rows=ocr.rows.filter(r=>!registeredIds.has(r.id));
+    const first=additions.map(r=>r.date).sort()[0];
+    ocr.done={count:additions.length,first};
+    sel=first;month=new Date(first+'T12:00');
+    ocr.step='done';ocrStatusText(`${additions.length}件を登録しました。${ocr.rows.length?`未登録の候補が${ocr.rows.length}件残っています。`:''}`,'ok');
+    if(ocr.rows.length)draftSaveNow();else{ocr.text='';ocr.lineMeta=[];draftClear()}
+    render();toast(`${additions.length}件を台帳に登録しました`);
+  }finally{ocr.registering=false;if(btn)btn.disabled=false}}
+function ocrReset(){if(ocr.imageUrl&&!Object.values(photos).includes(ocr.imageUrl))try{URL.revokeObjectURL(ocr.imageUrl)}catch{}ocr.image=null;ocr.imageUrl='';ocr.imageName='';ocr.text='';ocr.lineMeta=[];ocr.rows=[];ocr.error='';ocr.done=null;ocr.step='photo';$('#ocrText').value='';const pi=$('#photoInput');if(pi)pi.value='';ocrStatusText('台帳の写真を選んでください。');draftClear();renderOcr()}
+$('#photoInput').onchange=e=>{const f=e.target.files&&e.target.files[0];ocrSetImage(f);e.target.value=''};
+$('#ocrReadBtn').onclick=ocrRun;$('#ocrRetryBtn').onclick=ocrRun;
+$('#ocrManualBtn').onclick=()=>{ocr.rows.push(ocrBlankRow());ocr.error='';ocr.step='review';ocrStatusText('手入力の候補を追加しました。写真を見ながら入力してください。');renderOcr();draftSaveNow()};
+$('#ocrAddRowBtn').onclick=()=>{ocr.rows.push(ocrBlankRow());if(ocr.step==='photo'||ocr.step==='read')ocr.step='review';renderOcr();draftSaveNow()};
+$('#ocrParseBtn').onclick=ocrReparse;$('#ocrConfirmBtn').onclick=ocrGoConfirm;$('#ocrBackBtn').onclick=()=>{ocr.step='review';renderOcr()};$('#ocrSaveBtn').onclick=ocrRegister;
+$('#ocrDiscardBtn').onclick=()=>{if(!confirm('写真と読み取り中の候補を破棄しますか？（登録済みの予約は消えません）'))return;ocrReset()};
+$('#ocrText').oninput=()=>{ocr.text=$('#ocrText').value;draftSaveSoon()};
+const candList=$('#ocrCandidates');
+if(candList){candList.addEventListener('input',e=>{const input=e.target.closest?.('[data-f]'),card=e.target.closest?.('[data-cand]');if(!input||!card)return;const r=ocr.rows.find(x=>x.id===card.dataset.cand);if(!r)return;const k=input.dataset.f;r.f[k].value=String(input.value??'');if(r.f[k].status!=='manual'){r.f[k].status='edited';const cf=card.querySelector(`[data-cf="${k}"]`);if(cf){cf.className=cf.className.replace(/st-\w+/,'st-edited');const chip=cf.querySelector('.chip');if(chip){chip.className='chip edited';chip.textContent='修正済'}const note=cf.querySelector('.cf-note');if(note)note.textContent=''}}ocrRepaintAll();draftSaveSoon()});
+  candList.addEventListener('change',e=>{const card=e.target.closest?.('[data-cand]');if(!card)return;if(e.target.matches?.('[data-cand-check]')){const r=ocr.rows.find(x=>x.id===card.dataset.cand);if(r){r.include=e.target.checked;ocrRepaintAll();draftSaveSoon()}}});
+  candList.addEventListener('click',e=>{const rm=e.target.closest?.('[data-cand-remove]'),card=e.target.closest?.('[data-cand]');if(!rm||!card)return;ocr.rows=ocr.rows.filter(x=>x.id!==card.dataset.cand);ocrRenderCandidates();renderOcr();draftSaveNow()})}
+document.addEventListener('click',e=>{const g=e.target.closest?.('[data-ocr-goto]');if(g){setView(g.dataset.ocrGoto);return}if(e.target.closest?.('#ocrNextBtn')){ocrReset();const pi=$('#photoInput');if(pi&&pi.click)pi.click()}});
 
 render();
 if(startupError)toast(startupError);
+draftRestore();
 })();
 </script>
 </body></html>

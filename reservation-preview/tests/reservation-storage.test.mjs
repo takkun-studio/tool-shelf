@@ -9,6 +9,8 @@ const TEST_DIR = path.dirname(fileURLToPath(import.meta.url));
 const HTML_PATH = path.resolve(TEST_DIR, '../index.html');
 const HTML = readFileSync(HTML_PATH, 'utf8');
 const SCRIPT = HTML.match(/<script>\s*([\s\S]*?)\s*<\/script>/)?.[1];
+const PARSE_PATH = path.resolve(TEST_DIR, '../ocr/ocr-parse.js');
+const PARSE_SRC = readFileSync(PARSE_PATH, 'utf8');
 assert.ok(SCRIPT, `script not found in ${HTML_PATH}`);
 
 const TODAY = '2026-10-26';
@@ -67,6 +69,14 @@ class FakeElement {
   }
 
   focus() {}
+
+  contains() {
+    return false;
+  }
+
+  querySelector() {
+    return null;
+  }
 }
 
 class FakeStorage {
@@ -98,6 +108,10 @@ class FakeStorage {
   replace(raw) {
     this.values.set('schedule-demo-v2', raw);
   }
+
+  setRaw(key, raw) {
+    this.values.set(key, raw);
+  }
 }
 
 function record(overrides = {}) {
@@ -108,7 +122,7 @@ function record(overrides = {}) {
     start: '10:00',
     end: '11:00',
     name: '既存予約',
-    menu: 'カット',
+    menu: '会席コース',
     note: 'メモ',
     ...overrides,
   };
@@ -118,8 +132,9 @@ function validPayload(records, version = 2) {
   return { version, records };
 }
 
-function createApp({ records, raw, storage: givenStorage, getThrows = false } = {}) {
+function createApp({ records, raw, storage: givenStorage, getThrows = false, settings } = {}) {
   const storage = givenStorage ?? new FakeStorage({ getThrows });
+  if (settings !== undefined) storage.setRaw('schedule-settings-v1', JSON.stringify(settings));
   if (records !== undefined) storage.replace(JSON.stringify({ records }));
   if (raw !== undefined) storage.replace(raw);
 
@@ -149,7 +164,12 @@ function createApp({ records, raw, storage: givenStorage, getThrows = false } = 
 
   const document = {
     querySelector(selector) {
-      if (selector.startsWith('#')) return elements[selector.slice(1)] ?? null;
+      if (/^#[\w-]+$/.test(selector)) {
+        const id = selector.slice(1);
+        // 画面に追加された要素も、テストでは空の要素として扱う
+        if (!elements[id]) elements[id] = new FakeElement({ id });
+        return elements[id];
+      }
       return null;
     },
     querySelectorAll(selector) {
@@ -221,7 +241,9 @@ function createApp({ records, raw, storage: givenStorage, getThrows = false } = 
     },
     clearTimeout() {},
   };
-  vm.runInNewContext(SCRIPT, context, { filename: HTML_PATH });
+  vm.createContext(context);
+  vm.runInContext(PARSE_SRC, context, { filename: PARSE_PATH });
+  vm.runInContext(SCRIPT, context, { filename: HTML_PATH });
 
   return {
     context,
@@ -286,7 +308,7 @@ test('通常の追加・編集・削除は保存後の再起動でも維持さ�
   const app = createApp({ records: [] });
 
   app.elements.newBtn.click();
-  submitForm(app, { start: '09:00', end: '10:00', name: '追加予約', menu: '初回', note: '受付' });
+  submitForm(app, { start: '09:00', end: '10:00', name: '追加予約', menu: '昼の会席', note: '受付' });
   const added = storedRecords(app);
   assert.equal(added.length, 1);
   assert.equal(added[0].name, '追加予約');
@@ -304,7 +326,7 @@ test('通常の追加・編集・削除は保存後の再起動でも維持さ�
     start: '09:30',
     end: '10:00',
     name: '編集後の予約',
-    menu: '初回',
+    menu: '昼の会席',
     note: '変更済み',
   })]);
 
@@ -340,7 +362,7 @@ test('照合の反映は保存され、再起動後も予約側へ反映内容�
 });
 
 test('v2 JSONインポートとリセットは保存される', async () => {
-  const imported = [record({ id: 'imported-1', name: 'JSON予約', start: '13:00', end: '14:00', menu: 'カラー', note: 'JSON' })];
+  const imported = [record({ id: 'imported-1', name: 'JSON予約', start: '13:00', end: '14:00', menu: 'お祝い会席', note: 'JSON', guests: 4 })];
   const app = createApp({ records: [record({ id: 'old-1' })] });
 
   await importJson(app, validPayload(imported));
@@ -360,7 +382,7 @@ test('setItem例外時の追加は元データ・入力フォームを維持し�
   const before = app.storage.raw();
   app.storage.failWrites = true;
   app.elements.newBtn.click();
-  submitForm(app, { start: '12:00', end: '13:00', name: '保存失敗追加', menu: 'メニュー', note: '入力保持' });
+  submitForm(app, { start: '12:00', end: '13:00', name: '保存失敗追加', menu: '会席コース', note: '入力保持' });
 
   assert.equal(app.storage.raw(), before);
   assert.equal(app.elements.editModal.classList.contains('open'), true);
@@ -560,54 +582,115 @@ test('Google OAuthの設定状態に応じて接続の案内を切り替えら�
   assert.match(HTML, /<meta name="google-client-id" content="[^"]*">/);
   assert.match(HTML, /運営側のGoogle OAuth設定がまだ入っていません/);
 });
-test('台帳にだけ存在する予約も予約件数と空き時間に反映する', () => {
-  const app = createApp({ records: [
+const HOURS_10_18 = { openTime: '10:00', closeTime: '18:00', defaultDuration: 120, capacity: '' };
+
+test('台帳にだけ存在する予約も予約件数と空き時間に反映する（営業時間を設定した場合）', () => {
+  const app = createApp({ settings: HOURS_10_18, records: [
     record({ id: 'ledger-only', type: 'ledger', start: '10:00', end: '11:00' }),
   ] });
   assert.equal(app.elements.metricBooking.textContent, '1件');
   assert.equal(app.elements.metricOpen.textContent, '7時間');
-  assert.match(app.elements.compareList.innerHTML, /台帳にだけあります/);
+});
+test('カレンダー側の予約を使っている場合だけ「台帳にだけある予約」を確認対象にする', () => {
+  const ledgerOnly = record({ id: 'ledger-only', type: 'ledger', start: '10:00', end: '11:00' });
+  const noCalendar = createApp({ records: [ledgerOnly] });
+  assert.doesNotMatch(noCalendar.elements.compareList.innerHTML, /台帳にだけあります/);
+  const withCalendar = createApp({ records: [ledgerOnly, record({ id: 'other-day', type: 'booking', date: '2026-10-27', name: '別日の予約' })] });
+  assert.match(withCalendar.elements.compareList.innerHTML, /台帳にだけあります/);
 });
 test('同一内容の台帳とカレンダー予約は二重集計しない', () => {
-  const app = createApp({ records: [
+  const app = createApp({ settings: HOURS_10_18, records: [
     record({ id: 'calendar-one', type: 'booking' }),
     record({ id: 'ledger-one', type: 'ledger' }),
   ] });
   assert.equal(app.elements.metricBooking.textContent, '1件');
   assert.equal(app.elements.metricOpen.textContent, '7時間');
 });
-test('予約も台帳もない日は営業枠の8時間を表示する', () => {
+test('営業時間を設定していない場合は空き時間を決め打ちせず「未設定」と表示する', () => {
   const app = createApp({ records: [] });
   assert.equal(app.elements.metricBooking.textContent, '0件');
-  assert.equal(app.elements.metricOpen.textContent, '8時間');
+  assert.equal(app.elements.metricOpen.textContent, '未設定');
+  const set = createApp({ records: [], settings: HOURS_10_18 });
+  assert.equal(set.elements.metricOpen.textContent, '8時間');
+});
+test('人数つきの予約を保存・再読み込みでき、人数なしの旧データもそのまま読める', () => {
+  const app = createApp({ records: [record({ id: 'old-no-guests' })] });
+  app.elements.newBtn.click();
+  app.elements.editGuests.value = '6';
+  submitForm(app, { name: '人数あり様', start: '18:00', end: '20:00', menu: 'お祝い会席' });
+  const saved = storedRecords(app);
+  assert.equal(saved.find(x => x.name === '人数あり様').guests, 6);
+  assert.equal('guests' in saved.find(x => x.id === 'old-no-guests'), false);
+  const reloaded = createApp({ storage: app.storage });
+  assert.match(reloaded.elements.detailList.innerHTML, /人数あり様　6名/);
+});
+test('人数が不正な予約は保存しない', async () => {
+  for (const guests of [0, 1000, 2.5, '4']) {
+    const app = createApp({ records: [record({ id: 'keep-1' })] });
+    const before = app.storage.raw();
+    await importJson(app, validPayload([record({ id: 'bad-guests', guests })]));
+    assert.equal(app.storage.raw(), before, `guests=${guests}`);
+  }
+  const app = createApp({ records: [] });
+  app.elements.newBtn.click();
+  const empty = app.storage.raw();
+  app.elements.editGuests.value = '0';
+  submitForm(app, { name: '人数ゼロ様' });
+  assert.equal(app.storage.raw(), empty);
+  assert.match(app.elements.toast.textContent, /人数は1〜999/);
+});
+test('予約同士の時間の重なりは、予約上限を設定した場合だけ確認する（個人予定との重なりは常に確認）', () => {
+  const recs = [
+    record({ id: 'a', name: 'A様', start: '18:00', end: '20:00' }),
+    record({ id: 'b', name: 'B様', start: '18:30', end: '20:30' }),
+  ];
+  const noLimit = createApp({ records: recs });
+  assert.doesNotMatch(noLimit.elements.compareList.innerHTML, /上限/);
+  const limit1 = createApp({ records: recs, settings: { ...HOURS_10_18, capacity: 1 } });
+  assert.match(limit1.elements.compareList.innerHTML, /上限（1組）を超えています/);
+  const personal = createApp({ records: [...recs, record({ id: 'p', type: 'personal', name: '外出', start: '19:00', end: '19:30' })] });
+  assert.match(personal.elements.compareList.innerHTML, /予定の重複/);
+});
+test('同じお名前の予約が同じ日に複数ある場合は確認対象にする', () => {
+  const app = createApp({ records: [
+    record({ id: 'a', name: '山田様', start: '12:00', end: '14:00' }),
+    record({ id: 'b', name: '山田', start: '18:00', end: '20:00' }),
+  ] });
+  assert.match(app.elements.compareList.innerHTML, /同じお名前の予約が同じ日に複数あります/);
+});
+test('サンプルデータに美容室の用語が残っていない', () => {
+  for (const w of ['カット', 'カラー', 'パーマ', '美容', 'ヘア', '施術', 'サロン']) assert.ok(!HTML.includes(w), w);
 });
 
-
-test('OCR試験画面は写真の読み取り・手動修正・確認登録の導線を持つ', () => {
-  assert.match(HTML, /id="ocrReadBtn"/);
-  assert.match(HTML, /id="ocrText"/);
-  assert.match(HTML, /id="ocrParseBtn"/);
-  assert.match(HTML, /id="ocrSaveBtn"/);
-  assert.match(HTML, /Tesseract\.createWorker/);
-  assert.match(HTML, /\['jpn','eng'\]/);
-  assert.match(HTML, /if\(!confirm\(additions\.length/);
+test('写真登録画面は 写真選択→読み取り→確認・修正→最終確認→登録 の導線を持つ', () => {
+  for (const id of ['photoInput', 'ocrReadBtn', 'ocrCandidates', 'ocrText', 'ocrParseBtn', 'ocrConfirmBtn', 'ocrConfirm', 'ocrSaveBtn', 'ocrRetryBtn', 'ocrManualBtn', 'ocrAddRowBtn']) {
+    assert.match(HTML, new RegExp(`id="${id}"`), id);
+  }
+  assert.match(HTML, /<input id="photoInput" type="file" accept="image\/\*">/);
+  assert.match(HTML, /data-view="ocr"/);
 });
-test('OCRの予約候補を日付・時間・名前・内容へ抽出する', () => {
-  const source = HTML.match(/function parseOcrRows\(text, fallbackDate\)\{[\s\S]*?\n\}\nfunction ocrStatusText/);
-  assert.ok(source, 'OCR parser not found');
-  const fn = source[0].replace(/\nfunction ocrStatusText$/, '');
-  const parser = vm.runInNewContext('(function(){ const pad=n=>String(n).padStart(2,"0"); '+fn+';return parseOcrRows})()', { Date });
-  const rows = parser('11/09 10:00-11:00 山田様 カット\n11/09 13:30-14:30 佐藤様 カラー', '2026-11-09');
-  assert.equal(rows.length, 2);
-  assert.deepEqual(JSON.parse(JSON.stringify(rows[0])), {
-    date: '2026-11-09', start: '10:00', end: '11:00', name: '山田', menu: 'カット'
-  });
-  assert.equal(parser('11/40 10:00-11:00 山田様 カット', '2026-11-09').length, 0);
-  assert.equal(parser('11/09 22:00-21:00 山田様 カット', '2026-11-09').length, 0);
+test('OCRは同じ公開先のエンジンを使い、外部OCR APIやCDNへ画像を送らない', () => {
+  assert.match(HTML, /s\.src='ocr\/ocr-engine\.js/);
+  assert.match(HTML, /<script src="ocr\/ocr-parse\.js"><\/script>/);
+  assert.doesNotMatch(HTML, /tesseract|cdn\.jsdelivr|unpkg|vision\.googleapis|api\.openai/i);
+  const engine = readFileSync(path.resolve(TEST_DIR, '../ocr/ocr-engine.js'), 'utf8');
+  assert.match(engine, /vendor: 'ocr\/vendor\/'/);
+  assert.doesNotMatch(engine, /https?:\/\//, 'エンジンが外部URLを参照している');
+  assert.doesNotMatch(engine, /method:\s*['"]POST/);
 });
-test('OCRは画像を認識するだけで、承認前に予約へ自動追加しない', () => {
-  const scan = HTML.slice(HTML.indexOf('async function ocrReadPhoto()'), HTML.indexOf('const ocrReadBtn='));
-  assert.match(scan, /worker\.recognize\(prepared\)/);
-  assert.doesNotMatch(scan, /save\(/);
-  assert.match(HTML, /id:'l'\+crypto\.randomUUID\(\),type:'ledger'/);
+test('OCRの実行・候補作成・確認画面表示では保存せず、登録ボタンの処理だけが保存する', () => {
+  const body = name => {
+    const start = HTML.indexOf(`function ${name}(`) >= 0 ? HTML.indexOf(`function ${name}(`) : HTML.indexOf(`async function ${name}(`);
+    assert.ok(start >= 0, name);
+    const next = HTML.indexOf('\nfunction ', start + 10), nextAsync = HTML.indexOf('\nasync function ', start + 10);
+    return HTML.slice(start, Math.min(...[next, nextAsync].filter(x => x > 0)));
+  };
+  for (const name of ['ocrRun', 'ocrReparse', 'ocrGoConfirm', 'ocrSetImage', 'ocrRenderCandidates']) assert.doesNotMatch(body(name), /\bsave\(/, name);
+  assert.match(body('ocrRegister'), /save\(\[\.\.\.data,\.\.\.additions\]\)/);
+  assert.match(body('ocrRegister'), /if\(ocr\.registering\)return/);
+  assert.match(body('ocrRegister'), /!a\.blocked/);
+});
+test('OCRから登録する予約は「手書き台帳」型で、Googleカレンダーへは書き込まない', () => {
+  assert.match(HTML, /type:'ledger',date:c\.date/);
+  assert.doesNotMatch(HTML, /method:\s*['"](?:POST|PUT|PATCH|DELETE)['"]/);
 });

@@ -1,0 +1,6 @@
+<!doctype html><meta charset="utf-8"><title>OCR bench</title>
+<script src="ocr/ocr-engine.js"></script><script src="ocr/ocr-parse.js"></script>
+<script>
+window.runPaddle = async (url, opts) => { const t0 = performance.now(); const r = await KaisekiOcrEngine.recognize(url, opts || {}, () => {}); r.ms = performance.now() - t0; return r; };
+window.runTess = () => { throw new Error('Tesseract比較は一時作業場でのみ実施（リポジトリ版は端末内PP-OCRv5のみ）'); };
+</script>
