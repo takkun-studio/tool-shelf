@@ -46,7 +46,7 @@
   <div id="ocrStatus" class="section-note" role="status" aria-live="polite" style="margin-top:9px">まず台帳の写真を選んでください。</div>
   <div id="ocrOutput" hidden>
     <label class="field full" style="margin-top:10px">読み取り結果（修正できます）
-      <textarea id="ocrText" spellcheck="false" placeholder="11/09 10:00-11:00 山田様 カット"></textarea>
+      <textarea id="ocrText" spellcheck="false" placeholder="11/09 10:00-11:00 山田様 ご会食"></textarea>
     </label>
     <button class="btn sm" id="ocrParseBtn">予約候補に分ける</button>
     <div id="ocrCandidates" class="ocr-candidates"></div>
@@ -62,7 +62,7 @@
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const pad=n=>String(n).padStart(2,'0'), localDate=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const addDays=(s,days)=>{const a=s.split('-').map(Number);return localDate(new Date(a[0],a[1]-1,a[2]+days))};
-const today=localDate(new Date());const base=[{id:'b1',type:'booking',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'カット',note:''},{id:'b2',type:'booking',date:today,start:'14:30',end:'15:30',name:'佐藤様',menu:'カラー',note:''},{id:'b3',type:'booking',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'カット',note:''},{id:'p1',type:'personal',date:today,start:'13:00',end:'14:00',name:'私用・外出',menu:'',note:''},{id:'p2',type:'personal',date:addDays(today,1),start:'10:00',end:'11:30',name:'打ち合わせ',menu:'',note:''},{id:'l1',type:'ledger',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'カット',note:''},{id:'l2',type:'ledger',date:today,start:'15:00',end:'16:00',name:'佐藤様',menu:'カラー',note:'時刻が違うサンプル'},{id:'l3',type:'ledger',date:today,start:'16:30',end:'17:30',name:'田中様',menu:'カット',note:'台帳にだけあるサンプル'},{id:'l4',type:'ledger',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'カット',note:''}];
+const today=localDate(new Date());const base=[{id:'b1',type:'booking',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'ご会食',note:''},{id:'b2',type:'booking',date:today,start:'14:30',end:'15:30',name:'佐藤様',menu:'お食事',note:''},{id:'b3',type:'booking',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'ご会食',note:''},{id:'p1',type:'personal',date:today,start:'13:00',end:'14:00',name:'私用・外出',menu:'',note:''},{id:'p2',type:'personal',date:addDays(today,1),start:'10:00',end:'11:30',name:'打ち合わせ',menu:'',note:''},{id:'l1',type:'ledger',date:today,start:'10:00',end:'11:00',name:'山田様',menu:'ご会食',note:''},{id:'l2',type:'ledger',date:today,start:'15:00',end:'16:00',name:'佐藤様',menu:'お食事',note:'時刻が違うサンプル'},{id:'l3',type:'ledger',date:today,start:'16:30',end:'17:30',name:'田中様',menu:'ご会食',note:'台帳にだけあるサンプル'},{id:'l4',type:'ledger',date:addDays(today,2),start:'11:00',end:'12:00',name:'鈴木様',menu:'ご会食',note:''}];
 let data,photos={},sel=today,view='dashboard',month=new Date(today+'T12:00'),modalType='booking';
 const googlePrefsKey='schedule-google-prefs-v1';
 let googleAccessToken='',googleTokenClient=null,googleCalendars=[],googleEvents=[],googleScriptPromise=null,googleSyncing=false;
@@ -380,7 +380,7 @@ function ocrRenderRows(rows){
   area.innerHTML=rows.length?rows.map((r,i)=>'<div class="ocr-row" data-ocr-row="'+i+'"><b>予約候補 '+(i+1)+'</b><div class="ocr-grid">'+
     [['date','日付','date'],['start','開始','time'],['end','終了','time'],['name','名前','text'],['menu','内容','text']].map(f=>
       '<label class="field">'+f[1]+'<input data-ocr-field="'+f[0]+'" type="'+f[2]+'" value="'+esc(r[f[0]])+'" maxlength="'+(f[0]==='name'?100:f[0]==='menu'?150:16)+'"></label>').join('')+
-    '</div></div>').join(''):'<div class="section-note" style="margin:10px 0">予約の形に分けられませんでした。読み取り結果を修正して、もう一度「予約候補に分ける」を押してください。例：11/09 10:00-11:00 山田様 カット</div>';
+    '</div></div>').join(''):'<div class="section-note" style="margin:10px 0">予約の形に分けられませんでした。読み取り結果を修正して、もう一度「予約候補に分ける」を押してください。例：11/09 10:00-11:00 山田様 ご会食</div>';
 }
 let ocrScriptPromise=null;
 function ocrLoadEngine(){
