@@ -20,6 +20,15 @@
 }
 @media (min-width:691px){.main-content {min-width:0;}}
 
+
+.ocr-box{margin-top:12px;padding:14px;border:1px solid #c9d6f4;border-radius:12px;background:#f9fbff}
+.ocr-box[hidden],.ocr-candidates[hidden]{display:none}
+.ocr-box textarea{display:block;width:100%;min-height:120px;resize:vertical;border:1px solid #cbd7e9;border-radius:8px;padding:9px;margin:8px 0 10px;white-space:pre-wrap}
+.ocr-box .ocr-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr 1.2fr;gap:6px;margin:8px 0 12px}
+.ocr-box .ocr-grid input{min-width:0;width:100%;padding:7px 5px;border:1px solid #cbd7e9;border-radius:7px;font-size:12px}
+.ocr-box .ocr-row{margin:12px 0 14px;padding:10px;border-radius:9px;background:#fff;border:1px solid #e2e9f5}
+@media(max-width:690px){.ocr-box .ocr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ocr-box .ocr-grid label:last-child{grid-column:1/-1}}
+
 </style>
 </head>
 <body>
@@ -28,7 +37,22 @@
 <main class="main"><header class="top"><div><div class="eyebrow">SCHEDULE MANAGER / PROTOTYPE</div><h1 id="viewTitle">全体管理</h1></div><div class="top-actions"><button class="btn" id="todayBtn">今日へ</button><button class="btn primary" id="newBtn">＋ 予定を追加</button></div></header>
 <div class="main-content" id="mainContent"><div class="demo-note"><b>操作できる試作版</b>：表示中の予約・予定は架空のサンプルです。変更はこのブラウザ内だけに保存されます。Googleカレンダーは運営側の接続設定後、利用者本人がログインして読み取り同期できます。写真のAI文字読み取り・複数端末共有は未接続です。</div>
 <section id="dashboard" class="screen active"><div class="metrics"><div class="metric"><div class="label">選択日の予約</div><div class="value" id="metricBooking">0件</div><div class="sub">台帳とカレンダーを合算</div></div><div class="metric"><div class="label">個人予定</div><div class="value" id="metricPersonal">0件</div><div class="sub">選択日の予定</div></div><div class="metric warning"><div class="label">要確認</div><div class="value" id="metricIssue">0件</div><div class="sub">不一致・重複を検出</div></div><div class="metric"><div class="label">予約の空き</div><div class="value" id="metricOpen">-</div><div class="sub">10:00〜18:00の空き時間</div></div></div>
-<div class="split"><div class="panel"><div class="panel-heading"><div><div class="panel-title" id="timelineTitle">今日の予定</div><div class="small">緑：予約　青：個人予定　黄：要確認</div></div><div class="toolbar-inline"><button class="btn sm" id="prevDay">‹ 前日</button><button class="btn sm" id="nextDay">翌日 ›</button></div></div><div class="timeline" id="timeline"></div></div><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">確認が必要な項目</span><button class="btn sm" data-goto="detail">詳細を見る →</button></div><div class="alert-list" id="issueList"></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">手書き台帳</span><span class="small">写真を添付</span></div><div style="padding:16px"><label class="upload-btn">＋ 台帳の写真を選ぶ<input id="photoInput" type="file" accept="image/*"></label><div class="section-note" style="margin-top:10px">写真を見ながら台帳の予定を入力できます。文字の自動読み取りは今後の接続対象です。</div><div id="photoPreview"></div><button class="btn" style="width:100%;margin-top:12px" id="ledgerBtn">＋ 台帳の内容を入力</button></div></div><div class="panel" id="googlePanel"><div class="panel-heading"><span class="panel-title">Googleカレンダー</span><span class="small" id="googleStatus">未接続</span></div><div style="padding:16px"><div class="section-note" id="googleHelp">利用者本人のGoogleカレンダーを読み取り、予約用と予定確認用を分けて表示します。</div><div class="toolbar-inline" style="margin-top:12px"><button class="btn sm primary" id="googleConnectBtn">Googleに接続</button><button class="btn sm" id="googleSyncBtn" disabled>予定を同期</button><button class="btn sm" id="googleDisconnectBtn" hidden>接続解除</button></div><div id="googleCalendarPicker" hidden style="margin-top:14px"><label class="field full">予約カレンダー<select id="googleReservationCalendar"><option value="">選択してください</option></select></label><div class="data-label">予定として見るカレンダー</div><div id="googleBusyCalendars" class="section-note" style="display:grid;gap:7px;margin-top:8px"></div><div class="section-note" style="margin-top:10px">ここで選んだ私用・仕事・講座・祝日などの予定は、月間・日別表示と予約の空き時間判定に反映します。</div></div></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">データ管理</span></div><div style="padding:16px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="exportBtn">JSON書き出し</button><label class="btn sm" style="cursor:pointer">JSON読み込み<input id="importInput" type="file" accept="application/json,.json" style="display:none"></label><button class="btn sm danger" id="resetBtn">試作データに戻す</button></div></div></div></div></section>
+<div class="split"><div class="panel"><div class="panel-heading"><div><div class="panel-title" id="timelineTitle">今日の予定</div><div class="small">緑：予約　青：個人予定　黄：要確認</div></div><div class="toolbar-inline"><button class="btn sm" id="prevDay">‹ 前日</button><button class="btn sm" id="nextDay">翌日 ›</button></div></div><div class="timeline" id="timeline"></div></div><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">確認が必要な項目</span><button class="btn sm" data-goto="detail">詳細を見る →</button></div><div class="alert-list" id="issueList"></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">手書き台帳</span><span class="small">写真を添付</span></div><div style="padding:16px"><label class="upload-btn">＋ 台帳の写真を選ぶ<input id="photoInput" type="file" accept="image/*"></label><div class="section-note" style="margin-top:10px">写真を見ながら台帳の予定を入力できます。文字の自動読み取りは今後の接続対象です。</div><div id="photoPreview"></div>
+<div class="ocr-box">
+  <strong>写真の文字読み取り（試験中）</strong>
+  <div class="section-note">写真を選び「文字を読み取る」を押すと、端末内で日本語OCRを実行します。初回のみ認識用データの通信が必要です。自動登録はしません。</div>
+  <label class="section-note" style="display:block;margin:8px 0"><input id="ocrEnhance" type="checkbox"> 薄い文字を補正して再挑戦</label>
+  <button class="btn sm primary" id="ocrReadBtn" disabled>写真から文字を読み取る</button>
+  <div id="ocrStatus" class="section-note" role="status" aria-live="polite" style="margin-top:9px">まず台帳の写真を選んでください。</div>
+  <div id="ocrOutput" hidden>
+    <label class="field full" style="margin-top:10px">読み取り結果（修正できます）
+      <textarea id="ocrText" spellcheck="false" placeholder="11/09 10:00-11:00 山田様 カット"></textarea>
+    </label>
+    <button class="btn sm" id="ocrParseBtn">予約候補に分ける</button>
+    <div id="ocrCandidates" class="ocr-candidates"></div>
+    <button class="btn sm primary" id="ocrSaveBtn" hidden>内容を確認して台帳に登録</button>
+  </div>
+</div><button class="btn" style="width:100%;margin-top:12px" id="ledgerBtn">＋ 台帳の内容を入力</button></div></div><div class="panel" id="googlePanel"><div class="panel-heading"><span class="panel-title">Googleカレンダー</span><span class="small" id="googleStatus">未接続</span></div><div style="padding:16px"><div class="section-note" id="googleHelp">利用者本人のGoogleカレンダーを読み取り、予約用と予定確認用を分けて表示します。</div><div class="toolbar-inline" style="margin-top:12px"><button class="btn sm primary" id="googleConnectBtn">Googleに接続</button><button class="btn sm" id="googleSyncBtn" disabled>予定を同期</button><button class="btn sm" id="googleDisconnectBtn" hidden>接続解除</button></div><div id="googleCalendarPicker" hidden style="margin-top:14px"><label class="field full">予約カレンダー<select id="googleReservationCalendar"><option value="">選択してください</option></select></label><div class="data-label">予定として見るカレンダー</div><div id="googleBusyCalendars" class="section-note" style="display:grid;gap:7px;margin-top:8px"></div><div class="section-note" style="margin-top:10px">ここで選んだ私用・仕事・講座・祝日などの予定は、月間・日別表示と予約の空き時間判定に反映します。</div></div></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">データ管理</span></div><div style="padding:16px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="exportBtn">JSON書き出し</button><label class="btn sm" style="cursor:pointer">JSON読み込み<input id="importInput" type="file" accept="application/json,.json" style="display:none"></label><button class="btn sm danger" id="resetBtn">試作データに戻す</button></div></div></div></div></section>
 <section id="month" class="screen"><div class="panel"><div class="calendar"><div class="cal-toolbar"><strong id="monthTitle"></strong><div class="cal-actions"><button class="btn sm" id="prevMonth">‹</button><button class="btn sm" id="monthToday">今月</button><button class="btn sm" id="nextMonth">›</button></div></div><div class="weekdays"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div><div class="cal-grid" id="calGrid"></div><div class="legend"><span>● <b style="color:var(--green)">予約</b></span><span>● <b style="color:var(--blue)">個人予定</b></span><span>● <b style="color:var(--amber)">要確認</b></span><span>日付タップで詳細を表示</span></div></div></div></section>
 <section id="detail" class="screen"><div class="date-header"><button class="btn sm" id="detailPrev">‹ 前日</button><h2 id="detailDate"></h2><button class="btn sm" id="detailNext">翌日 ›</button><input id="datePicker" type="date" class="btn" aria-label="日付を選択"></div><div class="detail-layout"><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">この日の予定</span><button class="btn sm primary" id="detailAdd">＋ 追加</button></div><div class="detail-list" id="detailList"></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">台帳とカレンダーの照合</span><span class="small" id="compareCount"></span></div><div style="padding:6px 17px 18px" id="compareList"></div></div></div><div class="stack"><div class="panel"><div class="panel-heading"><span class="panel-title">この日の手書き台帳</span></div><div style="padding:16px"><div class="section-note">画像を添付して、読み取った内容を手入力で確認できます。</div><div id="detailPhoto"></div><button class="btn" id="detailLedger" style="width:100%;margin-top:12px">＋ 台帳の予定を入力</button></div></div><div class="panel"><div class="panel-heading"><span class="panel-title">操作について</span></div><div style="padding:16px" class="section-note">予約・個人予定・手書き台帳の入力と編集ができます。「台帳を採用」「予定を採用」で不一致を試しに解消できます。操作内容は試作用の端末内保存です。</div></div></div></div></section>
 </div></main></div><nav class="mobile-tabs"><button class="active" data-view="dashboard">▦ 全体管理</button><button data-view="month">▦ 月間表示</button><button data-view="detail">▤ 詳細表示</button></nav>
@@ -326,6 +350,143 @@ $('#photoInput').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>8
 $('#exportBtn').onclick=()=>{if(storageBlocked&&storedSnapshot===null){toast('保存データにアクセスできないため書き出せません');return}const blob=new Blob([storageBlocked?storedSnapshot:JSON.stringify({version:2,records:data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yoyaku-demo-'+today+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
 $('#importInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const next=readRecords(JSON.parse(await f.text()));if(!confirm('現在の試作データを読み込んだデータで置き換えますか？'))return;if(!save(next))return;render();toast('読み込みました')}catch{toast('対応したJSON形式ではありません')}finally{e.target.value=''}};
 $('#resetBtn').onclick=()=>{if(!confirm('入力した試作データを消して初期状態に戻しますか？'))return;if(!save(structuredClone(base)))return;photos={};render();$('#photoPreview').innerHTML='';toast('初期状態に戻しました')};
+
+let ocrWorkerPromise=null;
+function parseOcrRows(text, fallbackDate){
+  const rows=[],year=Number(fallbackDate.slice(0,4));
+  const normalized=String(text||'').normalize('NFKC').replace(/[〜～－–—]/g,'-');
+  for(const line of normalized.split(/\r?\n/)){
+    const m=line.trim().match(/^(?:[^\d]*\s*)?(?:(\d{4})[\/-])?(\d{1,2})[\/-](\d{1,2})\s+(\d{1,2}):(\d{2})\s*[-~]\s*(\d{1,2}):(\d{2})\s+(.+)$/);
+    if(!m)continue;
+    const y=Number(m[1]||year),mo=Number(m[2]),day=Number(m[3]);
+    const dateObj=new Date(y,mo-1,day);
+    if(dateObj.getFullYear()!==y||dateObj.getMonth()!==mo-1||dateObj.getDate()!==day)continue;
+    const start=pad(Number(m[4]))+':'+pad(Number(m[5])),end=pad(Number(m[6]))+':'+pad(Number(m[7]));
+    if(Number(m[4])>23||Number(m[5])>59||Number(m[6])>23||Number(m[7])>59||start>=end)continue;
+    const tail=m[8].trim().replace(/\s+/g,' ');
+    const n=tail.match(/^(.+?)(?:様)?\s+(.+)$/);
+    if(!n)continue;
+    const name=n[1].replace(/様$/,'').trim(),menu=n[2].trim();
+    if(!name||name.length>100||menu.length>150)continue;
+    rows.push({date:y+'-'+pad(mo)+'-'+pad(day),start,end,name,menu});
+  }
+  return rows;
+}
+function ocrStatusText(message){const el=$('#ocrStatus');if(el)el.textContent=message}
+function ocrRenderRows(rows){
+  const area=$('#ocrCandidates'),saveBtn=$('#ocrSaveBtn');
+  if(!area||!saveBtn)return;
+  saveBtn.hidden=!rows.length;
+  area.innerHTML=rows.length?rows.map((r,i)=>'<div class="ocr-row" data-ocr-row="'+i+'"><b>予約候補 '+(i+1)+'</b><div class="ocr-grid">'+
+    [['date','日付','date'],['start','開始','time'],['end','終了','time'],['name','名前','text'],['menu','内容','text']].map(f=>
+      '<label class="field">'+f[1]+'<input data-ocr-field="'+f[0]+'" type="'+f[2]+'" value="'+esc(r[f[0]])+'" maxlength="'+(f[0]==='name'?100:f[0]==='menu'?150:16)+'"></label>').join('')+
+    '</div></div>').join(''):'<div class="section-note" style="margin:10px 0">予約の形に分けられませんでした。読み取り結果を修正して、もう一度「予約候補に分ける」を押してください。例：11/09 10:00-11:00 山田様 カット</div>';
+}
+let ocrScriptPromise=null;
+function ocrLoadEngine(){
+  if(window.Tesseract)return Promise.resolve();
+  if(ocrScriptPromise)return ocrScriptPromise;
+  ocrScriptPromise=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src='https://cdn.jsdelivr.net/npm/tesseract.js@7.0.0/dist/tesseract.min.js';
+    script.async=true;
+    script.onload=()=>window.Tesseract?resolve():reject(Error('文字読み取りエンジンを読み込めませんでした'));
+    script.onerror=()=>reject(Error('文字読み取りエンジンの通信に失敗しました'));
+    document.head.appendChild(script);
+  }).catch(err=>{ocrScriptPromise=null;throw err});
+  return ocrScriptPromise;
+}
+async function ocrPreprocess(source,enhance){
+  const image=new Image();
+  await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(Error('写真を開けませんでした'));image.src=source});
+  const scale=Math.min(1,1900/Math.max(image.naturalWidth,image.naturalHeight));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+  canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+  const ctx=canvas.getContext('2d',{willReadFrequently:enhance});
+  if(!ctx)throw Error('写真を処理できませんでした');
+  ctx.drawImage(image,0,0,canvas.width,canvas.height);
+  if(enhance){
+    const data=ctx.getImageData(0,0,canvas.width,canvas.height);
+    const pixels=data.data, histogram=new Uint32Array(256);
+    for(let i=0;i<pixels.length;i+=4){const gray=Math.round((pixels[i]*77+pixels[i+1]*150+pixels[i+2]*29)/256);histogram[gray]++}
+    const cutoff=Math.floor(canvas.width*canvas.height*.01);
+    let lo=0,hi=255,n=0;
+    for(;lo<255;lo++){n+=histogram[lo];if(n>=cutoff)break}
+    n=0;
+    for(;hi>0;hi--){n+=histogram[hi];if(n>=cutoff)break}
+    if(hi>lo+15){
+      for(let i=0;i<pixels.length;i+=4){
+        const gray=Math.round((pixels[i]*77+pixels[i+1]*150+pixels[i+2]*29)/256);
+        const v=Math.max(0,Math.min(255,Math.round((gray-lo)*255/(hi-lo))));
+        pixels[i]=pixels[i+1]=pixels[i+2]=v;
+      }
+      ctx.putImageData(data,0,0);
+    }
+  }
+  return canvas;
+}
+async function ocrReadPhoto(){
+  const date=sel,source=photos[date],readBtn=$('#ocrReadBtn');
+  if(!source){ocrStatusText('先に写真を選んでください');return}
+  if(readBtn.disabled)return;
+  readBtn.disabled=true;
+  $('#ocrOutput').hidden=true;
+  ocrRenderRows([]);
+  ocrStatusText('読み取りエンジンを準備しています…');
+  try{
+    await ocrLoadEngine();
+    if(!ocrWorkerPromise){
+      ocrWorkerPromise=window.Tesseract.createWorker(['jpn','eng'],1,{
+        logger:m=>{if(m.status==='recognizing text')ocrStatusText('文字を読み取り中：'+Math.round((m.progress||0)*100)+'%')}
+      }).catch(err=>{ocrWorkerPromise=null;throw err});
+    }
+    const worker=await ocrWorkerPromise;
+    const prepared=await ocrPreprocess(source,$('#ocrEnhance').checked);
+    const result=await worker.recognize(prepared);
+    $('#ocrText').value=String(result?.data?.text||'');
+    $('#ocrOutput').hidden=false;
+    const rows=parseOcrRows($('#ocrText').value,date);
+    ocrRenderRows(rows);
+    ocrStatusText('読み取り終了：予約候補 '+rows.length+'件。原文と照合してから登録してください。');
+  }catch(err){
+    ocrStatusText('読み取り失敗：'+String(err?.message||err)+'。画像と通信を確認してください。');
+  }finally{readBtn.disabled=false}
+}
+const ocrReadBtn=$('#ocrReadBtn'),ocrParseBtn=$('#ocrParseBtn'),ocrSaveBtn=$('#ocrSaveBtn');
+if(ocrReadBtn)ocrReadBtn.onclick=ocrReadPhoto;
+if(ocrParseBtn)ocrParseBtn.onclick=()=>{const rows=parseOcrRows($('#ocrText').value,sel);ocrRenderRows(rows);ocrStatusText('修正した文字から予約候補 '+rows.length+'件を抽出しました。')};
+if(ocrSaveBtn)ocrSaveBtn.onclick=()=>{
+  const candidates=[];
+  for(const row of Array.from(document.querySelectorAll('[data-ocr-row]'))){
+    const get=field=>row.querySelector('[data-ocr-field="'+field+'"]')?.value?.trim()||'';
+    const candidate={date:get('date'),start:get('start'),end:get('end'),name:get('name'),menu:get('menu')};
+    const ymd=candidate.date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const dt=ymd?new Date(Number(ymd[1]),Number(ymd[2])-1,Number(ymd[3])):null;
+    if(!dt||localDate(dt)!==candidate.date||!/^([01]\d|2[0-3]):[0-5]\d$/.test(candidate.start)||
+       !/^([01]\d|2[0-3]):[0-5]\d$/.test(candidate.end)||candidate.start>=candidate.end||
+       !candidate.name||candidate.name.length>100||candidate.menu.length>150){
+      ocrStatusText('入力に不備があります。日付・開始・終了・名前を修正してください。');return;
+    }
+    candidates.push(candidate);
+  }
+  if(!candidates.length)return;
+  const seen=new Set(data.filter(x=>x.type==='ledger').map(x=>[x.date,x.start,x.end,x.name].join('|')));
+  const additions=[];
+  for(const c of candidates){
+    const key=[c.date,c.start,c.end,c.name].join('|');
+    if(seen.has(key))continue;
+    seen.add(key);
+    additions.push({id:'l'+crypto.randomUUID(),type:'ledger',...c,note:'写真OCRから確認して入力'});
+  }
+  if(!additions.length){ocrStatusText('同じ日付・時間・名前の台帳予約はすでに登録されています。');return}
+  if(!confirm(additions.length+'件を手書き台帳の予約として登録しますか？'))return;
+  if(!save([...data,...additions]))return;
+  ocrRenderRows([]);
+  render();
+  ocrStatusText('確認済みの台帳予約 '+additions.length+'件を登録しました。');
+};
+
 render();
 if(startupError)toast(startupError);
 })();
