@@ -581,3 +581,33 @@ test('予約も台帳もない日は営業枠の8時間を表示する', () => {
   assert.equal(app.elements.metricBooking.textContent, '0件');
   assert.equal(app.elements.metricOpen.textContent, '8時間');
 });
+
+
+test('OCR試験画面は写真の読み取り・手動修正・確認登録の導線を持つ', () => {
+  assert.match(HTML, /id="ocrReadBtn"/);
+  assert.match(HTML, /id="ocrText"/);
+  assert.match(HTML, /id="ocrParseBtn"/);
+  assert.match(HTML, /id="ocrSaveBtn"/);
+  assert.match(HTML, /Tesseract\.createWorker/);
+  assert.match(HTML, /\['jpn','eng'\]/);
+  assert.match(HTML, /if\(!confirm\(additions\.length/);
+});
+test('OCRの予約候補を日付・時間・名前・内容へ抽出する', () => {
+  const source = HTML.match(/function parseOcrRows\(text, fallbackDate\)\{[\s\S]*?\n\}\nfunction ocrStatusText/);
+  assert.ok(source, 'OCR parser not found');
+  const fn = source[0].replace(/\nfunction ocrStatusText$/, '');
+  const parser = vm.runInNewContext('(function(){ const pad=n=>String(n).padStart(2,"0"); '+fn+';return parseOcrRows})()', { Date });
+  const rows = parser('11/09 10:00-11:00 山田様 カット\n11/09 13:30-14:30 佐藤様 カラー', '2026-11-09');
+  assert.equal(rows.length, 2);
+  assert.deepEqual(JSON.parse(JSON.stringify(rows[0])), {
+    date: '2026-11-09', start: '10:00', end: '11:00', name: '山田', menu: 'カット'
+  });
+  assert.equal(parser('11/40 10:00-11:00 山田様 カット', '2026-11-09').length, 0);
+  assert.equal(parser('11/09 22:00-21:00 山田様 カット', '2026-11-09').length, 0);
+});
+test('OCRは画像を認識するだけで、承認前に予約へ自動追加しない', () => {
+  const scan = HTML.slice(HTML.indexOf('async function ocrReadPhoto()'), HTML.indexOf('const ocrReadBtn='));
+  assert.match(scan, /worker\.recognize\(prepared\)/);
+  assert.doesNotMatch(scan, /save\(/);
+  assert.match(HTML, /id:'l'\+crypto\.randomUUID\(\),type:'ledger'/);
+});
